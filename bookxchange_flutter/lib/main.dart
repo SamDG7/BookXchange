@@ -1,4 +1,4 @@
-import 'package:bookxchange_flutter/screens/login_screen.dart';
+import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: LoginSignupScreen(),
     );
   }
 }
