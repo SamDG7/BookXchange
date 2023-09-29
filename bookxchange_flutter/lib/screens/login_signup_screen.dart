@@ -1,5 +1,6 @@
 // Import packages from different files in the bookxchange_flutter directory
 import 'package:bookxchange_flutter/components/components.dart';
+import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,6 @@ class LoginSignupScreen extends StatefulWidget {
 
 // Login Signup Screens process
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
-
   // Variables to be used throughout the login/signup process
   //final _auth = FirebaseAuth.instance;
   late String _email;
@@ -32,7 +32,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         children: [
           // Display logo above login/sign up bar options
           SizedBox(
-            height: 200,
+            height: 175,
             child: Image.asset('assets/logo_with_text.png'),
           ),
 
@@ -40,7 +40,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Container(
-              height: MediaQuery.of(context).size.height - 500,
+              height: MediaQuery.of(context).size.height - 540,
 
               // Surround the login/sign up options with a border
               decoration: BoxDecoration(
@@ -75,14 +75,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     Expanded(
                       child: TabBarView(
                         children: [
-
                           //////////////////////////////
                           // LOGIN PAGE
                           //////////////////////////////
-                        
+
                           // Login page
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,6 +136,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
+
+                                const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -234,11 +235,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
-                          
+
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: butterfly, // Set the background color to blue
@@ -258,6 +259,38 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ),
             ),
           ),
+
+          //////////////////////////////
+          // LOGIN WITH GOOGLE BUTTON
+          //////////////////////////////
+          
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  thickness: 0.5, 
+                  color: Colors.grey[400],
+                ),
+              ),
+              Text("Or continue with"),
+              Expanded(
+                child: Divider(
+                  thickness: 0.5, 
+                  color: Colors.grey[400],
+                ),
+              ),
+            ],
+          ),
+
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+            child: SquareTile(
+              onTap: () {
+                //ADD ACTUAL GOOGLE LOGIN STUFF
+              },
+              imagePath: 'assets/google_logo.png'),
+            ),
         ],
       ),
     );
