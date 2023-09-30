@@ -257,9 +257,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 minimumSize:
                     Size(200, 50), // Set the button size (width x height)
               ),
-              onPressed: () {
-                // Add your button's onPressed logic here
-              },
+              onPressed: signUserIn,
               child: Text(
                 "Log In",
                 style: TextStyle(
