@@ -25,7 +25,61 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   late String _email;
   late String _phoneNumber;
   late String _password;
+  late String _confirmpassword;
   bool _saving = false;
+
+  bool _signingup = false;
+
+  void checkSignUpIn() {
+    if (_signingup) {
+      signUserUp();
+    } else {
+      signUserIn();
+    }
+  }
+  //method to setup account for users
+
+  void signUserUp() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    //try sign in
+    try {
+      if (_password == _confirmpassword) {
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+      } else {
+        passwordsNoMatch();
+      }
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      //WRONG LOGIN CREDENTIALS
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        wrongEmailMessage();
+        print('WRONG Something');
+      }
+    }
+  }
+
+  void passwordsNoMatch() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Passwords do not match'),
+        );
+      },
+    );
+  }
 
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
@@ -173,6 +227,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+                                      _signingup = false;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -203,8 +258,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 CustomTextField(
                                   textField: TextField(
                                     onChanged: (value) {
-                                      // TODO: MAKE SURE EMAIL HASN'T BEEN REGISTERED
-
                                       // Set the user's email
                                       _email = value;
                                     },
@@ -256,7 +309,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     // TODO: SHOULD BE ON PASSWORD CONFIRMATION, NOT ONCHANGED
                                     onChanged: (value) {
                                       // Set the user's password
-                                      _password = value;
+                                      _confirmpassword = value;
+                                      _signingup = true;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -292,9 +346,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 minimumSize:
                     Size(200, 50), // Set the button size (width x height)
               ),
-              onPressed: signUserIn,
+              onPressed: checkSignUpIn,
               child: Text(
-                "Log In",
+                "Log In/Sign Up",
                 style: TextStyle(
                   color: Colors.white, // Set the text color to white
                   fontSize: 18, // Set the text size
