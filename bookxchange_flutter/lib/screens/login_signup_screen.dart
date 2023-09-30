@@ -1,8 +1,13 @@
 // Import packages from different files in the bookxchange_flutter directory
+// import 'dart:js_interop';
+
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Stateful Widget
 class LoginSignupScreen extends StatefulWidget {
@@ -21,6 +26,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   late String _phoneNumber;
   late String _password;
   bool _saving = false;
+
+  //method to sign in users (firebaseAuth)
+  void signUserIn() async {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: _email, password: _password);
+  }
 
   @override
   Widget build(BuildContext context) {
