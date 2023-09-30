@@ -29,8 +29,29 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: _email, password: _password);
+    //create loading circle while signing in
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    //try sign in
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found wit that email');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password');
+      }
+    }
+
+    Navigator.pop(context);
   }
 
   @override
