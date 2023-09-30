@@ -43,15 +43,29 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
+
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found wit that email');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password');
+      Navigator.pop(context);
+
+      //WRONG LOGIN CREDENTIALS
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        wrongEmailMessage();
+        print('WRONG Something');
       }
     }
+  }
 
-    Navigator.pop(context);
+  //pop up for when the wrong email is entered
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Email or Password'),
+        );
+      },
+    );
   }
 
   @override
