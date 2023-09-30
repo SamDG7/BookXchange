@@ -263,20 +263,20 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           //////////////////////////////
           // LOGIN WITH GOOGLE BUTTON
           //////////////////////////////
-          
+
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: Divider(
-                  thickness: 0.5, 
+                  thickness: 0.5,
                   color: Colors.grey[400],
                 ),
               ),
               Text("Or continue with"),
               Expanded(
                 child: Divider(
-                  thickness: 0.5, 
+                  thickness: 0.5,
                   color: Colors.grey[400],
                 ),
               ),
@@ -286,11 +286,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () {
-                //ADD ACTUAL GOOGLE LOGIN STUFF
-              },
-              imagePath: 'assets/google_logo.png'),
-            ),
+                onTap: () {
+                  //ADD ACTUAL GOOGLE LOGIN STUFF
+                },
+                imagePath: 'assets/google_logo.png'),
+          ),
         ],
       ),
     );
