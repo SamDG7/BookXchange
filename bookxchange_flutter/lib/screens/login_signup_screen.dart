@@ -1,8 +1,13 @@
 // Import packages from different files in the bookxchange_flutter directory
+// import 'dart:js_interop';
+
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Stateful Widget
 class LoginSignupScreen extends StatefulWidget {
@@ -20,7 +25,102 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   late String _email;
   late String _phoneNumber;
   late String _password;
+  late String _confirmpassword;
   bool _saving = false;
+
+  bool _signingup = false;
+
+  void checkSignUpIn() {
+    if (_signingup) {
+      signUserUp();
+    } else {
+      signUserIn();
+    }
+  }
+  //method to setup account for users
+
+  void signUserUp() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    //try sign in
+    try {
+      if (_password == _confirmpassword) {
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+      } else {
+        passwordsNoMatch();
+      }
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      //WRONG LOGIN CREDENTIALS
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        wrongEmailMessage();
+        print('WRONG Something');
+      }
+    }
+  }
+
+  void passwordsNoMatch() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Passwords do not match'),
+        );
+      },
+    );
+  }
+
+  //method to sign in users (firebaseAuth)
+  void signUserIn() async {
+    //create loading circle while signing in
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    //try sign in
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      //WRONG LOGIN CREDENTIALS
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        wrongEmailMessage();
+        print('WRONG Something');
+      }
+    }
+  }
+
+  //pop up for when the wrong email is entered
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Email or Password'),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +227,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+                                      _signingup = false;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -157,8 +258,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 CustomTextField(
                                   textField: TextField(
                                     onChanged: (value) {
-                                      // TODO: MAKE SURE EMAIL HASN'T BEEN REGISTERED
-
                                       // Set the user's email
                                       _email = value;
                                     },
@@ -210,7 +309,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     // TODO: SHOULD BE ON PASSWORD CONFIRMATION, NOT ONCHANGED
                                     onChanged: (value) {
                                       // Set the user's password
-                                      _password = value;
+                                      _confirmpassword = value;
+                                      _signingup = true;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -246,11 +346,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 minimumSize:
                     Size(200, 50), // Set the button size (width x height)
               ),
-              onPressed: () {
-                // Add your button's onPressed logic here
-              },
+              onPressed: checkSignUpIn,
               child: Text(
-                "Log In",
+                "Log In/Sign Up",
                 style: TextStyle(
                   color: Colors.white, // Set the text color to white
                   fontSize: 18, // Set the text size
@@ -263,20 +361,20 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           //////////////////////////////
           // LOGIN WITH GOOGLE BUTTON
           //////////////////////////////
-          
+
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: Divider(
-                  thickness: 0.5, 
+                  thickness: 0.5,
                   color: Colors.grey[400],
                 ),
               ),
               Text("Or continue with"),
               Expanded(
                 child: Divider(
-                  thickness: 0.5, 
+                  thickness: 0.5,
                   color: Colors.grey[400],
                 ),
               ),
@@ -286,11 +384,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () {
-                //ADD ACTUAL GOOGLE LOGIN STUFF
-              },
-              imagePath: 'assets/google_logo.png'),
-            ),
+                onTap: () {
+                  //ADD ACTUAL GOOGLE LOGIN STUFF
+                },
+                imagePath: 'assets/google_logo.png'),
+          ),
         ],
       ),
     );

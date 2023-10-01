@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738603131874",
+    "project_id": "bookxchange-70fb5",
+    "storage_bucket": "bookxchange-70fb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738603131874:android:22e3f9f732dda082cd4fbb",
+        "android_client_info": {
+          "package_name": "com.example.bookxchange_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCfntHXGzs4fvOeZ9RjDr_myee4ch43CQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
