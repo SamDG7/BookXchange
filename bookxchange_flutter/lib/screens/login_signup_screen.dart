@@ -2,6 +2,7 @@
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 // Stateful Widget
@@ -286,9 +287,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () {
-                //ADD ACTUAL GOOGLE LOGIN STUFF
-              },
+              onTap: () => AuthService(),
               imagePath: 'assets/google_logo.png'),
             ),
         ],
