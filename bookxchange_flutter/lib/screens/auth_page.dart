@@ -15,7 +15,11 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return VerifyScreen();
+              if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                return HomePage();
+              } else {
+                return VerifyScreen();
+              }
             } else {
               return LoginSignupScreen();
             }
