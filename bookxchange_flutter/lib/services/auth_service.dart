@@ -3,61 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  static SnackBar customSnackBar({required String content}) {
-    return SnackBar(
-      backgroundColor: Colors.black,
-      content: Text(
-        content,
-        style: TextStyle(color: Colors.white, letterSpacing: 0.5),
-      ),
+    //google sign in
+
+  signInWithGoogle() async {
+    try {
+    //begin interactive sign in process
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    
+    //obtain auth details from request
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+    
+    //create a new credential for the user
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken, 
+      idToken: gAuth.idToken
     );
-  }
-
-  static Future<User?> signInWithGoogle({required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
-
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
-    final GoogleSignInAccount? gUser = await googleSignIn.signIn();
-
-    if (gUser != null) {
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await gUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-
-      try {
-        final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
-
-        user = userCredential.user;
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'account-exists-with-different-credential') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            AuthService.customSnackBar(
-              content: 'The account already exists with a different credential',
-            ),
-          );
-        } else if (e.code == 'invalid-credential') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            AuthService.customSnackBar(
-              content: 'Error occurred while accessing credentials. Try again.',
-            ),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          AuthService.customSnackBar(
-            content: 'Error occurred using Google Sign In. Try again.',
-          ),
-        );
-      }
+    
+    //sign in
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print(e);
+      return null;
     }
-
-    return user;
   }
 }

@@ -385,7 +385,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () => AuthService(),
+              onTap: () => AuthService().signInWithGoogle(),
               imagePath: 'assets/google_logo.png'),
             ),
         ],
