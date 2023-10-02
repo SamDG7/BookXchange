@@ -12,7 +12,12 @@
           "package_name": "com.example.bookxchange_flutter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "738603131874-htr6f3h6na0i0oi9e89d9k1flu1eu3io.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDCfntHXGzs4fvOeZ9RjDr_myee4ch43CQ"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "738603131874-htr6f3h6na0i0oi9e89d9k1flu1eu3io.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "738603131874-2eh0h275v19valc4ukuo2f8m29fioqq6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bookxchangeFlutter"
+              }
+            }
+          ]
         }
       }
     }
