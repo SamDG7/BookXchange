@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,10 +34,33 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-            'An email has been sent to ${FirebaseAuth.instance.currentUser!.email} please verify'),
+      appBar: AppBar(
+        title: Text("Email Verification"),
+        backgroundColor: butterfly,
       ),
+      body: Container(
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(30),
+                child: Image.asset('assets/email_logo.png'),
+              ),
+              Padding(
+                padding: EdgeInsets.all(30),
+                child: Text(
+                    'An email has been sent to ${FirebaseAuth.instance.currentUser!.email}. Please verify this email address',
+                    style: TextStyle(
+                        color: butterfly, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          )),
+      // body: Center(
+      //   child: Text(
+      //       'An email has been sent to ${FirebaseAuth.instance.currentUser!.email}. Please verify this email address',
+      //       style: TextStyle(color: butterfly, fontWeight: FontWeight.bold)),
+      // ),
     );
   }
 
