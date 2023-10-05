@@ -18,10 +18,10 @@ class AuthPage extends StatelessWidget {
               if (FirebaseAuth.instance.currentUser!.emailVerified) {
                 return HomePage();
               } else {
-                return VerifyScreen();
+                return const VerifyScreen();
               }
             } else {
-              return LoginSignupScreen();
+              return const LoginSignupScreen();
             }
           }),
     );

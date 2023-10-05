@@ -17,7 +17,7 @@ class SquareTile extends StatelessWidget {
       child: Container(
         width: 75, // Set a fixed width
         height: 75, // Set a fixed height
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(color: butterfly, width: 2),
           borderRadius: BorderRadius.circular(16),
