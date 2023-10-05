@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class VerifyScreen extends StatefulWidget {
@@ -16,10 +15,11 @@ class VerifyScreen extends StatefulWidget {
 class _VerifyScreenState extends State<VerifyScreen> {
   late Timer timer;
 
+  @override
   void initState() {
     FirebaseAuth.instance.currentUser!.sendEmailVerification();
 
-    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       checkEmailVerified();
     });
     super.initState();
@@ -35,23 +35,23 @@ class _VerifyScreenState extends State<VerifyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Email Verification"),
+        title: const Text("Email Verification"),
         backgroundColor: butterfly,
       ),
       body: Container(
           alignment: Alignment.topCenter,
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Image.asset('assets/email_logo.png'),
               ),
               Padding(
-                padding: EdgeInsets.all(30),
+                padding: const EdgeInsets.all(30),
                 child: Text(
                     'An email has been sent to ${FirebaseAuth.instance.currentUser!.email}. Please verify this email address',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: butterfly, fontWeight: FontWeight.bold)),
               ),
             ],

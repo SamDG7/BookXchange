@@ -1,4 +1,4 @@
-import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/screens/auth_page.dart';
 
@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: AuthPage(),
+      home: ProfileScreen(),
+      //home: const AuthPage(),
     );
   }
 }
