@@ -12,19 +12,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // App bar with menu navigation drawer and settings icon
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {}, // TODO: ADD ICON FUNCTIONALITY
-            icon: const Icon(Icons.settings), // Settings icon
-          )
-        ],
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: butterfly,
-      ),
-      drawer: Drawer(),
-
       // Vertical scrollable layout
       body: ListView(
         children: <Widget>[
