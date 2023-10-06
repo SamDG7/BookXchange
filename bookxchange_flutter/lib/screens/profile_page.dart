@@ -1,4 +1,6 @@
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
+import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -48,18 +50,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Text(
                           "Joined Oct. 1st, 2023"), // TODO: REPLACE WITH USER JOIN DATE
+
+                      //Edit profile option
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: OutlinedButton.icon(
-                          onPressed: () {}, // TODO: ADD BUTTON FUNCTIONALITY
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen()),
+                            );
+                          }, 
                           icon: Icon(
-                            Icons.mode_edit, 
+                            Icons.mode_edit,
                             color: butterfly,
-                            ),
+                          ),
                           label: Text(
-                            'Edit Profile', 
+                            'Edit Profile',
                             style: TextStyle(color: Colors.grey[800]),
-                            ),
+                          ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(width: 1.0, color: butterfly),
                           ),
@@ -89,11 +99,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
                   child: Text(
-                      "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                      ),
+                    "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
                 ), // TODO: REPLACE WITH USER BIO
               ],
             ),
