@@ -98,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                  child: Text(
+                  child: Text( 
                     "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
                     style: TextStyle(
                       fontSize: 15,

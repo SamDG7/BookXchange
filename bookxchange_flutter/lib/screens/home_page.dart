@@ -71,6 +71,11 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final user = FirebaseAuth.instance.currentUser!;
+  
+
+  //final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  //final FirebaseUser user = await auth.currentUser();
+  //final userid = user.uid;
   //function to sign the user out
   void signUserOut() async {
     print("Signing user out");
@@ -91,7 +96,7 @@ class _HomePageState extends State<HomePage> {
             .reauthenticateWithProvider(GoogleAuthProvider());
       }
 
-      await FirebaseAuth.instance.currentUser?.delete();
+      FirebaseAuth.instance.currentUser?.delete();
     } catch (e) {
       // Handle exceptions
     }
