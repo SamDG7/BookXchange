@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   // TODO: PUT CAMERA ROLL BUTTON HERE W SAME PADDING
                 ],
               ),
-              
+
               // TODO: PUT EDITABLE NAME, BIO, ECT HERE
             ],
           ),

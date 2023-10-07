@@ -1,6 +1,6 @@
 // Import packages from different files in the bookxchange_flutter directory
 // import 'dart:js_interop';
-
+import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
@@ -30,6 +30,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   bool _signingup = false;
 
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   void checkSignUpIn() {
     if (_signingup) {
       signUserUp();
@@ -39,35 +42,52 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   }
   //method to setup account for users
 
-  void signUserUp() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+  bool checkForValidPass() {
+    final numericRegex = RegExp(r'[0-9]');
+    if (_password.length < 8) {
+      return false;
+    }
+    if (!numericRegex.hasMatch(_password)) {
+      return false;
+    }
 
-    //try sign in
-    try {
-      if (_password == _confirmpassword) {
+    return true;
+  }
+
+  void signUserUp() async {
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
+
+    if (checkForValidPass() && _password == _confirmpassword) {
+      try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
+
+        // Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        // Navigator.pop(context);
+
+        //WRONG LOGIN CREDENTIALS
+        if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+          wrongEmailMessage();
+          print('WRONG Something');
+        }
+      }
+    } else {
+      // Navigator.pop(context);
+      if (checkForValidPass() == false) {
+        badPassword();
       } else {
         passwordsNoMatch();
       }
-
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-
-      //WRONG LOGIN CREDENTIALS
-      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        wrongEmailMessage();
-        print('WRONG Something');
-      }
     }
+    //try sign up
   }
 
   void passwordsNoMatch() {
@@ -84,23 +104,22 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
     //create loading circle while signing in
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
 
     //try sign in
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
-
-      Navigator.pop(context);
+      // Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
 
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
@@ -117,6 +136,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       builder: (context) {
         return const AlertDialog(
           title: Text('Incorrect Email or Password'),
+        );
+      },
+    );
+  }
+
+  void badPassword() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text(
+              'Password must be at least 8 characters in length and contain at least one number'),
         );
       },
     );
@@ -230,6 +261,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+
                                       _signingup = false;
                                     },
                                     style: const TextStyle(
@@ -296,6 +328,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+                                      passwordController.text = value;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -305,14 +338,39 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-
+                                // SizedBox(
+                                //   height: 20,
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     AnimatedContainer(
+                                //       duration: Duration(milliseconds: 500),
+                                //       width: 20,
+                                //       height: 20,
+                                //       decoration: BoxDecoration(
+                                //           border: Border.all(color: butterfly),
+                                //           borderRadius:
+                                //               BorderRadius.circular(50)),
+                                //       child: Center(
+                                //         child: Icon(
+                                //           Icons.check,
+                                //           color: Colors.white,
+                                //           size: 15,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     SizedBox(
+                                //       width: 10,
+                                //     ),
+                                //     Text("Contains at least 8 Characters")
+                                //   ],
+                                // ),
                                 CustomTextField(
-                                  // TODO: MAKE SURE PASSWORDS MATCH
                                   textField: TextField(
-                                    // TODO: SHOULD BE ON PASSWORD CONFIRMATION, NOT ONCHANGED
                                     onChanged: (value) {
                                       // Set the user's password
                                       _confirmpassword = value;
+                                      confirmPasswordController.text = value;
                                       _signingup = true;
                                     },
                                     style: const TextStyle(

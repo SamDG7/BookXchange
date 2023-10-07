@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                return HomePage();
+                return const HomePage();
               } else {
                 return const VerifyScreen();
               }
