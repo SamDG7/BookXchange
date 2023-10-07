@@ -5,6 +5,8 @@ import 'package:bookxchange_flutter/screens/messages_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/screens/swiper_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 // class HomePage extends StatefulWidget {
 //   const HomePage({super.key});
 
@@ -68,9 +70,14 @@ class _HomePageState extends State<HomePage> {
     MessagesScreen(),
   ];
 
-  void signUserOut() {
+
+  final user = FirebaseAuth.instance.currentUser!;
+  //function to sign the user out
+  void signUserOut() async {
     print("Signing user out");
-    FirebaseAuth.instance.signOut();
+    final googleSignIn = GoogleSignIn();
+    await FirebaseAuth.instance.signOut();
+    await googleSignIn.signOut();
   }
 
   @override
