@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               MaterialPageRoute(
                                   builder: (context) => EditProfileScreen()),
                             );
-                          }, 
+                          },
                           icon: Icon(
                             Icons.mode_edit,
                             color: butterfly,

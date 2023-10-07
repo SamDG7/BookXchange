@@ -72,8 +72,18 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
       //SOME SORT OF ERROR CAUSED BY THIS THAT DOESNT ALLOW SIGN OUT ON HOME PAGE FUNCTIONALITY
       //FIX??:: PERHAPS JUST TELL USERS TO GO BACK AND LOGIN WITH THIER NEW ACCOUNT
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      // Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (context) => HomePage()));
+      print('directing from email verified');
+      FirebaseAuth.instance.signOut();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text('Please Sign in'),
+          );
+        },
+      );
     }
   }
 }
