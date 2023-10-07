@@ -4,7 +4,6 @@
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +26,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   late String _phoneNumber;
   late String _password;
   late String _confirmpassword;
-  bool _saving = false;
+  final bool _saving = false;
 
   bool _signingup = false;
 
@@ -139,7 +138,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
           // Pad the container holding the login/sign up options
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Container(
               height: MediaQuery.of(context).size.height - 540,
 
@@ -158,7 +157,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 child: Column(
                   // Login/sign up bar
                   children: <Widget>[
-                    TabBar(
+                    const TabBar(
                       indicatorColor: butterfly,
                       labelStyle:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -182,7 +181,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
                           // Login page
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,7 +201,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                         hintText: 'Email'),
                                   ),
                                 ),
-                                Text("--- OR ---"),
+                                const Text("--- OR ---"),
 
                                 // Phone number entry text field
                                 CustomTextField(
@@ -220,7 +219,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 ),
 
                                 // Put a gap between phone number and password
-                                Text(" "),
+                                const Text(" "),
 
                                 // Password entry text field
                                 CustomTextField(
@@ -250,7 +249,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
                           // Sign up page
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -340,15 +339,15 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: butterfly, // Set the background color to blue
+                backgroundColor: butterfly, // Set the background color to blue
                 minimumSize:
-                    Size(200, 50), // Set the button size (width x height)
+                    const Size(200, 50), // Set the button size (width x height)
               ),
               onPressed: checkSignUpIn,
-              child: Text(
+              child: const Text(
                 "Log In/Sign Up",
                 style: TextStyle(
                   color: Colors.white, // Set the text color to white
@@ -372,7 +371,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   color: Colors.grey[400],
                 ),
               ),
-              Text("Or continue with"),
+              const Text("Or continue with"),
               Expanded(
                 child: Divider(
                   thickness: 0.5,
@@ -383,7 +382,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           ),
 
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
               onTap: () => AuthService().signInWithGoogle(),
               imagePath: 'assets/google_logo.png'),
