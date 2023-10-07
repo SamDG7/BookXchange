@@ -122,6 +122,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
+  //////////////////////////////
+  // UI
+  //////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -384,9 +387,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () => AuthService().signInWithGoogle(),
-              imagePath: 'assets/google_logo.png'),
-            ),
+                onTap: () => AuthService().signInWithGoogle(),
+                imagePath: 'assets/google_logo.png'),
+          ),
         ],
       ),
     );
