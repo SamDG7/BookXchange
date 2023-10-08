@@ -6,8 +6,10 @@ import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:bookxchange_flutter/api/user_account.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 // Stateful Widget
 class LoginSignupScreen extends StatefulWidget {
@@ -20,6 +22,14 @@ class LoginSignupScreen extends StatefulWidget {
 
 // Login Signup Screens process
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
+  Future<NewUser>? _futureUser;
+  late Future<ExistingUser> futureUser;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   futureUser = getUserLogin(getUUID());
+  // }
   // Variables to be used throughout the login/signup process
   //final _auth = FirebaseAuth.instance;
   late String _email;
@@ -54,6 +64,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return true;
   }
 
+  static String getUUID() {
+    //final User user = FirebaseAuth.instance.currentUser!;
+    final uuid = FirebaseAuth.instance.currentUser!.uid;
+    return uuid;
+  }
+
   void signUserUp() async {
     // showDialog(
     //   context: context,
@@ -68,7 +84,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
-
+        _futureUser = createUser(getUUID());
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);
@@ -118,6 +134,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
+      futureUser = getUserLogin(getUUID());
+
     } on FirebaseAuthException catch (e) {
       // Navigator.pop(context);
 
@@ -445,8 +463,15 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-                onTap: () => AuthService().signInWithGoogle(),
+                onTap: () async {
+                    AuthService().signInWithGoogle();
+                  //debugPrint(FirebaseAuth.instance.currentUser!.uid);
+                  // ignore: await_only_futures
+                 // _futureUser = createUser(user_uuid);
+                  //_futureUser = createUser(await (AuthService.getUUID() as String));
+                },
                 imagePath: 'assets/google_logo.png'),
+            
           ),
         ],
       ),
