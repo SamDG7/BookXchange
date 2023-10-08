@@ -1,8 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:bookxchange_flutter/api/user_account.dart';
 
 class AuthService {
     //google sign in
+  // static String getUUID()  {
+  //   //final User user = FirebaseAuth.instance.currentUser!;
+  //   // ignore: await_only_futures
+  //   String? uuid = FirebaseAuth.instance.currentUser?.uid;
+  //   return uuid;
+  // }
 
   signInWithGoogle() async {
     try {
@@ -18,8 +25,15 @@ class AuthService {
       idToken: gAuth.idToken
     );
     
-    //sign in
+    // try {
+    //   await FirebaseAuth.instance.signInWithCredential(credential);
+    // } catch (e) {
+    //   print(e);
+    //   return null;
+    // }
+    // //sign in
     return await FirebaseAuth.instance.signInWithCredential(credential);
+    //return FirebaseAuth.instance.currentUser?.uid;
     } catch (e) {
       print(e);
       return null;
