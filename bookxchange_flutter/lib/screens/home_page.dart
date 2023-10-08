@@ -70,7 +70,6 @@ class _HomePageState extends State<HomePage> {
     MessagesScreen(),
   ];
 
-
   final user = FirebaseAuth.instance.currentUser!;
   //function to sign the user out
   void signUserOut() async {
@@ -78,6 +77,100 @@ class _HomePageState extends State<HomePage> {
     final googleSignIn = GoogleSignIn();
     await FirebaseAuth.instance.signOut();
     await googleSignIn.signOut();
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    try {
+      final providerData =
+          FirebaseAuth.instance.currentUser?.providerData.first;
+
+      if (AppleAuthProvider().providerId == providerData!.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(AppleAuthProvider());
+      } else if (GoogleAuthProvider().providerId == providerData.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(GoogleAuthProvider());
+      }
+
+      await FirebaseAuth.instance.currentUser?.delete();
+    } catch (e) {
+      // Handle exceptions
+    }
+  }
+
+  Future<void> deleteUserAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      print("Firebase Authentication Exception: $e");
+
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      } else {
+        // Handle other Firebase exceptions
+      }
+    } catch (e) {
+      print("General Exception: $e");
+
+      // Handle general exception
+    }
+  }
+
+  // Function to delete the user account
+  void successfullyDeletedAccount(BuildContext context) {
+    // Show a success message dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Account Deleted"),
+          content: Text("Your account has been successfully deleted."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the success message dialog
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void deleteUserConfirmationPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Deletion of Account",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Are you sure you want to delete your account?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                // Perform the delete action here
+                Navigator.of(context).pop(); // Close the dialog
+                successfullyDeletedAccount(context);
+                deleteUserAccount();
+                // Add code to delete the account
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -101,8 +194,14 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.settings), // Settings icon
             itemBuilder: (context) => [
               PopupMenuItem(value: MenuItem.item1, child: Text('Log Out')),
+              //ADD DELETE CONFIRMATION POPUP
               PopupMenuItem(
-                  value: MenuItem.item2, child: Text('Something Else'))
+                value: MenuItem.item2,
+                child: Text('Delete Account'),
+                onTap: () {
+                  deleteUserConfirmationPopup(context);
+                },
+              )
             ],
           )
         ],
