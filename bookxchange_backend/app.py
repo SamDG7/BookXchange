@@ -55,6 +55,21 @@ def user_login(user_uid):
     
     return user.to_json(orient='records', force_ascii=False)
 
+@app.route('/user/delete', methods=['DELETE'])
+def user_delete():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+
+    user = db.db.user_collection.delete_one({
+        "uuid": uuid,
+    })
+
+    return json
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
