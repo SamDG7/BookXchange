@@ -84,7 +84,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
-        _futureUser = createUser(getUUID());
+        _futureUser = createUser(getUUID(), _email);
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);

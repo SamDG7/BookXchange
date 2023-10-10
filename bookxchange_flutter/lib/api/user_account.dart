@@ -9,7 +9,7 @@ import 'dart:async';
 
 
 // CREATE NEW USER ACCOUNT 
-Future<NewUser> createUser(String uuid) async {
+Future<NewUser> createUser(String uuid, String email) async {
   final response = await http.post(
     Uri.parse('http://localhost:8080/user/signup'),
     headers: <String, String>{
@@ -17,6 +17,7 @@ Future<NewUser> createUser(String uuid) async {
     },
     body: jsonEncode(<String, String>{
       'uuid': uuid,
+      'user_email': email,
     }),
   );
 
@@ -29,7 +30,7 @@ Future<NewUser> createUser(String uuid) async {
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
-      debugPrint(jsonDecode(response.body));
+      //debugPrint(jsonDecode(response.body));
       throw Exception('Failed to create user.');
   }
 }
