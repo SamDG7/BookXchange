@@ -34,20 +34,28 @@ def user_singup():
         return 'content type not supported'
     
     uuid = json['uuid']
-    # user_email = json['user_email']
+    user_email = json['user_email']
     # user_phone = json['user_phone']
     # user_name = json['user_name']
     # user_bio = json['user_bio']
 
     # global user_uid = json['uuid']
 
-    user = db.db.user_collection.insert_one({
-        "uuid": uuid,
-        "user_email": "",
-        "user_phone": "",
-        "user_name": "",
-        "user_bio": "",
-    })
+    # user = db.db.user_collection.insert_one({
+    #     "uuid": uuid,
+    #     "user_email": user_email,
+    #     "user_phone": "",
+    #     "user_name": "",
+    #     "user_bio": "",
+    # })
+    user = db.db.user_collection.replace_one({"uuid": uuid},
+        {
+            "uuid": uuid,
+            "user_email": user_email,
+            "user_phone": "",
+            "user_name": "",
+            "user_bio": "",
+        }, upsert=True)
 
     return json, 201
 
