@@ -290,9 +290,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-
                                 const SizedBox(height: 30),
+                                //Forgot password button
+
                               ],
+                              
                             ),
                           ),
 
@@ -412,21 +414,55 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           ),
 
           //////////////////////////////
+          /// FORGOT PASSWORD BUTTON
+          /// //////////////////////////
+          Padding(
+            //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
+
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: butterfly, // Set the background color to blue
+                minimumSize:
+                    Size(80, 30), // Set the button size (width x height)
+              ),
+              onPressed: checkSignUpIn, //TEMP NEED TO CHANGE
+              child: Text(
+                "Forgot Password",
+                style: TextStyle(
+                  color: Colors.white, // Set the text color to white
+                  fontSize: 10, // Set the text size
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+
+          //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
 
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
+
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: butterfly, // Set the background color to blue
                 minimumSize:
                     const Size(200, 50), // Set the button size (width x height)
               ),
+
+              onPressed: checkSignUpIn, 
+              child: Text(
+
               onPressed: checkSignUpIn,
               child: const Text(
+
                 "Log In/Sign Up",
                 style: TextStyle(
                   color: Colors.white, // Set the text color to white
@@ -436,6 +472,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ),
             ),
           ),
+          
 
           //////////////////////////////
           // LOGIN WITH GOOGLE BUTTON
