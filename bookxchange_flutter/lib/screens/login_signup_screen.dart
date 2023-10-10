@@ -1,14 +1,15 @@
 // Import packages from different files in the bookxchange_flutter directory
 // import 'dart:js_interop';
-
+import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:bookxchange_flutter/api/user_account.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 // Stateful Widget
 class LoginSignupScreen extends StatefulWidget {
@@ -21,15 +22,26 @@ class LoginSignupScreen extends StatefulWidget {
 
 // Login Signup Screens process
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
+  Future<NewUser>? _futureUser;
+  late Future<ExistingUser> futureUser;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   futureUser = getUserLogin(getUUID());
+  // }
   // Variables to be used throughout the login/signup process
   //final _auth = FirebaseAuth.instance;
   late String _email;
   late String _phoneNumber;
   late String _password;
   late String _confirmpassword;
-  bool _saving = false;
+  final bool _saving = false;
 
   bool _signingup = false;
+
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   void checkSignUpIn() {
     if (_signingup) {
@@ -40,35 +52,58 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   }
   //method to setup account for users
 
-  void signUserUp() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+  bool checkForValidPass() {
+    final numericRegex = RegExp(r'[0-9]');
+    if (_password.length < 8) {
+      return false;
+    }
+    if (!numericRegex.hasMatch(_password)) {
+      return false;
+    }
 
-    //try sign in
-    try {
-      if (_password == _confirmpassword) {
+    return true;
+  }
+
+  static String getUUID() {
+    //final User user = FirebaseAuth.instance.currentUser!;
+    final uuid = FirebaseAuth.instance.currentUser!.uid;
+    return uuid;
+  }
+
+  void signUserUp() async {
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
+
+    if (checkForValidPass() && _password == _confirmpassword) {
+      try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
+        _futureUser = createUser(getUUID(), _email);
+        // Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        // Navigator.pop(context);
+
+        //WRONG LOGIN CREDENTIALS
+        if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+          wrongEmailMessage();
+          print('WRONG Something');
+        }
+      }
+    } else {
+      // Navigator.pop(context);
+      if (checkForValidPass() == false) {
+        badPassword();
       } else {
         passwordsNoMatch();
       }
-
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-
-      //WRONG LOGIN CREDENTIALS
-      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        wrongEmailMessage();
-        print('WRONG Something');
-      }
     }
+    //try sign up
   }
 
   void passwordsNoMatch() {
@@ -85,23 +120,24 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
     //create loading circle while signing in
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
 
     //try sign in
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
+      // Navigator.pop(context);
+      futureUser = getUserLogin(getUUID());
 
-      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
 
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
@@ -123,6 +159,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
+  void badPassword() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text(
+              'Password must be at least 8 characters in length and contain at least one number'),
+        );
+      },
+    );
+  }
+
+  //////////////////////////////
+  // UI
+  //////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +190,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
           // Pad the container holding the login/sign up options
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Container(
               height: MediaQuery.of(context).size.height - 540,
 
@@ -158,7 +209,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 child: Column(
                   // Login/sign up bar
                   children: <Widget>[
-                    TabBar(
+                    const TabBar(
                       indicatorColor: butterfly,
                       labelStyle:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -182,7 +233,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
                           // Login page
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,7 +253,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                         hintText: 'Email'),
                                   ),
                                 ),
-                                Text("--- OR ---"),
+                                const Text("--- OR ---"),
 
                                 // Phone number entry text field
                                 CustomTextField(
@@ -220,7 +271,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 ),
 
                                 // Put a gap between phone number and password
-                                Text(" "),
+                                const Text(" "),
 
                                 // Password entry text field
                                 CustomTextField(
@@ -228,6 +279,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+
                                       _signingup = false;
                                     },
                                     style: const TextStyle(
@@ -252,7 +304,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
                           // Sign up page
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -296,6 +348,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     onChanged: (value) {
                                       // Set the user's password
                                       _password = value;
+                                      passwordController.text = value;
                                     },
                                     style: const TextStyle(
                                       fontSize: 15,
@@ -305,14 +358,39 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-
+                                // SizedBox(
+                                //   height: 20,
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     AnimatedContainer(
+                                //       duration: Duration(milliseconds: 500),
+                                //       width: 20,
+                                //       height: 20,
+                                //       decoration: BoxDecoration(
+                                //           border: Border.all(color: butterfly),
+                                //           borderRadius:
+                                //               BorderRadius.circular(50)),
+                                //       child: Center(
+                                //         child: Icon(
+                                //           Icons.check,
+                                //           color: Colors.white,
+                                //           size: 15,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     SizedBox(
+                                //       width: 10,
+                                //     ),
+                                //     Text("Contains at least 8 Characters")
+                                //   ],
+                                // ),
                                 CustomTextField(
-                                  // TODO: MAKE SURE PASSWORDS MATCH
                                   textField: TextField(
-                                    // TODO: SHOULD BE ON PASSWORD CONFIRMATION, NOT ONCHANGED
                                     onChanged: (value) {
                                       // Set the user's password
                                       _confirmpassword = value;
+                                      confirmPasswordController.text = value;
                                       _signingup = true;
                                     },
                                     style: const TextStyle(
@@ -367,15 +445,24 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
+
             padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: butterfly, // Set the background color to blue
+                backgroundColor: butterfly, // Set the background color to blue
                 minimumSize:
-                    Size(200, 50), // Set the button size (width x height)
+                    const Size(200, 50), // Set the button size (width x height)
               ),
+
               onPressed: checkSignUpIn, 
               child: Text(
+
+              onPressed: checkSignUpIn,
+              child: const Text(
+
                 "Log In/Sign Up",
                 style: TextStyle(
                   color: Colors.white, // Set the text color to white
@@ -400,7 +487,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   color: Colors.grey[400],
                 ),
               ),
-              Text("Or continue with"),
+              const Text("Or continue with"),
               Expanded(
                 child: Divider(
                   thickness: 0.5,
@@ -411,11 +498,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           ),
 
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
-              onTap: () => AuthService().signInWithGoogle(),
-              imagePath: 'assets/google_logo.png'),
-            ),
+                onTap: () async {
+                    AuthService().signInWithGoogle();
+                  //debugPrint(FirebaseAuth.instance.currentUser!.uid);
+                  // ignore: await_only_futures
+                 // _futureUser = createUser(user_uuid);
+                  //_futureUser = createUser(await (AuthService.getUUID() as String));
+                },
+                imagePath: 'assets/google_logo.png'),
+            
+          ),
         ],
       ),
     );

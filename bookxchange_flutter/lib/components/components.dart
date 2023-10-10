@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField({super.key, required this.textField});
+  const CustomTextField({super.key, required this.textField});
   final TextField textField;
 
   @override
