@@ -239,6 +239,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                   ),
                                 ),
 
+                                //Forgot password button
+                                CustomTextField(
+                                  textField: TextField(
+                                    style: const TextStyle(
+                                      fontSize: 8,
+                                    ),
+                                    decoration: kTextInputDecoration.copyWith(
+                                        hintText: 'Forgot Password'),
+                                    obscureText: true,
+                                  ),
+                                ),
                                 const SizedBox(height: 30),
                               ],
                             ),
