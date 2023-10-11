@@ -412,7 +412,28 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ),
             ),
           ),
+          //Forgot Password Button
+          Padding(
+            //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: butterfly, // Set the background color to blue
+                minimumSize:
+                    const Size(80, 40), // Set the button size (width x height)
+              ),
+              onPressed: checkSignUpIn, //needs to be changed
+              child: const Text(
+                "Forgot Password",
+                style: TextStyle(
+                  color: Colors.white, // Set the text color to white
+                  fontSize: 10, // Set the text size
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
           //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
