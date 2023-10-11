@@ -70,6 +70,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return uuid;
   }
 
+  void phoneNumberSignUp() async {}
+
   void signUserUp() async {
     // showDialog(
     //   context: context,
@@ -82,6 +84,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
     if (checkForValidPass() && _password == _confirmpassword) {
       try {
+        phoneNumberSignUp();
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
@@ -135,7 +138,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
-
     } on FirebaseAuthException catch (e) {
       // Navigator.pop(context);
 
@@ -464,14 +466,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
             child: SquareTile(
                 onTap: () async {
-                    AuthService().signInWithGoogle();
+                  AuthService().signInWithGoogle();
                   //debugPrint(FirebaseAuth.instance.currentUser!.uid);
                   // ignore: await_only_futures
-                 // _futureUser = createUser(user_uuid);
+                  // _futureUser = createUser(user_uuid);
                   //_futureUser = createUser(await (AuthService.getUUID() as String));
                 },
                 imagePath: 'assets/google_logo.png'),
-            
           ),
         ],
       ),
