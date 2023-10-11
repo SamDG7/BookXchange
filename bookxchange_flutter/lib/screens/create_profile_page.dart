@@ -3,9 +3,83 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 
+
+class MultiSelect extends StatefulWidget {
+  final List<String> items;
+  const MultiSelect({Key? key, required this.items}) : super(key: key);
+
+  @override
+  State<MultiSelect> createState() => _MultiSelectState();
+}
+
+  class _MultiSelectState extends State<MultiSelect> {
+    final List<String> _preferredGenres = [];
+
+    void _itemChange(String genre, bool isSelected) {
+      setState(() {
+        if (isSelected) {
+          _preferredGenres.add(genre);
+        } else {
+          _preferredGenres.remove(genre);
+        }
+      });
+    }
+
+    void _cancel() {
+      Navigator.pop(context);
+    }
+
+    void _submit() {
+      Navigator.pop(context, _preferredGenres);
+    }
+
+   @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        'Select Genres',
+        style: TextStyle(
+          color: butterfly,
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: ListBody(
+          //tileColor: isSelected ? Colors.blue : null, 
+          children: widget.items
+              .map((item) => CheckboxListTile.adaptive(
+                    value: _preferredGenres.contains(item),
+                    selectedTileColor: butterfly,
+                    title: Text(
+                      item,
+                      style: TextStyle(
+                        //color: white,
+                      ),
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (isChecked) => _itemChange(item, isChecked!),
+                  ))
+              .toList(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _cancel,
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _submit,
+          child: const Text('Submit'),
+        ),
+      ],
+    );
+  }
+}
+
+
+
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
-
+  
   @override
   State<CreateProfileScreen> createState() => _CreateProfileScreenState();
 }
@@ -13,6 +87,38 @@ class CreateProfileScreen extends StatefulWidget {
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userName = "";
   late String? userBio;
+  List<String> _preferredGenres = [];
+
+  void _showMultiSelect() async {
+
+    final List<String> items = [
+      'Genre 1',
+      'Genre 2',
+      'Genre 3',
+      'Genre 4',
+      'Genre 5',
+      'Genre 6',
+      'Genre 7',
+      'Genre 8',
+      'Genre 9',
+      'Genre 10',
+      'Genre 11',
+      'Genre 12',
+    ];
+    
+    final List<String>? results = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelect(items: items);
+      } 
+    );
+
+    if (results != null) {
+        setState(() {
+          _preferredGenres = results;
+        });
+    }
+  }
 
   bool checkNullValue() {
     if (userName.isEmpty) {
@@ -86,9 +192,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(40, 50, 50, 10),
+            padding: const EdgeInsets.fromLTRB(40, 50, 40, 10),
             child:
-          CustomTextField(
+          CustomTextField2(
             textField: TextField(
               onChanged: (value) {  
                 userName = value;
@@ -111,7 +217,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               width: 240, // <-- TextField width
               height: 110,
             child:
-          CustomTextField(
+          CustomTextField2(
             textField: TextField(
               maxLines: null,
               expands: true,
@@ -133,9 +239,50 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           ),
           ), 
           Padding(
+          padding: const EdgeInsets.fromLTRB(80, 20, 80, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // use this button to open the multi-select dialog
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                backgroundColor: butterfly,
+                ),
+                onPressed: _showMultiSelect,
+                child: const Text(
+                  "Select your genres",
+                  style: TextStyle(
+                    color: Colors.white, // Set the text color to white
+                    fontSize: 18, // Set the text size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+                const Divider(
+                  height: 20,
+                ),
+              // display selected items
+              Wrap(
+                children: _preferredGenres
+                    .map((e) => Chip(
+                          label: Text(
+                            e,
+                          style: TextStyle(
+                            color: butterfly, // Set the text color to white
+                            fontSize: 14, // Set the text size
+                          ),
+                          ),
+                        ))
+                    .toList(),
+              )
+            ],
+          ),
+          ),
+
+          Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: const EdgeInsets.fromLTRB(100, 30, 100, 10),
+            padding: const EdgeInsets.fromLTRB(100, 20, 100, 10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: butterfly, // Set the background color to blue
@@ -151,7 +298,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         elevation: 0,
                         content: Container(
                           padding: const EdgeInsets.all(19),
-                          height: 60, 
+                          height: 80, 
                           decoration: const BoxDecoration(
                             color: butterfly,
                             borderRadius: BorderRadius.all(Radius.circular(20))

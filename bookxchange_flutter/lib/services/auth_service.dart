@@ -1,3 +1,4 @@
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -41,6 +42,9 @@ class AuthService {
 
     Future<NewUser>? _futureUser;
     _futureUser = createUser(getUUID(), "hi");
+    //newUser = task.getResult().getAdditionalUserInfo().isNewUser();
+    //newUser = FirebaseAnalytics.instance.getAdditionalUserInfo.isNewUser();
+    
     //return await FirebaseAuth.instance.signInWithCredential(credential);
     //return FirebaseAuth.instance.currentUser?.uid;
     return newuser;
