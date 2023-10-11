@@ -1,4 +1,5 @@
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/create_profile_page.dart';
 import 'package:bookxchange_flutter/screens/messages_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/screens/swiper_page.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
+      //home: CreateProfileScreen(),
       home: AuthPage(),
     );
   }
