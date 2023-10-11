@@ -7,6 +7,8 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:bookxchange_flutter/screens/create_profile_page.dart';
+import 'package:bookxchange_flutter/globals.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +17,7 @@ import 'package:http/http.dart' as http;
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({super.key});
   static String id = 'login_signup_screen';
+  
 
   @override
   State<LoginSignupScreen> createState() => _LoginSignupScreenState();
@@ -70,6 +73,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return uuid;
   }
 
+
   void signUserUp() async {
     // showDialog(
     //   context: context,
@@ -85,6 +89,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
+        newUser = true;
+        //createProfile();
+        
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);
