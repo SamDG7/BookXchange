@@ -2,6 +2,9 @@ import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
+import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:bookxchange_flutter/api/user_profile.dart';
+import 'package:bookxchange_flutter/globals.dart';
 
 
 class MultiSelect extends StatefulWidget {
@@ -11,6 +14,7 @@ class MultiSelect extends StatefulWidget {
   @override
   State<MultiSelect> createState() => _MultiSelectState();
 }
+
 
   class _MultiSelectState extends State<MultiSelect> {
     final List<String> _preferredGenres = [];
@@ -86,8 +90,9 @@ class CreateProfileScreen extends StatefulWidget {
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userName = "";
-  late String? userBio;
+  late String userBio;
   List<String> _preferredGenres = [];
+  Future<CreateProfile>? _newProfile;
 
   void _showMultiSelect() async {
 
@@ -314,6 +319,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     ),
                   );
                 } else {
+                  _newProfile = createUserProfile(getUUID(), userName, userBio, _preferredGenres);
                 Navigator.push(
                    context,
                   MaterialPageRoute(builder: (context) => const HomePage()),
