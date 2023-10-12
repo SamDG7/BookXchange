@@ -75,6 +75,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => Container(
+                                              padding:
+                                                  const EdgeInsets.all(80),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      "Here Are Some Options To Share Your Profile!",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headlineLarge),
+                                                  Text(""),
+                                                  Text(
+                                                      "Click any of these platforms to tell your friends you are on BookXChange!"),
+                                                  Text(""),
+                                                ],
+                                              )
+                                            )
+                                          );
+                          },
+                          icon: Icon(
+                            Icons.share,
+                            color: butterfly,
+                          ),
+                          label: Text(
+                            'Share',
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(width: 1.0, color: butterfly),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
