@@ -6,7 +6,6 @@ import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,6 +70,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return uuid;
   }
 
+  void resetPassword() async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
+    Navigator.pop(context);
+  }
+
   void signUserUp() async {
     // showDialog(
     //   context: context,
@@ -86,7 +90,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
-        newUser = true;
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);
@@ -298,7 +301,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           butterfly, // Set the background color to blue
-                                      minimumSize: const Size(60,20), // Set the button size (width x height)
+                                      minimumSize: const Size(60,
+                                          20), // Set the button size (width x height)
                                     ),
                                     onPressed: () {
                                       showModalBottomSheet(
@@ -316,7 +320,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                                           .textTheme
                                                           .headlineLarge),
                                                   Text(""),
-                                                  Text("Please check your email for a password reset link"),
+                                                  Text(
+                                                      "Please check your email for a password reset link"),
                                                   Text(""),
                                                   CustomTextField(
                                                     textField: TextField(
@@ -334,6 +339,26 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                                                       'Email'),
                                                     ),
                                                   ),
+                                                  Text(""),
+                                                  Center(
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            butterfly, // Set the background color to blue
+                                                        minimumSize: const Size(
+                                                            100,
+                                                            50), // Set the button size (width x height)
+                                                      ),
+                                                      onPressed: resetPassword,
+                                                      child: const Text(
+                                                        "Send Email",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
                                                 ],
                                               )));
                                     },
@@ -523,7 +548,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             child: SquareTile(
                 onTap: () async {
                   AuthService().signInWithGoogle(context);
-                
                 },
                 imagePath: 'assets/google_logo.png'),
           ),
