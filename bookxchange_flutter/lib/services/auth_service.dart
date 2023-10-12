@@ -1,10 +1,19 @@
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:bookxchange_flutter/api/user_account.dart';
 
 class AuthService {
+  
   //google sign in
+  static String getUUID()  {
+    //final User user = FirebaseAuth.instance.currentUser!;
+    // ignore: await_only_futures
+    String uuid = FirebaseAuth.instance.currentUser!.uid;
+    return uuid;
+  }
 
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -31,11 +40,14 @@ class AuthService {
       //sign in
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
-      /*
-      print(e);
-      return null;
-      */
+      
+    UserCredential newuser = await FirebaseAuth.instance.signInWithCredential(credential);
 
+    Future<NewUser>? _futureUser;
+    _futureUser = createUser(getUUID(), "hi");
+    return newuser;
+    } on FirebaseAuthException catch (e) {
+      
       if (e.code == 'account-exists-with-different-credential') {
         ScaffoldMessenger.of(context).showSnackBar(
           AuthService.customSnackBar(

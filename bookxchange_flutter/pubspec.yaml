@@ -30,7 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  # adds http_interceptor
+  http_interceptor: ^1.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -38,6 +39,7 @@ dependencies:
   firebase_core: ^2.16.0
   firebase_auth: ^4.10.0
   google_sign_in: ^6.1.5
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:

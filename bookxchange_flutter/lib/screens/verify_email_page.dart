@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:bookxchange_flutter/screens/create_profile_page.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 
 class VerifyScreen extends StatefulWidget {
   const VerifyScreen({super.key});
@@ -73,9 +76,14 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
       //SOME SORT OF ERROR CAUSED BY THIS THAT DOESNT ALLOW SIGN OUT ON HOME PAGE FUNCTIONALITY
       //FIX??:: PERHAPS JUST TELL USERS TO GO BACK AND LOGIN WITH THIER NEW ACCOUNT
-
-      Navigator.of(context)
+       if (newUser == true) {
+        newUser = false;
+        Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => CreateProfileScreen()));
+       } else {
+        Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => HomePage()));
+      }
     }
   }
 }
