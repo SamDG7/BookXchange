@@ -80,7 +80,7 @@ def user_login(user_uid):
 @app.route('/user/delete', methods=['DELETE'])
 def user_delete():
     content_type = request.headers.get('Content-Type')
-    if(content_type == 'application/json'):
+    if(content_type == 'application/json; charset=utf-8'):
         json = request.json
     else:
         return 'content type not supported'
@@ -99,7 +99,7 @@ def user_delete():
 @app.route('/user/create_profile', methods=['PUT'])
 def user_create_profile():
     content_type = request.headers.get('Content-Type')
-    if(content_type == 'application/json'):
+    if(content_type == 'application/json; charset=utf-8'):
         json = request.json
     else:
         return 'content type not supported'
@@ -107,12 +107,14 @@ def user_create_profile():
     uuid = json['uuid']
     user_name = json['user_name']
     user_bio = json['user_bio']
+    user_genre = json['user_genre']
 
     # global user_uid = json['uuid']
 
     user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
-        "user_bio": user_bio}}
+        "user_bio": user_bio,
+        "user_genre": user_genre}}
     )
 
     return json, 201
