@@ -17,7 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Vertical scrollable layout
       body: ListView(
         children: <Widget>[
-          // Profile image, profile name, join date, edit profile button
+          // Profile image, profile name, join date, edit profile button, share profile
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -97,10 +97,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   Text(
                                                       "Click any of these platforms to tell your friends you are on BookXChange!"),
                                                   Text(""),
+                                                  Center (
+                                                    child: Icon (
+                                                      Icons.facebook,
+                                                      color: butterfly,
+                                                      size: 50
+                                                    ),
+                                                  ),
                                                 ],
-                                              )
+                                              ),
                                             )
-                                          );
+                                          );  
                           },
                           icon: Icon(
                             Icons.share,
@@ -184,6 +191,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
+          //invite someone to the app
+          Padding(
+                        padding: EdgeInsets.fromLTRB(90, 50, 90, 0),
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            /*
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen()),
+                            );
+                            */
+                          },
+                          icon: Icon(
+                            Icons.favorite,
+                            color: butterfly,
+                          ),
+                          label: Text(
+                            'Love The App? Invite Someone!',
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(width: 1.0, color: butterfly),
+                          ),
+                        ),
+                      ),
         ],
       ),
     );
