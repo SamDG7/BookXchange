@@ -1,7 +1,12 @@
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
+import 'package:bookxchange_flutter/api/user_profile.dart';
+import 'package:bookxchange_flutter/globals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -11,6 +16,10 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  late String userName;
+  late String userBio;
+  
+  Future<UpdateProfile>? _editProfile;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,11 +102,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           SizedBox(height: 50),
           // TODO: PUT EDITABLE NAME, BIO, ETC HERE
-          const Column(
+          Column(
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: TextField(
+                  onChanged: (value) {
+                    userName = value;
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: const BorderRadius.all(
@@ -122,6 +134,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
                 child: TextField(
+                  onChanged: (value) {
+                    userBio = value;
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: const BorderRadius.all(
@@ -155,7 +170,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 padding: EdgeInsets.fromLTRB(50, 0, 0, 100),
                 child: ElevatedButton(
                   //GET RID OF???
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -172,6 +189,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
+                    _editProfile = updateUserProfile(getUUID(), userName, userBio);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         backgroundColor: butterfly,
