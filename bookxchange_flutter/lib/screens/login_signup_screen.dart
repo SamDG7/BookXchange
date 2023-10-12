@@ -135,7 +135,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
-
     } on FirebaseAuthException catch (e) {
       // Navigator.pop(context);
 
@@ -192,7 +191,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Container(
-              height: MediaQuery.of(context).size.height - 540,
+              height: MediaQuery.of(context).size.height - 510,
 
               // Surround the login/sign up options with a border
               decoration: BoxDecoration(
@@ -290,8 +289,65 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          butterfly, // Set the background color to blue
+                                      minimumSize: const Size(60,20), // Set the button size (width x height)
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => Container(
+                                              padding:
+                                                  const EdgeInsets.all(100),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      "Enter Your Email Below!",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headlineLarge),
+                                                  Text(""),
+                                                  Text("Please check your email for a password reset link"),
+                                                  Text(""),
+                                                  CustomTextField(
+                                                    textField: TextField(
+                                                      onChanged: (value) {
+                                                        // Set the user's email
+                                                        _email = value;
+                                                      },
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                      decoration:
+                                                          kTextInputDecoration
+                                                              .copyWith(
+                                                                  hintText:
+                                                                      'Email'),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )));
+                                    },
+                                    child: const Text(
+                                      "Forgot Password",
+                                      style: TextStyle(
+                                        color: Colors
+                                            .white, // Set the text color to white
+                                        fontSize: 8, // Set the text size
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
 
-                                const SizedBox(height: 30),
+                                //const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -411,61 +467,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
           ),
 
-
-          //FORGOT PASSWORD BUTTON
-          Padding(
-            //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
-
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: butterfly, // Set the background color to blue
-                minimumSize:
-                    const Size(70, 35), // Set the button size (width x height)
-              ),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) =>Container(
-                    padding: const EdgeInsets.all(100),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Enter Your Email Below!", style: Theme.of(context).textTheme.headlineLarge),
-                        Text(""),
-                        Text("Please check your email for a password reset link"),
-                        Text(""),
-                        CustomTextField(
-                                  textField: TextField(
-                                    onChanged: (value) {
-                                      // Set the user's email
-                                      _email = value;
-                                    },
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                    ),
-                                    decoration: kTextInputDecoration.copyWith(
-                                        hintText: 'Email'),
-                                  ),
-                                ),
-                      ], 
-                    )
-                  )
-                );
-              },
-              child: const Text(
-                "Forgot Password",
-                style: TextStyle(
-                  color: Colors.white, // Set the text color to white
-                  fontSize: 10, // Set the text size
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-
-
           //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
@@ -473,7 +474,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: butterfly, // Set the background color to blue
@@ -519,14 +520,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
             child: SquareTile(
                 onTap: () async {
-                    AuthService().signInWithGoogle();
+                  AuthService().signInWithGoogle();
                   //debugPrint(FirebaseAuth.instance.currentUser!.uid);
                   // ignore: await_only_futures
-                 // _futureUser = createUser(user_uuid);
+                  // _futureUser = createUser(user_uuid);
                   //_futureUser = createUser(await (AuthService.getUUID() as String));
                 },
                 imagePath: 'assets/google_logo.png'),
-            
           ),
         ],
       ),
