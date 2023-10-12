@@ -7,6 +7,7 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -180,6 +181,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //////////////////////////////
   @override
   Widget build(BuildContext context) {
+    TextStyle linkStyle = TextStyle(color: butterfly, fontSize: 15.0, fontWeight: FontWeight.bold);
     return Scaffold(
       appBar: AppBar(),
 
@@ -294,22 +296,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          butterfly, // Set the background color to blue
-                                      minimumSize: const Size(60,
-                                          20), // Set the button size (width x height)
-                                    ),
-                                    onPressed: () {
+                                Padding (                                
+                                      padding: const EdgeInsets.fromLTRB(140, 0, 0, 0),
+                                  child: RichText(
+                                    text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Forgot Password?',
+                                        style: linkStyle,
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
                                       showModalBottomSheet(
                                           context: context,
                                           builder: (context) => Container(
                                               padding:
-                                                  const EdgeInsets.all(100),
+                                                  const EdgeInsets.all(80),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -362,18 +363,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                                 ],
                                               )));
                                     },
-                                    child: const Text(
-                                      "Forgot Password",
-                                      style: TextStyle(
-                                        color: Colors
-                                            .white, // Set the text color to white
-                                        fontSize: 8, // Set the text size
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                                   ),
+                                ],
                                 ),
-
+                                  ), 
+                                ),
                                 //const SizedBox(height: 30),
                               ],
                             ),
