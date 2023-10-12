@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
       await FirebaseAuth.instance.currentUser?.delete();
     } catch (e) {
-      // Handle exceptions
+      print("$e");
     }
   }
 

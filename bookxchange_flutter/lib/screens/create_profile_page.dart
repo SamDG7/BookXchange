@@ -6,7 +6,6 @@ import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
 
-
 class MultiSelect extends StatefulWidget {
   final List<String> items;
   const MultiSelect({Key? key, required this.items}) : super(key: key);
@@ -15,29 +14,28 @@ class MultiSelect extends StatefulWidget {
   State<MultiSelect> createState() => _MultiSelectState();
 }
 
+class _MultiSelectState extends State<MultiSelect> {
+  final List<String> _preferredGenres = [];
 
-  class _MultiSelectState extends State<MultiSelect> {
-    final List<String> _preferredGenres = [];
+  void _itemChange(String genre, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        _preferredGenres.add(genre);
+      } else {
+        _preferredGenres.remove(genre);
+      }
+    });
+  }
 
-    void _itemChange(String genre, bool isSelected) {
-      setState(() {
-        if (isSelected) {
-          _preferredGenres.add(genre);
-        } else {
-          _preferredGenres.remove(genre);
-        }
-      });
-    }
+  void _cancel() {
+    Navigator.pop(context);
+  }
 
-    void _cancel() {
-      Navigator.pop(context);
-    }
+  void _submit() {
+    Navigator.pop(context, _preferredGenres);
+  }
 
-    void _submit() {
-      Navigator.pop(context, _preferredGenres);
-    }
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text(
@@ -48,7 +46,7 @@ class MultiSelect extends StatefulWidget {
       ),
       content: SingleChildScrollView(
         child: ListBody(
-          //tileColor: isSelected ? Colors.blue : null, 
+          //tileColor: isSelected ? Colors.blue : null,
           children: widget.items
               .map((item) => CheckboxListTile.adaptive(
                     value: _preferredGenres.contains(item),
@@ -56,8 +54,8 @@ class MultiSelect extends StatefulWidget {
                     title: Text(
                       item,
                       style: TextStyle(
-                        //color: white,
-                      ),
+                          //color: white,
+                          ),
                     ),
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (isChecked) => _itemChange(item, isChecked!),
@@ -79,11 +77,9 @@ class MultiSelect extends StatefulWidget {
   }
 }
 
-
-
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
-  
+
   @override
   State<CreateProfileScreen> createState() => _CreateProfileScreenState();
 }
@@ -95,33 +91,31 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Future<CreateProfile>? _newProfile;
 
   void _showMultiSelect() async {
-
     final List<String> items = [
-      'Genre 1',
-      'Genre 2',
-      'Genre 3',
-      'Genre 4',
-      'Genre 5',
-      'Genre 6',
-      'Genre 7',
-      'Genre 8',
-      'Genre 9',
-      'Genre 10',
-      'Genre 11',
-      'Genre 12',
+      'Crime and Mystery',
+      'Fantasy',
+      'Historical',
+      'Horror',
+      'Romance',
+      'Science Fiction',
+      'Thriller',
+      'Young-adult',
+      'New-adult',
+      'Biography',
+      'Paranormal',
+      'Classics',
     ];
-    
+
     final List<String>? results = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelect(items: items);
-      } 
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelect(items: items);
+        });
 
     if (results != null) {
-        setState(() {
-          _preferredGenres = results;
-        });
+      setState(() {
+        _preferredGenres = results;
+      });
     }
   }
 
@@ -131,6 +125,30 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
     return true;
   }
+
+  void successfullyCreatedAccount(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Account Created'),
+          content: Text('Your account has been successfully created.', style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,102 +206,114 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     ),
                   ),
                   // TODO: PUT CAMERA ROLL BUTTON HERE W SAME PADDING
-                ],  
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        // OPEN CAMERA
+                      },
+                      icon: Icon(
+                        Icons.photo_library,
+                        color: butterfly,
+                      ),
+                      label: Text(
+                        'Open Camera Roll',
+                        style: TextStyle(color: Colors.grey[800]),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(width: 2.0, color: butterfly),
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
               // TODO: PUT EDITABLE NAME, BIO, ECT HERE
-
-              
             ],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(40, 50, 40, 10),
-            child:
-          CustomTextField2(
-            textField: TextField(
-              onChanged: (value) {  
-                userName = value;
-              },
-              style: const TextStyle(
-                fontSize: 15,
-              ),
-              decoration: kTextInputDecoration.copyWith(
+            child: CustomTextField2(
+              textField: TextField(
+                onChanged: (value) {
+                  userName = value;
+                },
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+                decoration: kTextInputDecoration.copyWith(
                   // Set the user's name
                   hintText: 'Name',
                   //contentPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0)
-                  ),
-
+                ),
+              ),
             ),
-          ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
-            child :SizedBox(
+            child: SizedBox(
               width: 240, // <-- TextField width
               height: 110,
-            child:
-          CustomTextField2(
-            textField: TextField(
-              maxLines: null,
-              expands: true,
-              keyboardType: TextInputType.multiline,
-              onChanged: (value) {  
-                userBio = value;
-              },
-              style: const TextStyle(
-                fontSize: 15,
-              ),
-              decoration: kTextInputDecoration.copyWith(
-                  // Set the user's name
-                  hintText: 'Bio',
-                  //contentPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0)
+              child: CustomTextField2(
+                textField: TextField(
+                  maxLines: null,
+                  expands: true,
+                  keyboardType: TextInputType.multiline,
+                  onChanged: (value) {
+                    userBio = value;
+                  },
+                  style: const TextStyle(
+                    fontSize: 15,
                   ),
-
+                  decoration: kTextInputDecoration.copyWith(
+                    // Set the user's name
+                    hintText: 'Bio',
+                    //contentPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0)
+                  ),
+                ),
+              ),
             ),
           ),
-          ),
-          ), 
           Padding(
-          padding: const EdgeInsets.fromLTRB(80, 20, 80, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // use this button to open the multi-select dialog
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                backgroundColor: butterfly,
-                ),
-                onPressed: _showMultiSelect,
-                child: const Text(
-                  "Select your genres",
-                  style: TextStyle(
-                    color: Colors.white, // Set the text color to white
-                    fontSize: 18, // Set the text size
-                    fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.fromLTRB(80, 20, 80, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // use this button to open the multi-select dialog
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: butterfly,
+                  ),
+                  onPressed: _showMultiSelect,
+                  child: const Text(
+                    "Select your genres",
+                    style: TextStyle(
+                      color: Colors.white, // Set the text color to white
+                      fontSize: 18, // Set the text size
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
                 const Divider(
                   height: 20,
                 ),
-              // display selected items
-              Wrap(
-                children: _preferredGenres
-                    .map((e) => Chip(
-                          label: Text(
-                            e,
-                          style: TextStyle(
-                            color: butterfly, // Set the text color to white
-                            fontSize: 14, // Set the text size
-                          ),
-                          ),
-                        ))
-                    .toList(),
-              )
-            ],
+                // display selected items
+                Wrap(
+                  children: _preferredGenres
+                      .map((e) => Chip(
+                            label: Text(
+                              e,
+                              style: TextStyle(
+                                color: butterfly, // Set the text color to white
+                                fontSize: 14, // Set the text size
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                )
+              ],
+            ),
           ),
-          ),
-
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
@@ -296,34 +326,29 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               ),
               onPressed: () {
                 if (checkNullValue() == false) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        content: Container(
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      content: Container(
                           padding: const EdgeInsets.all(19),
-                          height: 80, 
+                          height: 80,
                           decoration: const BoxDecoration(
-                            color: butterfly,
-                            borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
+                              color: butterfly,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
                           child: const Text(
-                            "Make sure to enter your name and bio!",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16
-                            )
-                          )
-                        ),
+                              "Make sure to enter your name and bio!",
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 16))),
                     ),
                   );
                 } else {
-                  _newProfile = createUserProfile(getUUID(), userName, userBio, _preferredGenres);
-                Navigator.push(
-                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                  _newProfile = createUserProfile(
+                      getUUID(), userName, userBio, _preferredGenres);
+                  //ADD PREFERENCES HAVE BEEN SAVED HERE
+                  successfullyCreatedAccount(context);
                 }
               },
               child: const Text(
