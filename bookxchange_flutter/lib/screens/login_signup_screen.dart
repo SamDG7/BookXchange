@@ -520,11 +520,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
             child: SquareTile(
                 onTap: () async {
-                  AuthService().signInWithGoogle();
-                  //debugPrint(FirebaseAuth.instance.currentUser!.uid);
-                  // ignore: await_only_futures
-                  // _futureUser = createUser(user_uuid);
-                  //_futureUser = createUser(await (AuthService.getUUID() as String));
+                  AuthService().signInWithGoogle(context);
+                
                 },
                 imagePath: 'assets/google_logo.png'),
           ),
