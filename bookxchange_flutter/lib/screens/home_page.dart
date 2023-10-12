@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
     final googleSignIn = GoogleSignIn();
     await FirebaseAuth.instance.signOut();
     await googleSignIn.signOut();
+    Navigator.popUntil(context, ModalRoute.withName("/"));
   }
 
   Future<void> _reauthenticateAndDelete() async {
@@ -128,7 +129,8 @@ class _HomePageState extends State<HomePage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the success message dialog
+                Navigator.of(context).pop();
+                Navigator.popUntil(context, ModalRoute.withName("/")); // Close the success message dialog
               },
               child: Text("OK"),
             ),
@@ -189,6 +191,8 @@ class _HomePageState extends State<HomePage> {
             onSelected: (value) {
               if (value == MenuItem.item1) {
                 signUserOut();
+                // Navigator.of(context)
+                //   .push(MaterialPageRoute(builder: (context) => LoginSignupScreen()));
               }
             },
             icon: const Icon(Icons.settings), // Settings icon
