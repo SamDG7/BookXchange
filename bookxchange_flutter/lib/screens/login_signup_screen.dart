@@ -7,8 +7,6 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
-import 'package:bookxchange_flutter/screens/create_profile_page.dart';
-import 'package:bookxchange_flutter/globals.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +15,6 @@ import 'package:http/http.dart' as http;
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({super.key});
   static String id = 'login_signup_screen';
-  
 
   @override
   State<LoginSignupScreen> createState() => _LoginSignupScreenState();
@@ -73,7 +70,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return uuid;
   }
 
-
   void signUserUp() async {
     // showDialog(
     //   context: context,
@@ -89,9 +85,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
-        newUser = true;
-        //createProfile();
-        
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);
@@ -142,7 +135,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
-
     } on FirebaseAuthException catch (e) {
       // Navigator.pop(context);
 
@@ -199,7 +191,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Container(
-              height: MediaQuery.of(context).size.height - 540,
+              height: MediaQuery.of(context).size.height - 510,
 
               // Surround the login/sign up options with a border
               decoration: BoxDecoration(
@@ -297,8 +289,65 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          butterfly, // Set the background color to blue
+                                      minimumSize: const Size(60,20), // Set the button size (width x height)
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => Container(
+                                              padding:
+                                                  const EdgeInsets.all(100),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      "Enter Your Email Below!",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headlineLarge),
+                                                  Text(""),
+                                                  Text("Please check your email for a password reset link"),
+                                                  Text(""),
+                                                  CustomTextField(
+                                                    textField: TextField(
+                                                      onChanged: (value) {
+                                                        // Set the user's email
+                                                        _email = value;
+                                                      },
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                      decoration:
+                                                          kTextInputDecoration
+                                                              .copyWith(
+                                                                  hintText:
+                                                                      'Email'),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )));
+                                    },
+                                    child: const Text(
+                                      "Forgot Password",
+                                      style: TextStyle(
+                                        color: Colors
+                                            .white, // Set the text color to white
+                                        fontSize: 8, // Set the text size
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
 
-                                const SizedBox(height: 30),
+                                //const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -417,28 +466,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ),
             ),
           ),
-          //Forgot Password Button
-          Padding(
-            //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: butterfly, // Set the background color to blue
-                minimumSize:
-                    const Size(80, 40), // Set the button size (width x height)
-              ),
-              onPressed: checkSignUpIn, //needs to be changed
-              child: const Text(
-                "Forgot Password",
-                style: TextStyle(
-                  color: Colors.white, // Set the text color to white
-                  fontSize: 10, // Set the text size
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
           //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
@@ -446,7 +474,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           Padding(
             //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
 
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: butterfly, // Set the background color to blue
@@ -489,17 +517,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           ),
 
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
             child: SquareTile(
                 onTap: () async {
-                    AuthService().signInWithGoogle();
-                  //debugPrint(FirebaseAuth.instance.currentUser!.uid);
-                  // ignore: await_only_futures
-                 // _futureUser = createUser(user_uuid);
-                  //_futureUser = createUser(await (AuthService.getUUID() as String));
+                  AuthService().signInWithGoogle(context);
+                
                 },
                 imagePath: 'assets/google_logo.png'),
-            
           ),
         ],
       ),

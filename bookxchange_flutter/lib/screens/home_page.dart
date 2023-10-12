@@ -85,10 +85,8 @@ class _HomePageState extends State<HomePage> {
       final providerData =
           FirebaseAuth.instance.currentUser?.providerData.first;
 
-      if (AppleAuthProvider().providerId == providerData!.providerId) {
-        await FirebaseAuth.instance.currentUser!
-            .reauthenticateWithProvider(AppleAuthProvider());
-      } else if (GoogleAuthProvider().providerId == providerData.providerId) {
+      if ((providerData != null) &&
+          (GoogleAuthProvider().providerId == providerData.providerId)) {
         await FirebaseAuth.instance.currentUser!
             .reauthenticateWithProvider(GoogleAuthProvider());
       }
@@ -107,30 +105,31 @@ class _HomePageState extends State<HomePage> {
 
       if (e.code == "requires-recent-login") {
         await _reauthenticateAndDelete();
-      } else {
-        // Handle other Firebase exceptions
       }
     } catch (e) {
       print("General Exception: $e");
-
-      // Handle general exception
     }
   }
 
-  // Function to delete the user account
+  //popup that tells user account has been deleted
   void successfullyDeletedAccount(BuildContext context) {
-    // Show a success message dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Account Deleted"),
-          content: Text("Your account has been successfully deleted."),
+          title: Text(
+            "Account Deleted",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Your account has been successfully deleted.", style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.popUntil(context, ModalRoute.withName("/")); // Close the success message dialog
+                //account is deleted
               },
               child: Text("OK"),
             ),
@@ -140,6 +139,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //confirms that the user wants to delete their account
   void deleteUserConfirmationPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -151,21 +151,19 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Are you sure you want to delete your account?"),
+          content: Text("Are you sure you want to delete your account?", style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
-                // Perform the delete action here
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 successfullyDeletedAccount(context);
                 deleteUserAccount();
-                // Add code to delete the account
               },
               child: Text("Delete"),
             ),
