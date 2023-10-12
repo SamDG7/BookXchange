@@ -38,16 +38,13 @@ class AuthService {
           accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
       //sign in
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      
-    UserCredential newuser = await FirebaseAuth.instance.signInWithCredential(credential);
+      //return await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential newuser = await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Future<NewUser>? _futureUser;
-    _futureUser = createUser(getUUID(), "hi");
-    return newuser;
+      Future<NewUser>? _futureUser;
+      _futureUser = createUser(getUUID(), "hi");
+      return newuser;
     } on FirebaseAuthException catch (e) {
-      
       if (e.code == 'account-exists-with-different-credential') {
         ScaffoldMessenger.of(context).showSnackBar(
           AuthService.customSnackBar(
