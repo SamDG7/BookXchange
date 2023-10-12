@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -80,27 +82,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: OutlinedButton.icon(
                           onPressed: () {
                             showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) => Container(
-                                              padding:
-                                                  const EdgeInsets.all(80),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      "Here Are Some Options To Share Your Profile!",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge),
-                                                  Text(""),
-                                                  Text(
-                                                      "Click any of these platforms to tell your friends you are on BookXChange!"),
-                                                  Text(""),
-                                                ],
-                                              )
-                                            )
-                                          );
+                                context: context,
+                                builder: (context) => Container(
+                                    height: 300,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 20, 0, 0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                            "Love This App? Share The Love!",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineLarge),
+                                        SizedBox(height: 20),
+                                        Text(
+                                            "Click any of these platforms to tell your friends you are on BookXChange!"),
+                                        SizedBox(height: 50),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 15),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(butterfly),
+                                                fixedSize: MaterialStateProperty
+                                                    .all<Size>(Size(150,
+                                                        50)), // Change the background color here
+                                              ),
+                                              child: Text(
+                                                "Invite Friends",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            SizedBox(width: 20),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(butterfly),
+                                                fixedSize: MaterialStateProperty
+                                                    .all<Size>(Size(150,
+                                                        50)), // Change the background color here
+                                              ),
+                                              child: Text(
+                                                "Share Profile",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )));
                           },
                           icon: Icon(
                             Icons.share,
@@ -138,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                  child: Text( 
+                  child: Text(
                     "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
                     style: TextStyle(
                       fontSize: 15,

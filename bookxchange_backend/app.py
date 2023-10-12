@@ -119,5 +119,27 @@ def user_create_profile():
 
     return json, 201
 
+# user update profile
+@app.route('/user/update_profile', methods=['PUT'])
+def user_update_profile():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+    user_name = json['user_name']
+    user_bio = json['user_bio']
+
+    # global user_uid = json['uuid']
+
+    user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+        {'$set': {"user_name": user_name,
+        "user_bio": user_bio}}
+    )
+
+    return json, 201
+
 if __name__ == '__main__':
     app.run(host='localhost', port=8080, debug=True)
