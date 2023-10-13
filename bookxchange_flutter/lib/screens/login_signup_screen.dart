@@ -88,20 +88,29 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     // );
 
     if (checkForValidPass() && _password == _confirmpassword) {
-      try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: _email, password: _password);
-        _futureUser = createUser(getUUID(), _email);
-        newUser = true;
-        // Navigator.pop(context);
-      } on FirebaseAuthException catch (e) {
-        // Navigator.pop(context);
+      final list =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(_email);
+      if (list.isNotEmpty) {
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: _email, password: _password);
+          _futureUser = createUser(getUUID(), _email);
+          newUser = true;
+          // Navigator.pop(context);
+        } on FirebaseAuthException catch (e) {
+          // Navigator.pop(context);
 
-        //WRONG LOGIN CREDENTIALS
-        if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-          wrongEmailMessage();
-          print('WRONG Something');
+          //WRONG LOGIN CREDENTIALS
+          if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+            emailAlreadyInUse();
+          } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+            wrongEmailMessage();
+            print('WRONG Something');
+            print(e.code);
+          }
         }
+      } else {
+        emailAlreadyInUse();
       }
     } else {
       // Navigator.pop(context);
@@ -112,6 +121,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       }
     }
     //try sign up
+  }
+
+  void emailAlreadyInUse() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Account Already Exists with these Credentials'),
+        );
+      },
+    );
   }
 
   void passwordsNoMatch() {
@@ -183,7 +203,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //////////////////////////////
   @override
   Widget build(BuildContext context) {
-    TextStyle linkStyle = TextStyle(color: butterfly, fontSize: 15.0, fontWeight: FontWeight.bold);
+    TextStyle linkStyle = TextStyle(
+        color: butterfly, fontSize: 15.0, fontWeight: FontWeight.bold);
     return Scaffold(
       appBar: AppBar(),
 
@@ -298,77 +319,92 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-                                Padding (                                
-                                      padding: const EdgeInsets.fromLTRB(140, 0, 0, 0),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(140, 0, 0, 0),
                                   child: RichText(
                                     text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: 'Forgot Password?',
-                                        style: linkStyle,
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) => Container(
-                                              padding:
-                                                  const EdgeInsets.all(80),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      "Enter Your Email Below!",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge),
-                                                  Text(""),
-                                                  Text(
-                                                      "Please check your email for a password reset link"),
-                                                  Text(""),
-                                                  CustomTextField(
-                                                    textField: TextField(
-                                                      onChanged: (value) {
-                                                        // Set the user's email
-                                                        _email = value;
-                                                      },
-                                                      style: const TextStyle(
-                                                        fontSize: 15,
-                                                      ),
-                                                      decoration:
-                                                          kTextInputDecoration
-                                                              .copyWith(
-                                                                  hintText:
-                                                                      'Email'),
-                                                    ),
-                                                  ),
-                                                  Text(""),
-                                                  Center(
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            butterfly, // Set the background color to blue
-                                                        minimumSize: const Size(
-                                                            100,
-                                                            50), // Set the button size (width x height)
-                                                      ),
-                                                      onPressed: resetPassword,
-                                                      child: const Text(
-                                                        "Send Email",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              )));
-                                    },
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: 'Forgot Password?',
+                                          style: linkStyle,
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(80),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                  "Enter Your Email Below!",
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headlineLarge),
+                                                              Text(""),
+                                                              Text(
+                                                                  "Please check your email for a password reset link"),
+                                                              Text(""),
+                                                              CustomTextField(
+                                                                textField:
+                                                                    TextField(
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    // Set the user's email
+                                                                    _email =
+                                                                        value;
+                                                                  },
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                  ),
+                                                                  decoration: kTextInputDecoration
+                                                                      .copyWith(
+                                                                          hintText:
+                                                                              'Email'),
+                                                                ),
+                                                              ),
+                                                              Text(""),
+                                                              Center(
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                    backgroundColor:
+                                                                        butterfly, // Set the background color to blue
+                                                                    minimumSize:
+                                                                        const Size(
+                                                                            100,
+                                                                            50), // Set the button size (width x height)
+                                                                  ),
+                                                                  onPressed:
+                                                                      resetPassword,
+                                                                  child:
+                                                                      const Text(
+                                                                    "Send Email",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          )));
+                                            },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                                ),
-                                  ), 
                                 ),
                                 //const SizedBox(height: 30),
                               ],
