@@ -46,7 +46,7 @@ Future<ExistingUser> getUserLogin(String uuid) async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return ExistingUser.fromJson(jsonDecode(response.body));
+    return ExistingUser.fromJson(jsonDecode(response.body)[0] as Map<String, dynamic>);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -93,6 +93,13 @@ class ExistingUser {
       userName: json['user_name'],
       userBio: json['user_bio']
     );
+    // ExistingUser(
+    //   uuid: json['uuid'],
+    //   userEmail: json['user_email'],
+    //   userPhone: json['user_phone'],
+    //   userName: json['user_name'],
+    //   userBio: json['user_bio']
+    // );
   }
 }
 

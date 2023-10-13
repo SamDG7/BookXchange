@@ -5,6 +5,9 @@ import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class MultiSelect extends StatefulWidget {
   final List<String> items;
@@ -89,7 +92,36 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userName = "";
   late String userBio;
   List<String> _preferredGenres = [];
+  File? _image;
+  final picker = ImagePicker();
   Future<CreateProfile>? _newProfile;
+
+  Future getImageFromGallery() async {
+  try {
+    final _image = await picker.pickImage(source: ImageSource.gallery);
+    if (_image == null) return;
+
+    setState(() => this._image = File(_image.path));
+  } on PlatformException catch (e) {
+    print('Failed to pick image: $e');
+  }
+    // if (pickedFile != null) {
+    //   _image = File(pickedFile.path);
+    // }
+  //);
+}
+
+//Image Picker function to get image from camera
+Future getImageFromCamera() async {
+  try {
+    final _image = await picker.pickImage(source: ImageSource.camera);
+    if (_image == null) return;
+
+    setState(() => this._image = File(_image.path));
+  } on PlatformException catch (e) {
+    print('Failed to pick image: $e');
+  }
+}
 
   void _showMultiSelect() async {
     final List<String> items = [
@@ -172,14 +204,41 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
                 child: Container(
+                  //children: [
                   child: CircleAvatar(
-                    radius: 75,
-                    backgroundColor: butterfly,
-                    child: CircleAvatar(
-                      radius: 70,
-                      backgroundImage: AssetImage(
-                          'assets/profile_pic_elena.png'), // TODO: REPLACE WITH USER IMAGE
-                    ),
+                  radius: 75,
+                  //backgroundColor: butterfly,
+                  child: _image == null
+                    //? Image.file(File('assets/profile_pic_elena.png'))
+                    ? Text('N',
+                      style: TextStyle(
+                        color: butterfly,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 80,
+                      ),
+                    )
+                    : Image.file(_image!,
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover),
+                  // child: CircleAvatar(
+                  //   radius: 70,
+                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+                    
+                  
+                     //backgroundImage: 
+                          // image != null
+                          //   ? ClipOval(
+                          //       child: Image.file(
+                          //         image!,
+                          //         width: 70,
+                          //         height:70,
+                          //         fit: BoxFit.cover,
+                          //     ), 
+                             //AssetImage('assets/profile_pic_default.png'),
+                      //_image == null ? Text('No Image selected') : Image.file(_image),
+                      //) // TODO: REPLACE WITH USER IMAGE
+                    //),
                   ),
                 ),
               ),
@@ -191,6 +250,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: OutlinedButton.icon(
                       onPressed: () {
+                        getImageFromCamera();
                         // OPEN CAMERA
                       },
                       icon: Icon(
@@ -211,7 +271,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // OPEN CAMERA
+                        getImageFromGallery();
                       },
                       icon: Icon(
                         Icons.photo_library,

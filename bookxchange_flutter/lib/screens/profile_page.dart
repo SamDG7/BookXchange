@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 
@@ -14,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+    Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
 
     Future<void> shareApp() async {
   // Set the app link and the message to be shared
@@ -52,14 +55,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Container(
                   child: Column(
                     children: [
-                      Text(
-                        "Elena Monroe", // TODO: REPLACE WITH USER IMAGE
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      FutureBuilder<ExistingUser>(
+  // pass the list (postsFuture)
+                      future: _existingUser,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // do something till waiting for data, we can show here a loader
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasData) {
+                          final name = snapshot.data!.userName;
+                          return buildName(name);
+                          // Text(posts);
+                          // we have the data, do stuff here
+                        } else {
+                          return const Text("No name available");
+                          // we did not recieve any data, maybe show error or no data available
+                        }
+                      }
                       ),
+                      // Text(
+                      //   "Elena Monroe", // TODO: REPLACE WITH USER IMAGE
+                      //   textAlign: TextAlign.left,
+                      //   style: TextStyle(
+                      //     fontSize: 25,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                       Text(
                           "Joined Oct. 1st, 2023"), // TODO: REPLACE WITH USER JOIN DATE
 
@@ -192,17 +213,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                  child: Text(
-                    "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                ), // TODO: REPLACE WITH USER BIO
-              ],
-            ),
-          ),
+                   padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                   child: FutureBuilder<ExistingUser>(
+  // pass the list (postsFuture)
+                      future: _existingUser,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // do something till waiting for data, we can show here a loader
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasData) {
+                          final bio = snapshot.data!.userBio;
+                          return buildBio(bio);
+                          // Text(posts);
+                          // we have the data, do stuff here
+                        } else {
+                          return const Text("No bio available");
+                          // we did not recieve any data, maybe show error or no data available
+                        }
+                      }
+                      )
+                   ),
+          //       Padding(
+          //         padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+          //         child: Text(
+          //           "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
+          //           style: TextStyle(
+          //             fontSize: 15,
+          //           ),
+          //         ),
+          //       ), // TODO: REPLACE WITH USER BIO
+          //     ],
+          //   ),
+          // ),
 
           // Community rating
           Padding(
@@ -242,6 +284,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
           //invite someone to the app
         ],
       ),
+          )
+        ],
+      ),
     );
   }
+  Widget buildBio(String userbio) {
+  return Text(
+          userbio,
+          style: TextStyle(
+            fontSize: 15,
+    )
+  );
 }
+
+ Widget buildName(String username) {
+  return Text(
+    username,
+    textAlign: TextAlign.left,
+    style: TextStyle(
+      fontSize: 25,
+      fontWeight: FontWeight.bold,
+    ),
+    );
+}
+}
+
+
