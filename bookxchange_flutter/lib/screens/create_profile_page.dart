@@ -91,6 +91,7 @@ class CreateProfileScreen extends StatefulWidget {
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userName = "";
   late String userBio;
+  late String userZipCode;
   List<String> _preferredGenres = [];
   File? _image;
   final picker = ImagePicker();
@@ -312,6 +313,28 @@ Future getImageFromCamera() async {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
+            child: CustomTextField2(
+              textField: TextField(
+                onChanged: (value) {
+                  userZipCode = value;
+                },
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+                decoration: kTextInputDecoration.copyWith(
+                  // Set the user's name
+                  hintText: 'Zip Code', 
+                  counterText: "",
+                ),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: 5,
+                
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
             child: SizedBox(
               width: 240, // <-- TextField width
               height: 110,
@@ -407,7 +430,7 @@ Future getImageFromCamera() async {
                   );
                 } else {
                   _newProfile = createUserProfile(
-                      getUUID(), userName, userBio, _preferredGenres);
+                      getUUID(), userName, userBio, _preferredGenres, userZipCode);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
                 }
