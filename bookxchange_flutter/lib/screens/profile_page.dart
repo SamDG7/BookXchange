@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bookxchange_flutter/api/show_user_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -30,6 +31,11 @@ Future<void> shareApp2() async {
   const String message = 'Check out my profile on BookXChange!';
     await FlutterShare.share(title: 'Share App', text: message);
 }
+
+  //Future<ProfileAccount>? currentUser;
+  Future<ProfileAccount> currentUser = fetchProfileAccount();
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,7 +192,7 @@ Future<void> shareApp2() async {
 
           // About me title and bio
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -213,7 +219,7 @@ Future<void> shareApp2() async {
 
           // Community rating
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
             child: Row(
               children: [
                 Text(
@@ -231,7 +237,7 @@ Future<void> shareApp2() async {
 
           // Library
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
