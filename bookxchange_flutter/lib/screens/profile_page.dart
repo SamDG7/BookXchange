@@ -4,6 +4,7 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +14,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+    Future<void> shareApp() async {
+  // Set the app link and the message to be shared
+    const String appLink = 'https://github.com/SamDG7/BookXchange';
+    const String message = 'Hey! I just joined this really cool app called BookXchange! Become a member of our book-lover community and read your favorite books!';
+
+  // Share the app link and message using the share dialog
+    await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(width: 15),
                                             ElevatedButton(
                                               onPressed: () {
+                                                shareApp();
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
@@ -124,6 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(width: 20),
                                             ElevatedButton(
                                               onPressed: () {
+                                                
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
@@ -228,31 +240,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           //invite someone to the app
-          Padding(
-                        padding: EdgeInsets.fromLTRB(90, 50, 90, 0),
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            /*
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfileScreen()),
-                            );
-                            */
-                          },
-                          icon: Icon(
-                            Icons.favorite,
-                            color: butterfly,
-                          ),
-                          label: Text(
-                            'Love The App? Invite Someone!',
-                            style: TextStyle(color: Colors.grey[800]),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(width: 1.0, color: butterfly),
-                          ),
-                        ),
-                      ),
         ],
       ),
     );

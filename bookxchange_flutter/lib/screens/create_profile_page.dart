@@ -131,8 +131,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Account Created'),
-          content: Text('Your account has been successfully created.', style: TextStyle(fontSize: 16)),
+          title: Text('Profile Created'),
+          content: Text('Your profile has been successfully created.', style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {

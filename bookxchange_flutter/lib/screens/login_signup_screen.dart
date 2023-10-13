@@ -7,6 +7,7 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,6 +92,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
+        newUser = true;
         // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         // Navigator.pop(context);

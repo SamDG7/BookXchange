@@ -9,7 +9,9 @@ import 'dart:async';
 
 Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre) async {
   final response = await http.put(
-    Uri.parse('http://localhost:8080/user/create_profile'),
+    //Uri.parse('http://localhost:8080/user/create_profile'),
+    Uri.parse('http://192.168.4.74:8080/user/create_profile'),
+    //http://192.168.4.74:8080
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -37,7 +39,8 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
 
 Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio) async {
   final response = await http.put(
-    Uri.parse('http://localhost:8080/user/update_profile'),
+    //Uri.parse('http://localhost:8080/user/update_profile'),
+    Uri.parse('http://192.168.4.74:8080/user/update_profile'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
