@@ -40,10 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Container(
                   child: CircleAvatar(
-                    radius: 75,
+                    radius: 80,
                     backgroundColor: butterfly,
                     child: CircleAvatar(
-                      radius: 70,
+                      radius: 75,
                       backgroundImage:
                           AssetImage('assets/profile_pic_elena.png'),
                     ),
@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+                padding: EdgeInsets.fromLTRB(10, 25, 10, 0),
                 child: Container(
                   child: Column(
                     children: [
@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       //Edit profile option
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: OutlinedButton.icon(
                           onPressed: () {
                             Navigator.push(
@@ -109,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                         child: OutlinedButton.icon(
                           onPressed: () {
                             showModalBottomSheet(
