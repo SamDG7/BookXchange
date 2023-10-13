@@ -1,9 +1,15 @@
+import base64
+import binascii
+import io
+from tkinter import Image
 from flask import Flask, request
 import pandas as pd
 from os import abort
 from uuid import uuid4, UUID
 import db
+import requests
 from flask_cors import CORS, cross_origin
+from requests_toolbelt.multipart import decoder
 
 user_uid = ""
 
@@ -140,6 +146,35 @@ def user_update_profile():
     )
 
     return json, 201
+
+
+@app.route('/user/save_picture', methods=['PUT'])
+def user_save_picture():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid = json['uuid']
+    picture = json['picture']
+
+    with open("images/%s.png" %uuid, "wb") as fh:
+        fh.write(base64.b64decode(picture, validate=True))
+    return json, 201
+
+
+@app.route('/user/<user_uid>/get_picture', methods=['GET'])
+def user_get_picture(user_uid):
+    
+    with open("images/%s.png" %user_uid, "rb") as f:
+        base64_string = base64.b64encode(f.read())
+    
+    #print(user)
+    
+    # return user.to_json(orient='records', force_ascii=False)
+    return user.to_json(orient='records')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

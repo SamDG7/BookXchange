@@ -6,6 +6,7 @@ import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/screens/create_profile_page.dart';
 
 import 'package:bookxchange_flutter/screens/verify_email_page.dart';
+import 'package:bookxchange_flutter/screens/test_picture.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -23,6 +24,7 @@ class AuthPage extends StatelessWidget {
                   newUser = false;
                   return const CreateProfileScreen();
                 } else {
+                  //return const TestPictureScreen();
                   return const HomePage();
                 }
               } else {

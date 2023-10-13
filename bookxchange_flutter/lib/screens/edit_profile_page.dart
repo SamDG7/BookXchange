@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
@@ -5,11 +7,25 @@ import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
+// class ImageWidget extends StatelessWidget {
+//   final File image;
+//   final ValueChanged<ImageSource> onClicked;
+
+//   const ImageWidget ({
+//     Key? key,
+//     required this.image,
+//     required this.onClicked,
+//   }) : super(key: key);
+// }
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
+  
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -18,7 +34,50 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   late String userName;
   late String userBio;
-  
+  //File? image;
+  File? _image;
+  final picker = ImagePicker();
+
+
+  // Future pickImage(ImageSource source) async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: source);
+  //     if (image == null) return;
+
+  //     final imageTemporary = File(image.path);
+  //     setState(() => this.image = imageTemporary);
+  //   } on PlatformException catch(e) {
+  //     print('Failed to pick image: $e');
+  //   }
+  // }
+
+  //Image Picker function to get image from gallery
+Future getImageFromGallery() async {
+  try {
+    final _image = await picker.pickImage(source: ImageSource.gallery);
+    if (_image == null) return;
+
+    setState(() => this._image = File(_image.path));
+  } on PlatformException catch (e) {
+    print('Failed to pick image: $e');
+  }
+    // if (pickedFile != null) {
+    //   _image = File(pickedFile.path);
+    // }
+  //);
+}
+
+//Image Picker function to get image from camera
+Future getImageFromCamera() async {
+  try {
+    final _image = await picker.pickImage(source: ImageSource.camera);
+    if (_image == null) return;
+
+    setState(() => this._image = File(_image.path));
+  } on PlatformException catch (e) {
+    print('Failed to pick image: $e');
+  }
+}
   Future<UpdateProfile>? _editProfile;
   @override
   Widget build(BuildContext context) {
@@ -42,14 +101,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
                 child: Container(
+                  //children: [
                   child: CircleAvatar(
-                    radius: 75,
-                    backgroundColor: butterfly,
-                    child: CircleAvatar(
-                      radius: 70,
-                      backgroundImage: AssetImage(
-                          'assets/profile_pic_elena.png'), // TODO: REPLACE WITH USER IMAGE
-                    ),
+                  radius: 75,
+                  //backgroundColor: butterfly,
+                  child: _image == null
+                    //? Image.file(File('assets/profile_pic_elena.png'))
+                    ? Text('N',
+                      style: TextStyle(
+                        color: butterfly,
+                        fontWeight: FontWeight.w100,
+                        fontSize: 80,
+                      ),
+                    )
+                    : Image.file(_image!,
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover),
+                  // child: CircleAvatar(
+                  //   radius: 70,
+                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+                    
+                  
+                     //backgroundImage: 
+                          // image != null
+                          //   ? ClipOval(
+                          //       child: Image.file(
+                          //         image!,
+                          //         width: 70,
+                          //         height:70,
+                          //         fit: BoxFit.cover,
+                          //     ), 
+                             //AssetImage('assets/profile_pic_default.png'),
+                      //_image == null ? Text('No Image selected') : Image.file(_image),
+                      //) // TODO: REPLACE WITH USER IMAGE
+                    //),
                   ),
                 ),
               ),
@@ -62,6 +148,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: OutlinedButton.icon(
                       onPressed: () {
                         // OPEN CAMERA
+                        //pickImage(ImageSource.camera);
+                        getImageFromCamera();
                       },
                       icon: Icon(
                         Icons.photo_camera,
@@ -81,7 +169,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // OPEN CAMERA
+                        // CAMERA ROLL
+                        getImageFromGallery();
                       },
                       icon: Icon(
                         Icons.photo_library,
@@ -190,6 +279,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
                     _editProfile = updateUserProfile(getUUID(), userName, userBio);
+                    if (_image != null) {
+                      saveProfilePicture(getUUID(), _image!);
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         backgroundColor: butterfly,
