@@ -42,6 +42,7 @@ class _MultiSelectState extends State<MultiSelect> {
         'Select Genres',
         style: TextStyle(
           color: butterfly,
+          fontWeight: FontWeight.bold,
         ),
       ),
       content: SingleChildScrollView(

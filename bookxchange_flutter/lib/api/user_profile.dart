@@ -3,9 +3,27 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 
+
+
+
+// Future<void> pickImage(File pickedFile) async {
+//   update();
+// }
+
+// Future<bool> upload() async {
+//   update();
+//   bool success = false;
+//   http.StreamedResponse respone = await updateProfile(pickedFile);
+
+//   if (response.statusCode == 200) {
+
+//   }
+// }
 
 Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre) async {
   final response = await http.put(
@@ -62,6 +80,42 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
     // then throw an exception.
       //debugPrint(jsonDecode(response.body));
       throw Exception('Failed to edit profile.');
+  }
+}
+
+Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) async {
+  // var request = 
+  //     http.MultipartRequest('POST', Uri.parse('http://192.168.4.74:8080/user/save_picture'));
+  // request.fields['uuid'] = uuid;
+  // request.files.add(http.MultipartFile.fromBytes('picture', File(pickedImage.path).readAsBytesSync(),filename: pickedImage.path));
+  //   //http://192.168.4.74:8080
+  //   var response = await request.send();
+  File imageFile = File(pickedImage.path);
+  List<int> imageBytes = imageFile.readAsBytesSync();
+  String base64Image = base64.encode(imageBytes);
+  final response = await http.put(
+  //Uri.parse('http://localhost:8080/user/update_profile'),
+  Uri.parse('http://192.168.4.74:8080/user/save_picture'),
+  headers: <String, String>{
+    'Content-Type': 'application/json',
+  },
+  body: jsonEncode(<String, dynamic>{
+    'uuid': uuid,
+    'picture': base64Image
+  }),
+);
+  if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    //return CreateProfile.fromJson(await jsonDecode(response.body));
+    return jsonDecode(response.body);
+    //return NewUser.fromJson(await json.decode(json.encode(response.body))); 
+    //return NewUser.fromJson(json.decode(json.encode(response.body))); 
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+      //debugPrint(jsonDecode(response.body));
+      throw Exception('Failed to save picture.');
   }
 }
 
