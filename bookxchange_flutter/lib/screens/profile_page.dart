@@ -248,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // Community rating
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Row(
               children: [
                 Text(
@@ -266,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // Library
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
