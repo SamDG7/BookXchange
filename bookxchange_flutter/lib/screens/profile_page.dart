@@ -26,6 +26,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Share the app link and message using the share dialog
     await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
 }
+Future<void> shareApp2() async {
+  // Set the app link and the message to be shared
+    const String message = 'Check out my profile on BookXchange!';
+
+  // Share the app link and message using the share dialog
+    await FlutterShare.share(title: 'Share App', text: message);
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(width: 20),
                                             ElevatedButton(
                                               onPressed: () {
-                                                
+                                                shareApp2();
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
