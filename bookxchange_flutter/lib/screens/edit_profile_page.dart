@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
@@ -110,7 +111,7 @@ Future getImageFromCamera() async {
                     ? Text('N',
                       style: TextStyle(
                         color: butterfly,
-                        fontWeight: FontWeight.w100,
+                        fontWeight: FontWeight.w500,
                         fontSize: 80,
                       ),
                     )
@@ -214,7 +215,7 @@ Future getImageFromCamera() async {
                     ),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    labelText: "Full Name",
+                    labelText: "Name",
                     labelStyle: TextStyle(fontSize: 20, color: Colors.black),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
@@ -296,7 +297,11 @@ Future getImageFromCamera() async {
                       ),
                     );
                     Future.delayed(Duration(seconds: 2), () {
-                      Navigator.pop(context);
+                      //Navigator.pop(context);
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
                     });
                   },
                   style: ElevatedButton.styleFrom(

@@ -1,6 +1,8 @@
+from ast import List
 import base64
 import binascii
 import io
+from json import dumps, loads
 from tkinter import Image
 from flask import Flask, request
 import pandas as pd
@@ -69,18 +71,25 @@ def user_singup():
 @app.route('/user/<user_uid>', methods=['GET'])
 def user_login(user_uid):
 
-    user = db.db.user_collection.find({
-        "uuid": user_uid
+    # user = db.db.user_collection.find({
+    #     "uuid": user_uid
+    # })
+    user = db.db.user_collection.find_one({
+        # 'uuid': str(user_uid)
+        'uuid': user_uid
     })
-    user = pd.DataFrame(list(user))
+    user = pd.DataFrame((user))
     if (user.empty):
         return "Resource Not Found", 404
-    user = user.astype({"uuid": str, "_id": str})
+    #user = user.astype({"uuid": str, "_id": str})
     user = user.drop(columns=["_id"])
-    #print(user)
+    user = user.groupby(["uuid", "user_email", "user_phone", "user_name", "user_bio"],as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
+    #user = user.astype({"user_genre" : list})
+    print(user)
     
     # return user.to_json(orient='records', force_ascii=False)
     return user.to_json(orient='records')
+    # return loads(dumps(user))
 
 # user account delete
 @app.route('/user/delete', methods=['DELETE'])
