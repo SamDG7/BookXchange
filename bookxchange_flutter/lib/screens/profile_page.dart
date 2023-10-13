@@ -16,24 +16,19 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-    Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
+  Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
 
-    Future<void> shareApp() async {
-  // Set the app link and the message to be shared
+  Future<void> shareApp() async {
+    // Set the app link and the message to be shared
     const String appLink = 'https://github.com/SamDG7/BookXchange';
-    const String message = 'Hey! I just joined this really cool app called BookXchange! Become a member of our book-lover community and read your favorite books!';
+    const String message =
+        'Hey! I just joined this really cool app called BookXchange! Become a member of our book-lover community and read your favorite books!';
 
-  // Share the app link and message using the share dialog
-    await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
-}
-Future<void> shareApp2() async {
-  // Set the app link and the message to be shared
-    const String message = 'Check out my profile on BookXchange!';
-    const String appLink = 'https://github.com/SamDG7/BookXchange';
+    // Share the app link and message using the share dialog
+    await FlutterShare.share(
+        title: 'Share App', text: message, linkUrl: appLink);
+  }
 
-  // Share the app link and message using the share dialog
-    await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
-}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,23 +59,23 @@ Future<void> shareApp2() async {
                   child: Column(
                     children: [
                       FutureBuilder<ExistingUser>(
-  // pass the list (postsFuture)
-                      future: _existingUser,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          // do something till waiting for data, we can show here a loader
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasData) {
-                          final name = snapshot.data!.userName;
-                          return buildName(name);
-                          // Text(posts);
-                          // we have the data, do stuff here
-                        } else {
-                          return const Text("No name available");
-                          // we did not recieve any data, maybe show error or no data available
-                        }
-                      }
-                      ),
+                          // pass the list (postsFuture)
+                          future: _existingUser,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final name = snapshot.data!.userName;
+                              return buildName(name);
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No name available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
                       // Text(
                       //   "Elena Monroe", // TODO: REPLACE WITH USER IMAGE
                       //   textAlign: TextAlign.left,
@@ -130,8 +125,7 @@ Future<void> shareApp2() async {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                            "Love This App? Share The Love!",
+                                        Text("Love This App? Share The Love!",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineLarge),
@@ -152,8 +146,7 @@ Future<void> shareApp2() async {
                                                     MaterialStateProperty.all<
                                                         Color>(butterfly),
                                                 fixedSize: MaterialStateProperty
-                                                    .all<Size>(Size(150,
-                                                        50)),
+                                                    .all<Size>(Size(150, 50)),
                                               ),
                                               child: Text(
                                                 "Invite Friends",
@@ -164,7 +157,6 @@ Future<void> shareApp2() async {
                                             SizedBox(width: 20),
                                             ElevatedButton(
                                               onPressed: () {
-                                                shareApp2();
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
@@ -172,8 +164,7 @@ Future<void> shareApp2() async {
                                                     MaterialStateProperty.all<
                                                         Color>(butterfly),
                                                 fixedSize: MaterialStateProperty
-                                                    .all<Size>(Size(150,
-                                                        50)),
+                                                    .all<Size>(Size(150, 50)),
                                               ),
                                               child: Text(
                                                 "Share Profile",
@@ -221,99 +212,131 @@ Future<void> shareApp2() async {
                   ),
                 ),
                 Padding(
-                   padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                   child: FutureBuilder<ExistingUser>(
-  // pass the list (postsFuture)
-                      future: _existingUser,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          // do something till waiting for data, we can show here a loader
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasData) {
-                          final bio = snapshot.data!.userBio;
-                          return buildBio(bio);
-                          // Text(posts);
-                          // we have the data, do stuff here
-                        } else {
-                          return const Text("No bio available");
-                          // we did not recieve any data, maybe show error or no data available
-                        }
-                      }
+                    padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                    child: FutureBuilder<ExistingUser>(
+                        // pass the list (postsFuture)
+                        future: _existingUser,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // do something till waiting for data, we can show here a loader
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            final bio = snapshot.data!.userBio;
+                            return buildBio(bio);
+                            // Text(posts);
+                            // we have the data, do stuff here
+                          } else {
+                            return const Text("No bio available");
+                            // we did not recieve any data, maybe show error or no data available
+                          }
+                        })),
+                //       Padding(
+                //         padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                //         child: Text(
+                //           "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
+                //           style: TextStyle(
+                //             fontSize: 15,
+                //           ),
+                //         ),
+                //       ), // TODO: REPLACE WITH USER BIO
+                //     ],
+                //   ),
+                // ),
+
+                // Community rating
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Community \nRating: ",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Image.asset(
+                          'assets/community_rating.png'), // TODO: REPLACE WITH ACTUAL USER RATING IN FORM OF STARS
+                    ],
+                  ),
+                ),
+
+                // Library
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      // Title and edit button
+                      Row(
+
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Text(
+                            "My Library",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfileScreen()),
+                                // add screen to edit library here
+                              );
+                            },
+                            icon: Icon(
+                              Icons.bookmark_border,
+                              color: butterfly,
+                            ),
+                            label: Text(
+                              'Edit Library',
+                              style: TextStyle(color: Colors.grey[800]),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(width: 1.0, color: butterfly),
+                            ),
+                          ),
+                        ],
                       )
-                   ),
-          //       Padding(
-          //         padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-          //         child: Text(
-          //           "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
-          //           style: TextStyle(
-          //             fontSize: 15,
-          //           ),
-          //         ),
-          //       ), // TODO: REPLACE WITH USER BIO
-          //     ],
-          //   ),
-          // ),
 
-          // Community rating
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-            child: Row(
-              children: [
-                Text(
-                  "Community \nRating: ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                      // Button to edit library
+
+                      // TODO: ADD LIBRARY
+                    ],
                   ),
                 ),
-                Image.asset(
-                    'assets/community_rating.png'), // TODO: REPLACE WITH ACTUAL USER RATING IN FORM OF STARS
+                //invite someone to the app
               ],
             ),
-          ),
-
-          // Library
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "My Library",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // TODO: ADD LIBRARY
-              ],
-            ),
-          ),
-          //invite someone to the app
-        ],
-      ),
           )
         ],
       ),
     );
   }
-  Widget buildBio(String userbio) {
-  return Text(
-          userbio,
-          style: TextStyle(
-            fontSize: 15,
-    )
-  );
-}
 
- Widget buildName(String username) {
-  return Text(
-    username,
-    textAlign: TextAlign.left,
-    style: TextStyle(
-      fontSize: 25,
-      fontWeight: FontWeight.bold,
-    ),
+  Widget buildBio(String userbio) {
+    return Text(userbio,
+        style: TextStyle(
+          fontSize: 15,
+        ));
+  }
+
+  Widget buildName(String username) {
+    return Text(
+      username,
+      textAlign: TextAlign.left,
+      softWrap: true,
+      style: TextStyle(
+        fontSize: 25,
+        fontWeight: FontWeight.bold,
+      ),
     );
-}
+  }
 }
