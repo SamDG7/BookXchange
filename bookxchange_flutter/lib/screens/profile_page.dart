@@ -8,7 +8,6 @@ import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:share/share.dart';
 
 
 class ProfileScreen extends StatefulWidget {
