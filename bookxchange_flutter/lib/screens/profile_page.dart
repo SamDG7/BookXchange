@@ -29,9 +29,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 Future<void> shareApp2() async {
   // Set the app link and the message to be shared
     const String message = 'Check out my profile on BookXchange!';
+    const String appLink = 'https://github.com/SamDG7/BookXchange';
 
   // Share the app link and message using the share dialog
-    await FlutterShare.share(title: 'Share App', text: message);
+    await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
 }
   @override
   Widget build(BuildContext context) {
