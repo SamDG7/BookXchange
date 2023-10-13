@@ -86,31 +86,29 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     //     );
     //   },
     // );
-
+    // final list = await FirebaseAuth.instance.fetchSignInMethodsForEmail(_email);
+    // if (list.isEmpty) {
+    //   emailAlreadyInUse();
+    // } else
     if (checkForValidPass() && _password == _confirmpassword) {
-      final list =
-          await FirebaseAuth.instance.fetchSignInMethodsForEmail(_email);
-      if (list.isNotEmpty) {
-        try {
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: _email, password: _password);
-          _futureUser = createUser(getUUID(), _email);
-          newUser = true;
-          // Navigator.pop(context);
-        } on FirebaseAuthException catch (e) {
-          // Navigator.pop(context);
+      try {
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+        _futureUser = createUser(getUUID(), _email);
+        newUser = true;
+        // Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        // Navigator.pop(context);
 
-          //WRONG LOGIN CREDENTIALS
-          if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-            emailAlreadyInUse();
-          } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-            wrongEmailMessage();
-            print('WRONG Something');
-            print(e.code);
-          }
+        //WRONG LOGIN CREDENTIALS
+        print(e.code);
+        if (e.code == 'email-already-in-use') {
+          emailAlreadyInUse();
+        } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+          wrongEmailMessage();
+          print('WRONG Something');
+          print(e.code);
         }
-      } else {
-        emailAlreadyInUse();
       }
     } else {
       // Navigator.pop(context);
@@ -163,6 +161,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => HomePage()));
     } on FirebaseAuthException catch (e) {
       // Navigator.pop(context);
 
