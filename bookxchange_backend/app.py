@@ -123,13 +123,14 @@ def user_create_profile():
     user_name = json['user_name']
     user_bio = json['user_bio']
     user_genre = json['user_genre']
+    user_zipcode = json['user_zipcode']
 
     # global user_uid = json['uuid']
 
     user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
-        "user_genre": user_genre}}
+        "user_genre": user_genre, "user_zipcode": user_zipcode}}
     )
 
     return json, 201
