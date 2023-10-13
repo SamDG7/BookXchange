@@ -5,6 +5,8 @@ import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:share/share.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,6 +24,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Share the app link and message using the share dialog
     await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
+}
+Future<void> shareApp2() async {
+  // Share the message using the share dialog
+  const String message = 'Check out my profile on BookXChange!';
+    await FlutterShare.share(title: 'Share App', text: message);
 }
   @override
   Widget build(BuildContext context) {
@@ -135,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(width: 20),
                                             ElevatedButton(
                                               onPressed: () {
-                                                
+                                                shareApp2();
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
