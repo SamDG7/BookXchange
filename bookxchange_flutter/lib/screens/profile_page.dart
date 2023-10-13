@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bookxchange_flutter/api/show_user_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -8,7 +7,6 @@ import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,16 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Share the app link and message using the share dialog
     await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
 }
-Future<void> shareApp2() async {
-  // Share the message using the share dialog
-  const String message = 'Check out my profile on BookXChange!';
-    await FlutterShare.share(title: 'Share App', text: message);
-}
-
-  //Future<ProfileAccount>? currentUser;
-  Future<ProfileAccount> currentUser = fetchProfileAccount();
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +156,7 @@ Future<void> shareApp2() async {
                                             SizedBox(width: 20),
                                             ElevatedButton(
                                               onPressed: () {
-                                                shareApp2();
+                                                
                                                 Navigator.of(context).pop();
                                               },
                                               style: ButtonStyle(
@@ -212,7 +200,7 @@ Future<void> shareApp2() async {
 
           // About me title and bio
           Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -260,7 +248,7 @@ Future<void> shareApp2() async {
 
           // Community rating
           Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
             child: Row(
               children: [
                 Text(
@@ -278,7 +266,7 @@ Future<void> shareApp2() async {
 
           // Library
           Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -321,5 +309,3 @@ Future<void> shareApp2() async {
     );
 }
 }
-
-
