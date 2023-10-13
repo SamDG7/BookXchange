@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 
-<<<<<<< HEAD
 
 
 
@@ -26,9 +25,6 @@ import 'dart:io';
 //   }
 // }
 
-=======
-// write functions here then import into screen 
->>>>>>> dd06fae (Fixed padding on profile screen)
 Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
