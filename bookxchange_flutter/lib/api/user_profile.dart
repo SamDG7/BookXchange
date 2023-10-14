@@ -10,7 +10,7 @@ import 'dart:io';
 
 
 // write functions here then import into screen 
-Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode, Book userBook) async {
+Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode) async {
   final response = await http.put(
 
     Uri.parse('http://10.0.0.127:8080/user/create_profile'),
@@ -24,7 +24,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
       'user_bio': userBio,
       'user_genre': userGenre,
       'user_zipcode': userZipCode,
-      'user_book': userBook,
+      //'user_book': userBook,
     }),
   );
 
@@ -42,7 +42,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
   }
 }
 
-Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio, Book userBook) async {
+Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio) async {
   final response = await http.put(
 
     Uri.parse('http://10.0.0.127:8080/user/update_profile'),
@@ -54,7 +54,7 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
       'uuid': uuid,
       'user_name': userName,
       'user_bio': userBio,
-      'user_book': userBook,
+      //'user_book': userBook,
     }),
   );
 
@@ -112,10 +112,10 @@ class CreateProfile {
   final String userName;
   final String userBio;
   final List<String> userGenre;
-  final Book userBook;
+  //final Book userBook;
 
   //const NewUser({required this.uuid, this.userEmail, this.userPhone, this.userName, this.userBio});
-  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre, required this.userBook});
+  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
     return CreateProfile(

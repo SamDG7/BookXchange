@@ -36,24 +36,24 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
               children: [
 
 
-                FutureBuilder<ExistingUser>(
-                          // pass the list (postsFuture)
-                          future: _existingUser,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final title = snapshot.data!.title;
-                              return buildTitle(title);
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No title available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
+                // FutureBuilder<ExistingUser>(
+                //           // pass the list (postsFuture)
+                //           future: _existingUser,
+                //           builder: (context, snapshot) {
+                //             if (snapshot.connectionState ==
+                //                 ConnectionState.waiting) {
+                //               // do something till waiting for data, we can show here a loader
+                //               return const CircularProgressIndicator();
+                //             } else if (snapshot.hasData) {
+                //               final title = snapshot.data!.title;
+                //               return buildTitle(title);
+                //               // Text(posts);
+                //               // we have the data, do stuff here
+                //             } else {
+                //               return const Text("No title available");
+                //               // we did not recieve any data, maybe show error or no data available
+                //             }
+                //           }),
 
 
 

@@ -83,9 +83,9 @@ class ExistingUser {
   final String userPhone;
   final String userName;
   final String userBio;
-  final Book userBook;
+  //final Book userBook;
 
-  const ExistingUser({required this.uuid,required this.userEmail,required this.userPhone,required this.userName,required this.userBio, required this.userBook});
+  const ExistingUser({required this.uuid,required this.userEmail,required this.userPhone,required this.userName,required this.userBio});
   //const NewUser({required this.uuid});
   
   factory ExistingUser.fromJson(Map<String, dynamic> json) {
@@ -94,8 +94,8 @@ class ExistingUser {
       userEmail: json['user_email'],
       userPhone: json['user_phone'],
       userName: json['user_name'],
-      userBio: json['user_bio']
-      userBook: json['user_book'],
+      userBio: json['user_bio'],
+      //userBook: json['user_book'],
     );
 
   }
