@@ -31,7 +31,7 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
         // Profile image, profile name, join date, edit profile button, share profile
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 50, 20, 0),
+            padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
             child: Column(
               children: [
                 Text(
@@ -61,6 +61,10 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     fit: BoxFit.fill,
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 OutlinedButton.icon(
                   onPressed: () {
                     //Navigator.push(
@@ -75,12 +79,36 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     color: butterfly,
                   ),
                   label: Text(
-                    'See More ',
+                    'See More',
                     style: TextStyle(color: Colors.grey[800]),
                   ),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(width: 1.0, color: butterfly),
                   ),
+                ),
+                
+                OutlinedButton.icon(
+                  onPressed: () {
+                    //Navigator.push(
+                    //    context,
+                    //    MaterialPageRoute(
+                    //         builder: (context) => BookAboutScreen()),
+                    // add screen to edit library here
+                    //     );
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: butterfly,
+                  ),
+                  label: Text(
+                    'Edit Book',
+                    style: TextStyle(color: Colors.grey[800]),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(width: 1.0, color: butterfly),
+                  ),
+                ),
+                  ],
                 ),
                
               ],
