@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -287,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditProfileScreen()),
+                                    builder: (context) => BookAboutScreen()),
                                 // add screen to edit library here
                               );
                             },
