@@ -11,8 +11,9 @@ import 'dart:async';
 // CREATE NEW USER ACCOUNT 
 Future<NewUser> createUser(String uuid, String email) async {
   final response = await http.post(
-    //Uri.parse('http://localhost:8080/user/signup'),
-    Uri.parse('http://192.168.4.35:8080/user/signup'),
+
+    Uri.parse('http://10.0.0.127:8080/user/signup'),
+   
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -41,8 +42,9 @@ Future<ExistingUser> getUserLogin(String uuid) async {
     'uuid': uuid
   };
   final response = await http
-  //.get(Uri.parse('http://localhost:8080/user/''$uuid'));
-    .get(Uri.parse('http://192.168.4.35:8080/user/''$uuid'));
+
+    .get(Uri.parse('http://10.0.0.127:8080/user/''$uuid'));
+
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -81,8 +83,9 @@ class ExistingUser {
   final String userPhone;
   final String userName;
   final String userBio;
+  final Book userBook;
 
-  const ExistingUser({required this.uuid,required this.userEmail,required this.userPhone,required this.userName,required this.userBio});
+  const ExistingUser({required this.uuid,required this.userEmail,required this.userPhone,required this.userName,required this.userBio, required this.userBook});
   //const NewUser({required this.uuid});
   
   factory ExistingUser.fromJson(Map<String, dynamic> json) {
@@ -92,38 +95,41 @@ class ExistingUser {
       userPhone: json['user_phone'],
       userName: json['user_name'],
       userBio: json['user_bio']
+      userBook: json['user_book'],
     );
-    // ExistingUser(
-    //   uuid: json['uuid'],
-    //   userEmail: json['user_email'],
-    //   userPhone: json['user_phone'],
-    //   userName: json['user_name'],
-    //   userBio: json['user_bio']
-    // );
+
   }
 }
 
-// // GET
-// void getUserData() async {
-//   final response = await http.get('<https://localhost:8080/user/signup>');
-//   if (response.statusCode == 200) {
-//     print('User data: ${response.body}');
-//   } else {
-//     throw Exception('Failed to fetch user data');
-//   }
-// }
+class Book {
+  final String uuid;
+  final String title;
+  final String author;
+  final int year;
+  final String genres;
+  final Image bookCover;
+  final String yourReview;
+  final bool currentStatus;
+  final int numSwaps;
+  final double timeOnProfile;
 
+  const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps, required this.timeOnProfile});
 
+  factory Book.fromJson(Map<String, dynamic> json) {
+    return Book(
+      uuid: json['uuid'],
+      title: json['title'],
+      author: json['author'],
+      year: json['year'],
+      genres: json['genres'],
+      bookCover: json['book_cover'],
+      yourReview: json['personal_review'],
+      currentStatus: json['status'],
+      numSwaps: json['numberOfSwaps'],
+      timeOnProfile: json['time_on_profile'],
 
+    );
+  }
 
-// Future<http.Response> createAlbum(String title) {
-//   return http.post(
-//     Uri.parse('https://localhost:8080/user/signup'),
-//     headers: <String, String>{
-//       'Content-Type': 'application/json; charset=UTF-8',
-//     },
-//     body: jsonEncode(<String, String>{
-//       'title': title,
-//     }),
-//   );
-// }
+}
+

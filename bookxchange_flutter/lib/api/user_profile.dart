@@ -9,28 +9,12 @@ import 'dart:async';
 import 'dart:io';
 
 
-
-
-// Future<void> pickImage(File pickedFile) async {
-//   update();
-// }
-
-// Future<bool> upload() async {
-//   update();
-//   bool success = false;
-//   http.StreamedResponse respone = await updateProfile(pickedFile);
-
-//   if (response.statusCode == 200) {
-
-//   }
-// }
-
 // write functions here then import into screen 
-Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode) async {
+Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode, Book userBook) async {
   final response = await http.put(
-    //Uri.parse('http://localhost:8080/user/create_profile'),
-    Uri.parse('http://192.168.4.35:8080/user/create_profile'),
-    //http://192.168.4.74:8080
+
+    Uri.parse('http://10.0.0.127:8080/user/create_profile'),
+
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -40,6 +24,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
       'user_bio': userBio,
       'user_genre': userGenre,
       'user_zipcode': userZipCode,
+      'user_book': userBook,
     }),
   );
 
@@ -57,10 +42,11 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
   }
 }
 
-Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio) async {
+Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio, Book userBook) async {
   final response = await http.put(
-    //Uri.parse('http://localhost:8080/user/update_profile'),
-    Uri.parse('http://192.168.4.35:8080/user/update_profile'),
+
+    Uri.parse('http://10.0.0.127:8080/user/update_profile'),
+    
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -68,6 +54,7 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
       'uuid': uuid,
       'user_name': userName,
       'user_bio': userBio,
+      'user_book': userBook,
     }),
   );
 
@@ -86,18 +73,15 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
 }
 
 Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) async {
-  // var request = 
-  //     http.MultipartRequest('POST', Uri.parse('http://192.168.4.74:8080/user/save_picture'));
-  // request.fields['uuid'] = uuid;
-  // request.files.add(http.MultipartFile.fromBytes('picture', File(pickedImage.path).readAsBytesSync(),filename: pickedImage.path));
-  //   //http://192.168.4.74:8080
-  //   var response = await request.send();
+
   File imageFile = File(pickedImage.path);
   List<int> imageBytes = imageFile.readAsBytesSync();
   String base64Image = base64.encode(imageBytes);
+  
   final response = await http.put(
-  //Uri.parse('http://localhost:8080/user/update_profile'),
-  Uri.parse('http://192.168.4.35:8080/user/save_picture'),
+
+  Uri.parse('http://10.0.0.127/user/save_picture'),
+  
   headers: <String, String>{
     'Content-Type': 'application/json',
   },
@@ -128,9 +112,10 @@ class CreateProfile {
   final String userName;
   final String userBio;
   final List<String> userGenre;
+  final Book userBook;
 
   //const NewUser({required this.uuid, this.userEmail, this.userPhone, this.userName, this.userBio});
-  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
+  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre, required this.userBook});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
     return CreateProfile(
