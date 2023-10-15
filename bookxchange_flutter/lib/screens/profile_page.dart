@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/add_book_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -265,47 +266,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 // Library
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
+                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        "My Library",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-                      // Title and edit button
-                      Row(
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child:
 
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          Text(
-                            "My Library",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
+                              // Title and edit button
+                              Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              OutlinedButton.icon(
+                                onPressed: () {
+                                  /* Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => BookAboutScreen()),
                                 // add screen to edit library here
-                              );
-                            },
-                            icon: Icon(
-                              Icons.bookmark_border,
-                              color: butterfly,
-                            ),
-                            label: Text(
-                              'Edit Library',
-                              style: TextStyle(color: Colors.grey[800]),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(width: 1.0, color: butterfly),
-                            ),
-                          ),
-                        ],
-                      )
+                              ); */
+                                },
+                                icon: Icon(
+                                  Icons.bookmark_border,
+                                  color: butterfly,
+                                ),
+                                label: Text(
+                                  'Edit Library',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side:
+                                      BorderSide(width: 1.0, color: butterfly),
+                                ),
+                              ),
+
+                              SizedBox(width: 10),
+
+                              // Add book button
+                              OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AddBooktoLibraryScreen()),
+                                    // add screen to edit library here
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.bookmark_border,
+                                  color: butterfly,
+                                ),
+                                label: Text(
+                                  'Add Book',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side:
+                                      BorderSide(width: 1.0, color: butterfly),
+                                ),
+                              ),
+                            ],
+                          ))
 
                       // Button to edit library
 
