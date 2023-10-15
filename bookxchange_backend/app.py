@@ -127,7 +127,7 @@ def user_create_profile():
 
     # global user_uid = json['uuid']
 
-    user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+    user = db.db.book_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
         "user_genre": user_genre, "user_zipcode": user_zipcode}}
@@ -188,3 +188,97 @@ def user_get_picture(user_uid):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
+
+
+##############################
+# BOOK STUFF
+##############################
+
+
+
+# user create book
+
+##@app.route('/user/create_profile', methods=['PUT'])
+
+## WHAT IS THIS LITTLE PATH WHERE IS IT GOING TO ('PUTTING TO')
+@app.route('/user/create_book', methods=['PUT'])
+def user_create_book():
+
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    #uuid = json['uuid']
+    #user_name = json['user_name']
+    #user_bio = json['user_bio']
+    #user_genre = json['user_genre']
+    #user_zipcode = json['user_zipcode']
+
+    uuid: json['uuid']
+    title: json['title']
+    author: json['author']
+    year: json['year']
+    genre: json['genre']
+    bookCover: json['book_cover']
+    yourReview: json['personal_review']
+    currentStatus: json['status']
+    numSwaps: json['numberOfSwaps']
+
+    #user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+        #{'$set': {"user_name": user_name,
+        #"user_bio": user_bio,
+        #"user_genre": user_genre, "user_zipcode": user_zipcode}}
+    #)
+
+    ## SHOULD THIS BE USER OR BOOK
+
+    book = db.db.book_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$set': {
+            "title": title,
+            "author": author,
+            "year": year,
+            "genre": genre,
+            "book_cover": bookCover,
+            "personal_review": yourReview,
+            "status": currentStatus,
+            "numberOfSwaps": numSwaps
+            }
+        }
+    )
+
+    return json, 201
+
+# user update book
+#@app.route('/user/update_profile', methods=['PUT'])
+
+@app.route('/user/update_book', methods=['PUT'])
+def user_update_book():
+
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid: json['uuid']
+    bookCover: json['book_cover']
+    yourReview: json['personal_review']
+    currentStatus: json['status']
+
+    # global user_uid = json['uuid']
+
+    book = db.db.book_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$set': {
+            "book_cover": bookCover,
+            "personal_review": yourReview,
+            "status": currentStatus
+        }}
+    )
+
+    return json, 201
