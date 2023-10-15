@@ -232,8 +232,6 @@ def user_create_book():
         #"user_genre": user_genre, "user_zipcode": user_zipcode}}
     #)
 
-    ## SHOULD THIS BE USER OR BOOK
-
     book = db.db.book_collection.find_one_and_update(
         {"uuid": uuid}, 
 

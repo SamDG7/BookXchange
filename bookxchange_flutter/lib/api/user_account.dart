@@ -111,9 +111,8 @@ class Book {
   final String yourReview;
   final bool currentStatus;
   final int numSwaps;
-  final double timeOnProfile;
 
-  const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps, required this.timeOnProfile});
+  const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps});
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
@@ -126,7 +125,6 @@ class Book {
       yourReview: json['personal_review'],
       currentStatus: json['status'],
       numSwaps: json['numberOfSwaps'],
-      timeOnProfile: json['time_on_profile'],
 
     );
   }
