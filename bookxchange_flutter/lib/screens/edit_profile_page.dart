@@ -35,6 +35,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   late String userName;
   late String userBio;
+  late String userZipCode;
   //File? image;
   File? _image;
   final picker = ImagePicker();
@@ -222,6 +223,36 @@ Future getImageFromCamera() async {
                 ),
               ),
               Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                child: TextField(
+                  onChanged: (value) {
+                    userZipCode = value;
+                  },
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: 5,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(20),
+                      ),
+                      borderSide: BorderSide(width: 2, color: butterfly),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(20),
+                      ),
+                      borderSide: BorderSide(color: butterfly),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    labelText: "Zip Code",
+                    labelStyle: TextStyle(fontSize: 20, color: Colors.black),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                ),
+              ),
+              Padding(
                 padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
                 child: TextField(
                   onChanged: (value) {
@@ -279,7 +310,7 @@ Future getImageFromCamera() async {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
-                    _editProfile = updateUserProfile(getUUID(), userName, userBio);
+                    _editProfile = updateUserProfile(getUUID(), userName, userBio, userZipCode);
                     if (_image != null) {
                       saveProfilePicture(getUUID(), _image!);
                     }

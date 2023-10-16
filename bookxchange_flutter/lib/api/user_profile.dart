@@ -12,9 +12,9 @@ import 'dart:io';
 // write functions here then import into screen 
 Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode) async {
   final response = await http.put(
-
-    Uri.parse('http://10.0.0.127:8080/user/create_profile'),
-
+    //Uri.parse('http://localhost:8080/user/create_profile'),
+    Uri.parse('http://192.168.4.35:8080/user/create_profile'),
+    //http://192.168.4.74:8080
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -24,7 +24,6 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
       'user_bio': userBio,
       'user_genre': userGenre,
       'user_zipcode': userZipCode,
-      //'user_book': userBook,
     }),
   );
 
@@ -32,8 +31,6 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
     return CreateProfile.fromJson(await jsonDecode(response.body));
-    //return NewUser.fromJson(await json.decode(json.encode(response.body))); 
-    //return NewUser.fromJson(json.decode(json.encode(response.body))); 
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -42,11 +39,10 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
   }
 }
 
-Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio) async {
+Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio, String userZipCode) async {
   final response = await http.put(
-
-    Uri.parse('http://10.0.0.127:8080/user/update_profile'),
-    
+    //Uri.parse('http://localhost:8080/user/update_profile'),
+    Uri.parse('http://192.168.4.35:8080/user/update_profile'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -54,7 +50,7 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
       'uuid': uuid,
       'user_name': userName,
       'user_bio': userBio,
-      //'user_book': userBook,
+      'user_zipcode': userZipCode,
     }),
   );
 
@@ -62,8 +58,6 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
     return UpdateProfile.fromJson(await jsonDecode(response.body));
-    //return NewUser.fromJson(await json.decode(json.encode(response.body))); 
-    //return NewUser.fromJson(json.decode(json.encode(response.body))); 
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -73,15 +67,18 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
 }
 
 Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) async {
-
+  // var request = 
+  //     http.MultipartRequest('POST', Uri.parse('http://192.168.4.74:8080/user/save_picture'));
+  // request.fields['uuid'] = uuid;
+  // request.files.add(http.MultipartFile.fromBytes('picture', File(pickedImage.path).readAsBytesSync(),filename: pickedImage.path));
+  //   //http://192.168.4.74:8080
+  //   var response = await request.send();
   File imageFile = File(pickedImage.path);
   List<int> imageBytes = imageFile.readAsBytesSync();
   String base64Image = base64.encode(imageBytes);
-  
   final response = await http.put(
-
-  Uri.parse('http://10.0.0.127/user/save_picture'),
-  
+  //Uri.parse('http://localhost:8080/user/update_profile'),
+  Uri.parse('http://192.168.4.35:8080/user/save_picture'),
   headers: <String, String>{
     'Content-Type': 'application/json',
   },
@@ -107,45 +104,39 @@ Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) 
 
 class CreateProfile {
   final String uuid;
-  // String userEmail = '';
-  // String userPhone = '';
   final String userName;
   final String userBio;
   final List<String> userGenre;
-  //final Book userBook;
+  final String userZipCode;
 
-  //const NewUser({required this.uuid, this.userEmail, this.userPhone, this.userName, this.userBio});
-  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
+  const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre, required this.userZipCode});
+  //const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
     return CreateProfile(
       uuid: json['uuid'],
-      // userEmail: json['user_email'],
-      // userPhone: json['user_phone'],
       userName: json['user_name'],
       userBio: json['user_bio'],
-      userGenre: json['user_genre']
+      userGenre: json['user_genre'],
+      userZipCode: json['user_zipcode']
     );
   }
 }
 
 class UpdateProfile {
   final String uuid;
-  // String userEmail = '';
-  // String userPhone = '';
   final String userName;
   final String userBio;
+  final String userZipCode;
 
-  //const NewUser({required this.uuid, this.userEmail, this.userPhone, this.userName, this.userBio});
-  const UpdateProfile({required this.uuid, required this.userName, required this.userBio});
+  const UpdateProfile({required this.uuid, required this.userName, required this.userBio, required this.userZipCode});
 
   factory UpdateProfile.fromJson(Map<String, dynamic> json) {
     return UpdateProfile(
       uuid: json['uuid'],
-      // userEmail: json['user_email'],
-      // userPhone: json['user_phone'],
       userName: json['user_name'],
       userBio: json['user_bio'],
+      userZipCode: json['user_zipcode']
     );
   }
 }
