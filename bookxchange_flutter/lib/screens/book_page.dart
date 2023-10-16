@@ -1,3 +1,4 @@
+import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/globals.dart';
@@ -11,7 +12,8 @@ class BookAboutScreen extends StatefulWidget {
 }
 
 class _BookAboutScreenState extends State<BookAboutScreen> {
-  //Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
+
+  Future<Book> _currentBook = getCurrentBook(getUUID());
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,8 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
             padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
             child: Column(
               children: [
-                // FutureBuilder<ExistingUser>(
-                //           // pass the list (postsFuture)
-                //           future: _existingUser,
+                // FutureBuilder<Book>(
+                //           future: _currentBook,
                 //           builder: (context, snapshot) {
                 //             if (snapshot.connectionState ==
                 //                 ConnectionState.waiting) {
@@ -45,13 +46,14 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                 //             } else if (snapshot.hasData) {
                 //               final title = snapshot.data!.title;
                 //               return buildTitle(title);
-                //               // Text(posts);
                 //               // we have the data, do stuff here
                 //             } else {
                 //               return const Text("No title available");
                 //               // we did not recieve any data, maybe show error or no data available
                 //             }
                 //           }),
+
+                //TODO: DO THIS FOR ALL
 
                 Text(
                   "Watership Down",

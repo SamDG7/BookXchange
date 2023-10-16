@@ -21,7 +21,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   //File? _image;
   //final picker = ImagePicker();
 
-  Future<CreateBook>? _newBook;
+  Future<Book>? _newBook;
 
   // get image from camera roll
 

@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
 ## WHAT IS THIS LITTLE PATH WHERE IS IT GOING TO ('PUTTING TO')
 @app.route('/book/create_book', methods=['PUT'])
-def user_create_book():
+def user_library_create_book():
 
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
@@ -253,8 +253,8 @@ def user_create_book():
 # user update book
 #@app.route('/user/update_profile', methods=['PUT'])
 
-@app.route('/user/update_book', methods=['PUT'])
-def user_update_book():
+@app.route('/book/update_book', methods=['PUT'])
+def user_library_update_book():
     # (re) setter method so doesn't return anything
 
     content_type = request.headers.get('Content-Type')
@@ -267,8 +267,6 @@ def user_update_book():
     bookCover: json['book_cover']
     yourReview: json['personal_review']
     currentStatus: json['status']
-
-    # global user_uid = json['uuid']
 
     book = db.db.book_collection.find_one_and_update(
         {"uuid": uuid}, 
