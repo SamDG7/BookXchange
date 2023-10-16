@@ -100,34 +100,3 @@ class ExistingUser {
 
   }
 }
-
-class Book {
-  final String uuid;
-  final String title;
-  final String author;
-  final int year;
-  final String genres;
-  final Image bookCover;
-  final String yourReview;
-  final bool currentStatus;
-  final int numSwaps;
-
-  const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps});
-
-  factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-      uuid: json['uuid'],
-      title: json['title'],
-      author: json['author'],
-      year: json['year'],
-      genres: json['genres'],
-      bookCover: json['book_cover'],
-      yourReview: json['personal_review'],
-      currentStatus: json['status'],
-      numSwaps: json['numberOfSwaps'],
-
-    );
-  }
-
-}
-

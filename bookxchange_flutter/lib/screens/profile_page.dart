@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:bookxchange_flutter/constants.dart';
-import 'package:bookxchange_flutter/screens/add_book_page.dart';
+import 'package:bookxchange_flutter/screens/create_book_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';

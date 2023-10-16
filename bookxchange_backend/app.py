@@ -201,7 +201,7 @@ if __name__ == '__main__':
 ##@app.route('/user/create_profile', methods=['PUT'])
 
 ## WHAT IS THIS LITTLE PATH WHERE IS IT GOING TO ('PUTTING TO')
-@app.route('/user/create_book', methods=['PUT'])
+@app.route('/book/create_book', methods=['PUT'])
 def user_create_book():
 
     content_type = request.headers.get('Content-Type')
@@ -255,6 +255,7 @@ def user_create_book():
 
 @app.route('/user/update_book', methods=['PUT'])
 def user_update_book():
+    # (re) setter method so doesn't return anything
 
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
@@ -280,3 +281,32 @@ def user_update_book():
     )
 
     return json, 201
+
+
+##@app.route('/user/<user_uid>', methods=['GET'])
+##def user_login(user_uid):
+
+
+@app.route('/book/<user_uid>', methods=['GET'])
+def get_book_widget(user_uid):
+
+    # user = db.db.user_collection.find_one({
+    #     'uuid': user_uid
+    # })
+    # user = pd.DataFrame((user))
+    # if (user.empty):
+    #     return "Resource Not Found", 404
+    # user = user.drop(columns=["_id"])
+    # user = user.groupby(["uuid", "title", "user_phone", "user_name", "user_bio"],as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
+    # print(user)
+
+    book = db.db.book_collection.find_one({
+        'uuid': user_uid
+    })
+    book = pd.DataFrame((book))
+    if (book.empty):
+        return "Resource Not Found", 404
+    book = book.drop(columns=["_id"])
+    book = book.groupby(["uuid", "title", "author", "book_cover"],as_index=False).agg(lambda genres: ','.join(genres.tolist()))
+    
+    return book.to_json(orient='records')
