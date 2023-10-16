@@ -63,6 +63,7 @@ def user_singup():
             "user_phone": "",
             "user_name": "",
             "user_bio": "",
+            "user_zipcode": ""
         }, upsert=True)
 
     return json, 201
@@ -78,12 +79,12 @@ def user_login(user_uid):
         # 'uuid': str(user_uid)
         'uuid': user_uid
     })
-    user = pd.DataFrame((user))
+    user = pd.DataFrame([user])
     if (user.empty):
         return "Resource Not Found", 404
     #user = user.astype({"uuid": str, "_id": str})
     user = user.drop(columns=["_id"])
-    user = user.groupby(["uuid", "user_email", "user_phone", "user_name", "user_bio"],as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
+    #user = user.groupby(["uuid", "user_email", "user_phone", "user_name", "user_bio", "user_zipcode"], as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
     #user = user.astype({"user_genre" : list})
     print(user)
     
@@ -124,13 +125,17 @@ def user_create_profile():
     user_bio = json['user_bio']
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
-
+    print(user_name)
+    print(user_bio)
+    print(user_genre)
+    print(user_zipcode)
     # global user_uid = json['uuid']
 
-    user = db.db.book_collection.find_one_and_update({"uuid": uuid}, 
+    user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
-        "user_genre": user_genre, "user_zipcode": user_zipcode}}
+        "user_genre": user_genre,
+        "user_zipcode": user_zipcode}}
     )
 
     return json, 201
@@ -147,12 +152,13 @@ def user_update_profile():
     uuid = json['uuid']
     user_name = json['user_name']
     user_bio = json['user_bio']
+    user_zipcode = json['user_zipcode']
 
     # global user_uid = json['uuid']
 
     user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
-        "user_bio": user_bio}}
+        "user_bio": user_bio, "user_zipcode": user_zipcode}}
     )
 
     return json, 201
