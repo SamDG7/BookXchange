@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
@@ -13,7 +16,7 @@ import 'dart:io';
 Future<CreateProfile> createUserProfile(String uuid, String userName, String userBio, List<String> userGenre, String userZipCode) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
-    Uri.parse('http://192.168.4.35:8080/user/create_profile'),
+    Uri.parse('http://127.0.0.1:8080/user/create_profile'),
     //http://192.168.4.74:8080
     headers: <String, String>{
       'Content-Type': 'application/json',
@@ -42,7 +45,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName, String use
 Future<UpdateProfile> updateUserProfile(String uuid, String userName, String userBio, String userZipCode) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/update_profile'),
-    Uri.parse('http://192.168.4.35:8080/user/update_profile'),
+    Uri.parse('http://127.0.0.1:8080/user/update_profile'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -66,7 +69,7 @@ Future<UpdateProfile> updateUserProfile(String uuid, String userName, String use
   }
 }
 
-Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) async {
+Future<Map<String,dynamic>> saveProfilePicture(String uuid, File pickedImage) async {
   // var request = 
   //     http.MultipartRequest('POST', Uri.parse('http://192.168.4.74:8080/user/save_picture'));
   // request.fields['uuid'] = uuid;
@@ -76,9 +79,9 @@ Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) 
   File imageFile = File(pickedImage.path);
   List<int> imageBytes = imageFile.readAsBytesSync();
   String base64Image = base64.encode(imageBytes);
-  final response = await http.put(
+  final response = await http.post(
   //Uri.parse('http://localhost:8080/user/update_profile'),
-  Uri.parse('http://192.168.4.35:8080/user/save_picture'),
+  Uri.parse('http://127.0.0.1:8080/user/save_picture'),
   headers: <String, String>{
     'Content-Type': 'application/json',
   },
@@ -99,6 +102,30 @@ Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) 
     // then throw an exception.
       //debugPrint(jsonDecode(response.body));
       throw Exception('Failed to save picture.');
+  }
+}
+
+
+
+Future<ProfileImage> getProfilePicture(String uuid) async {
+  http.Response response = await http
+  //.get(Uri.parse('http://localhost:8080/user/''$uuid'));
+    .get(Uri.parse(getImageURL(uuid)));
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    //return base64Encode(response.bodyBytes);
+   return ProfileImage.fromJson(jsonDecode((response.body)));
+    // setState(() {
+
+    // });
+   // return Image.memory(base64Decode((response.body)));
+    //return ExistingUser.fromJson(jsonDecode(response.body)[0] as Map<String, dynamic>);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    //return null;
+    throw Exception('Failed to load user data');
   }
 }
 
@@ -137,6 +164,18 @@ class UpdateProfile {
       userName: json['user_name'],
       userBio: json['user_bio'],
       userZipCode: json['user_zipcode']
+    );
+  }
+}
+
+class ProfileImage {
+  final String userPicture;
+
+  const ProfileImage({required this.userPicture});
+
+  factory ProfileImage.fromJson(Map<String, dynamic> json) {
+    return ProfileImage(
+      userPicture: json['user_picture'],
     );
   }
 }

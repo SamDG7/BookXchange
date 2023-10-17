@@ -4,7 +4,7 @@ import binascii
 import io
 from json import dumps, loads
 from tkinter import Image
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import pandas as pd
 from os import abort
 from uuid import uuid4, UUID
@@ -31,7 +31,7 @@ def flask_mongodb_atlas():
 ## USER ACCOUNT ROUTES 
 
 # user sign up -- new user
-@app.route('/user/signup', methods=['POST'])
+@app.route('/user/signup', methods=['PUT'])
 @cross_origin()
 def user_singup():
     content_type = request.headers.get('Content-Type')
@@ -56,7 +56,17 @@ def user_singup():
     #     "user_name": "",
     #     "user_bio": "",
     # })
-    user = db.db.user_collection.replace_one({"uuid": uuid},
+    # user = db.db.user_collection.replace_one({"uuid": uuid},
+    #     {
+    #         "uuid": uuid,
+    #         "user_email": user_email,
+    #         "user_phone": "",
+    #         "user_name": "",
+    #         "user_bio": "",
+    #         "user_zipcode": ""
+    #     }, upsert=True)
+
+    db.db.user_collection.replace_one({"uuid": uuid},
         {
             "uuid": uuid,
             "user_email": user_email,
@@ -86,7 +96,7 @@ def user_login(user_uid):
     user = user.drop(columns=["_id"])
     #user = user.groupby(["uuid", "user_email", "user_phone", "user_name", "user_bio", "user_zipcode"], as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
     #user = user.astype({"user_genre" : list})
-    print(user)
+    #print(user)
     
     # return user.to_json(orient='records', force_ascii=False)
     return user.to_json(orient='records')
@@ -103,7 +113,11 @@ def user_delete():
     
     uuid = json['uuid']
 
-    user = db.db.user_collection.delete_one({
+    # user = db.db.user_collection.delete_one({
+    #     "uuid": uuid,
+    # })
+
+    db.db.user_collection.delete_one({
         "uuid": uuid,
     })
 
@@ -131,13 +145,19 @@ def user_create_profile():
     print(user_zipcode)
     # global user_uid = json['uuid']
 
-    user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+    # user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+    #     {'$set': {"user_name": user_name,
+    #     "user_bio": user_bio,
+    #     "user_genre": user_genre,
+    #     "user_zipcode": user_zipcode}}
+    # )
+
+    db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
         "user_genre": user_genre,
         "user_zipcode": user_zipcode}}
     )
-
     return json, 201
 
 # user update profile
@@ -156,7 +176,12 @@ def user_update_profile():
 
     # global user_uid = json['uuid']
 
-    user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+    # user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+    #     {'$set': {"user_name": user_name,
+    #     "user_bio": user_bio, "user_zipcode": user_zipcode}}
+    # )
+
+    db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
         "user_bio": user_bio, "user_zipcode": user_zipcode}}
     )
@@ -164,7 +189,7 @@ def user_update_profile():
     return json, 201
 
 
-@app.route('/user/save_picture', methods=['PUT'])
+@app.route('/user/save_picture', methods=['POST'])
 def user_save_picture():
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
@@ -180,20 +205,25 @@ def user_save_picture():
     return json, 201
 
 
-@app.route('/user/<user_uid>/get_picture', methods=['GET'])
+@app.route('/user/get_picture/<user_uid>', methods=['GET'])
 def user_get_picture(user_uid):
     
-    with open("images/%s.png" %user_uid, "rb") as f:
-        base64_string = base64.b64encode(f.read())
+    try:
+        # with open("images/%s.png" %user_uid, "rb") as f:
+        #     image = Image.open(f)
+
+        with open("images/%s.png" %user_uid, "rb") as f:
+            base64_string = base64.b64encode(f.read())
     
-    #print(user)
+        #print(base64_string)
+    except:
+        print("file not found");        
     
     # return user.to_json(orient='records', force_ascii=False)
-    return user.to_json(orient='records')
+    return jsonify({'user_picture': base64_string.decode('utf-8')})
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+
 
 
 ##############################
@@ -314,3 +344,7 @@ def get_book_widget(user_uid):
     book = book.groupby(["uuid", "title", "author", "book_cover"],as_index=False).agg(lambda genres: ','.join(genres.tolist()))
     
     return book.to_json(orient='records')
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
