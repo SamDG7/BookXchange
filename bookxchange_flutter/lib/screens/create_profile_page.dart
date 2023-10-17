@@ -429,14 +429,18 @@ Future getImageFromCamera() async {
                     ),
                   );
                 } else {
-                  print(userName);
-                  print(userBio);
-                  print(_preferredGenres);
-                  print(userZipCode);
+                  if (_image != null) {
+                      saveProfilePicture(getUUID(), _image!);
+                    }
+                  //print(userName);
+                  //print(userBio);
+                  //print(_preferredGenres);
+                  //print(userZipCode);
                   _newProfile = createUserProfile(
                       getUUID(), userName, userBio, _preferredGenres, userZipCode);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
+                  //getProfilePicture(getUUID());
                 }
               },
               child: const Text(
