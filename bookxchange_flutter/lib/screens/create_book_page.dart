@@ -1,5 +1,10 @@
 import 'package:bookxchange_flutter/api/book_profile.dart';
+
 import 'package:flutter/material.dart';
+import 'package:bookxchange_flutter/globals.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddBooktoLibraryScreen extends StatefulWidget {
   const AddBooktoLibraryScreen({super.key});
@@ -13,13 +18,15 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author;
   late int year;
   late List<String> genres;
-  late Image bookCover;
+  //late Image bookCover;
   late String yourReview;
   late bool currentStatus = true; // status is TRUE because the book is IN the user's home
   late int numSwaps = 0;
 
   //File? _image;
-  //final picker = ImagePicker();
+
+  File? bookCover;
+  final picker = ImagePicker();
 
   Future<Book>? _newBook;
 
