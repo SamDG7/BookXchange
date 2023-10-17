@@ -6,7 +6,8 @@ import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/screens/swiper_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:bookxchange_flutter/components/components.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 // class HomePage extends StatefulWidget {
 //   const HomePage({super.key});
 
@@ -71,8 +72,8 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final user = FirebaseAuth.instance.currentUser!;
-  
-
+  late String _msg = "";
+  late String _subject = "";
   //final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   //final FirebaseUser user = await auth.currentUser();
   //final userid = user.uid;
@@ -83,6 +84,18 @@ class _HomePageState extends State<HomePage> {
     await FirebaseAuth.instance.signOut();
     await googleSignIn.signOut();
     Navigator.popUntil(context, ModalRoute.withName("/"));
+  }
+
+  void reportIssue() async {
+    final Email send_email = Email(
+        body: _msg,
+        subject: _subject,
+        recipients: ['bookxchangehelp@gmail.com'],
+        isHTML: false);
+
+    await FlutterEmailSender.send(send_email);
+
+    Navigator.pop(context);
   }
 
   Future<void> _reauthenticateAndDelete() async {
@@ -128,12 +141,16 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Your account has been successfully deleted.", style: TextStyle(fontSize: 16)),
+          content: Text("Your account has been successfully deleted.",
+              style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.popUntil(context, ModalRoute.withName("/")); // Close the success message dialog
+                Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(
+                        "/")); // Close the success message dialog
                 //account is deleted
               },
               child: Text("OK"),
@@ -156,7 +173,8 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Are you sure you want to delete your account?", style: TextStyle(fontSize: 16)),
+          content: Text("Are you sure you want to delete your account?",
+              style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
@@ -196,6 +214,8 @@ class _HomePageState extends State<HomePage> {
                 signUserOut();
                 // Navigator.of(context)
                 //   .push(MaterialPageRoute(builder: (context) => LoginSignupScreen()));
+              } else if (value == MenuItem.item3) {
+                reportIssue();
               }
             },
             icon: const Icon(Icons.settings), // Settings icon
@@ -208,7 +228,91 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   deleteUserConfirmationPopup(context);
                 },
-              )
+              ),
+              PopupMenuItem(
+                value: MenuItem.item3,
+                child: Text("Report an issue"),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => Container(
+                          padding: const EdgeInsets.all(80),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Report an Issue",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge),
+                              Text(""),
+                              Text("Please enter the category of the issue"),
+                              Text(""),
+                              CustomTextField(
+                                textField: TextField(
+                                  onChanged: (value) {
+                                    // Set the user's email
+                                    _subject = value;
+                                  },
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                  decoration: kTextInputDecoration.copyWith(
+                                      hintText: 'Subject'),
+                                ),
+                              ),
+                              Text(""),
+                              Text(""),
+                              Text(
+                                  "Please provide the specifics of the issue below"),
+                              Text(""),
+                              Container(
+                                width: 300,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 50,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    width: 2.5,
+                                    color: butterfly,
+                                  ),
+                                ),
+                                child: TextField(
+                                  onChanged: (value) {
+                                    // Set the user's email
+                                    _msg = value;
+                                  },
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                  decoration: kTextInputDecoration.copyWith(
+                                      hintText: 'Comments'),
+                                ),
+                              ),
+                              Text(""),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        butterfly, // Set the background color to blue
+                                    minimumSize: const Size(100,
+                                        50), // Set the button size (width x height)
+                                  ),
+                                  onPressed: reportIssue,
+                                  child: const Text(
+                                    "Submit Report",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )));
+                },
+              ),
             ],
           )
         ],
