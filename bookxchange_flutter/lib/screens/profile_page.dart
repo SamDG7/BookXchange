@@ -414,7 +414,7 @@ Widget build(BuildContext context) {
                               ); */
                                 },
                                 icon: Icon(
-                                  Icons.bookmark_border,
+                                  Icons.edit,
                                   color: butterfly,
                                 ),
                                 label: Text(
@@ -441,7 +441,7 @@ Widget build(BuildContext context) {
                                   );
                                 },
                                 icon: Icon(
-                                  Icons.bookmark_border,
+                                  Icons.add,
                                   color: butterfly,
                                 ),
                                 label: Text(
@@ -454,7 +454,8 @@ Widget build(BuildContext context) {
                                 ),
                               ),
                             ],
-                          ))
+                          ),
+                          ),
 
                       // Button to edit library
 
