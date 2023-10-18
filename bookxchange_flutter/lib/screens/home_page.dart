@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
     final response = await http.post(
       url,
       headers: {
+        'origin': 'http://localhost',
         'Content-Type': 'application/json',
       },
       body: json.encode({
@@ -73,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         }
       }),
     );
-
+    Navigator.pop(context);
     print(response.body);
 
     // final message = Message()
