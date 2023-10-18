@@ -103,17 +103,13 @@ Future<Book> updateBook(String uuid, Image bookCover, String yourReview, bool cu
   }
 }
 
-// EDIT FOR SAVE BOOK COVER PIC
-/* Future<http.StreamedResponse> saveProfilePicture(String uuid, File pickedImage) async {
-
+Future<Map<String,dynamic>> saveBookCoverPicture(String uuid, File pickedImage) async {
+  
   File imageFile = File(pickedImage.path);
   List<int> imageBytes = imageFile.readAsBytesSync();
   String base64Image = base64.encode(imageBytes);
-  
-  final response = await http.put(
-
-  Uri.parse('http://10.0.0.127/user/save_picture'),
-  
+  final response = await http.post(
+  Uri.parse('http://127.0.0.1:8080/book/save_picture'),
   headers: <String, String>{
     'Content-Type': 'application/json',
   },
@@ -125,17 +121,27 @@ Future<Book> updateBook(String uuid, Image bookCover, String yourReview, bool cu
   if (response.statusCode == 201) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    //return CreateProfile.fromJson(await jsonDecode(response.body));
     return jsonDecode(response.body);
-    //return NewUser.fromJson(await json.decode(json.encode(response.body))); 
-    //return NewUser.fromJson(json.decode(json.encode(response.body))); 
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
-      //debugPrint(jsonDecode(response.body));
-      throw Exception('Failed to save picture.');
+    throw Exception('Failed to save picture.');
   }
-} */
+}
+
+Future<BookCoverImage> getBookCoverPicture(String uuid) async {
+  http.Response response = await http
+    .get(Uri.parse(getImageURL(uuid)));
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+   return BookCoverImage.fromJson(jsonDecode((response.body)));
+   } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load book cover');
+  }
+}
 
 class Book {
 
@@ -167,82 +173,14 @@ class Book {
   }
 }
 
-///// NOT SUPPOSED TO BE ABSTRACT -- JUST FOR NOW UNTIL I DEBUG
-abstract class BookLibraryWidget extends StatefulWidget {
-   BookLibraryWidget({super.key});
+class BookCoverImage {
+  final String userPicture;
 
-  Future<Book>? _currentBook = getCurrentBook(getUUID());
+  const BookCoverImage({required this.userPicture});
 
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0), 
-        child: Column(
-          children: <Widget>[
-
-
-            // PUT FUTUREBUILDER FOR GETTING BOOK IMAGE HERE
-
-
-            FutureBuilder<Book>(
-              future: _currentBook,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // do something till waiting for data, we can show here a loader
-                  return const CircularProgressIndicator();
-
-                } else if (snapshot.hasData) {
-                  final title = snapshot.data!.title;
-                  return buildTitle(title);
-
-                } else {
-                  return const Text("No title available");
-                  // we did not recieve any data, maybe show error or no data available
-                }
-              }
-            ),
-
-            FutureBuilder<Book>(
-              future: _currentBook,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // do something till waiting for data, we can show here a loader
-                  return const CircularProgressIndicator();
-
-                } else if (snapshot.hasData) {
-                  final author = snapshot.data!.author;
-                  return buildAuthor(author);
-
-                } else {
-                  return const Text("No author available");
-                  // we did not recieve any data, maybe show error or no data available
-                }
-              }
-            ),
-
-
-
-          ],
-        ),
-        ),
+  factory BookCoverImage.fromJson(Map<String, dynamic> json) {
+    return BookCoverImage(
+      userPicture: json['user_picture'],
     );
-  }
-
-  // MAKE BUILDIMAGE WIDGET
-
-  Widget buildTitle(String title) {
-    return Text(title,
-        style: TextStyle(
-          fontSize: 15,
-        ));
-  }
-
-  Widget buildAuthor(String author) {
-    return Text(author,
-        style: TextStyle(
-          fontSize: 15,
-        ));
   }
 }

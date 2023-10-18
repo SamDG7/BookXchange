@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
@@ -6,9 +7,12 @@ import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'dart:convert';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,6 +23,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
+  Future<ProfileImage>? _image = getProfilePicture(getUUID());
+  
+  //Future<Image> _image = getProfilePicture(getUUID());
 
   Future<void> shareApp() async {
     // Set the app link and the message to be shared
@@ -32,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       // Vertical scrollable layout
       body: ListView(
@@ -42,19 +49,130 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                
                 child: Container(
+                  //children: [
                   child: CircleAvatar(
-                    radius: 80,
-                    backgroundColor: butterfly,
-                    child: CircleAvatar(
-                      radius: 75,
-                      backgroundImage:
-                          AssetImage('assets/profile_pic_elena.png'),
-                    ),
+                  radius: 75,
+                    //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
+                    child: FutureBuilder<ProfileImage>(
+                        // pass the list (postsFuture)
+                        future: _image,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // do something till waiting for data, we can show here a loader
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            //final bio = snapshot.data!.userBio;
+                            final userPicture = snapshot.data!.userPicture;
+                            return buildPicture(userPicture);
+                            // Text(posts);
+                            // we have the data, do stuff here
+                          } else {
+                            return const Text("No image available");
+                            // we did not recieve any data, maybe show error or no data available
+                          }
+                        })
                   ),
-                ),
-              ),
+                  // width: 150,
+                  // height: 150,
+                  //fit: BoxFit.cover)
+                )
+                
+                    //child: FutureBuilder<Image>(
+                          // pass the list (postsFuture)
+                          //future: _image,
+                          //builder: (context, snapshot) {
+                            //if (snapshot.connectionState ==
+                                //ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              //return const CircularProgressIndicator();
+                            //} else if (snapshot.hasData) {
+                              //final name = snapshot.data!.user_picture;
+                              //]
+                    
+                   // )
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            //} else {
+                              //return const Text("N");
+                              // we did not recieve any data, maybe show error or no data available
+                            //}
+            ),
+            
+                    
+                  //backgroundColor: butterfly,
+                  // child: getProfilePicture(getUUID())  == null
+                  //   //? Image.file(File('assets/profile_pic_elena.png'))
+                  //   ? Text('N',
+                  //     style: TextStyle(
+                  //       color: butterfly,
+                  //       fontWeight: FontWeight.w500,
+                  //       fontSize: 80,
+                  //     ),
+                  //   )
+                  //   child: Image.memory(base64Decode(await getProfilePicture(getUUID())),
+                  //   width: 150,
+                  //   height: 150,
+                  //   fit: BoxFit.cover),
+                  // child: CircleAvatar(
+                  //   radius: 70,
+                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+                    
+                  
+                     //backgroundImage: 
+                          // image != null
+                          //   ? ClipOval(
+                          //       child: Image.file(
+                          //         image!,
+                          //         width: 70,
+                          //         height:70,
+                          //         fit: BoxFit.cover,
+                          //     ), 
+                             //AssetImage('assets/profile_pic_default.png'),
+                      //_image == null ? Text('No Image selected') : Image.file(_image),
+                      //) // TODO: REPLACE WITH USER IMAGE
+                    //),
+                  
+              //),
+              
+              // Padding(
+              //   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              //   child: Container(
+              //     child: getProfilePicture(getUUID())
+              //     // child: FutureBuilder<Image>(
+              //     //         // pass the list (postsFuture)
+              //     //         future: Image,
+              //     //         builder: (context, snapshot) {
+              //     //           if (snapshot.connectionState ==
+              //     //               ConnectionState.waiting) {
+              //     //             // do something till waiting for data, we can show here a loader
+              //     //             return const CircularProgressIndicator();
+              //     //           } else if (snapshot.hasData) {
+              //     //             //final name = snapshot.data!.userName;
+              //     //             return Image;
+              //     //             // Text(posts);
+              //     //             // we have the data, do stuff here
+              //     //           } else {
+              //     //             return const Text("No name available");
+              //     //             // we did not recieve any data, maybe show error or no data available
+              //     //           }
+              //     //         }),
+
+
+              //     // child: CircleAvatar(
+              //     //   radius: 80,
+              //     //   backgroundColor: butterfly,
+              //     //   child: CircleAvatar(
+              //     //     radius: 75,
+              //     //     backgroundImage:
+              //     //         AssetImage('assets/profile_pic_elena.png'),
+              //     //   ),
+              //     // ),
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.fromLTRB(10, 25, 10, 0),
                 child: Container(
@@ -361,14 +479,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildName(String username) {
-    return Text(
+    return  Text(
       username,
       textAlign: TextAlign.left,
       softWrap: true,
       style: TextStyle(
         fontSize: 25,
         fontWeight: FontWeight.bold,
+        overflow: TextOverflow.clip,
       ),
     );
+  //}
+  //);
   }
+
+  Widget buildPicture(String image64) {
+    // ignore: unnecessary_null_comparison
+    return  profileImage == null ? CircleAvatar(radius: 75, child: Text('N',
+                      style: TextStyle(
+                        color: butterfly,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 80,
+                      ),
+                    )) : CircleAvatar(radius: 75, backgroundImage: Image.memory(base64Decode(image64)).image);
+
+  }
+
 }
