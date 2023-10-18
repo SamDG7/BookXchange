@@ -314,6 +314,7 @@ Future getImageFromCamera() async {
                     if (_image != null) {
                       saveProfilePicture(getUUID(), _image!);
                     }
+                    getProfilePicture(getUUID());
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         backgroundColor: butterfly,

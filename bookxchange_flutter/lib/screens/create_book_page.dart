@@ -3,6 +3,9 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:bookxchange_flutter/globals.dart';
 
 class MultiSelect extends StatefulWidget {
   final List<String> items;
@@ -89,7 +92,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late int year;
   late String ISBN = '';
   late List<String> genres;
-  late Image bookCover;
+  //late Image bookCover;
   late String yourReview;
   late bool currentStatus =
       true; // status is TRUE because the book is IN the user's home
@@ -97,7 +100,9 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   List<String> _preferredGenres = [];
 
   //File? _image;
-  //final picker = ImagePicker();
+
+  File? bookCover;
+  final picker = ImagePicker();
 
   Future<Book>? _newBook;
 
