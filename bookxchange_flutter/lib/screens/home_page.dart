@@ -8,49 +8,11 @@ import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-// class HomePage extends StatefulWidget {
-//   const HomePage({super.key});
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   final user = FirebaseAuth.instance.currentUser!;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(actions: [
-//         IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
-//       ]),
-//       body: Center(child: Text("LOGGED IN AS " + user.email!)),
-//     );
-//   }
-
-//   // function to sign the user out
-
-// }
-
-// class HomePage extends StatelessWidget {
-//   HomePage({super.key});
-
-//   final user = FirebaseAuth.instance.currentUser!;
-//   //function to sign the user out
-//   void signUserOut() {
-//     FirebaseAuth.instance.signOut();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(actions: [
-//         IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
-//       ]),
-//       body: Center(child: Text("LOGGED IN AS ${user.email!}")),
-//     );
-//   }
-// }
 enum MenuItem { item1, item2, item3 }
 
 class HomePage extends StatefulWidget {
@@ -86,16 +48,49 @@ class _HomePageState extends State<HomePage> {
     Navigator.popUntil(context, ModalRoute.withName("/"));
   }
 
-  void reportIssue() async {
-    final Email send_email = Email(
-        body: _msg,
-        subject: _subject,
-        recipients: ['bookxchangehelp@gmail.com'],
-        isHTML: false);
+  Future reportIssue() async {
+    // final smtpServer = gmail('bookxchangehelp@gmail.com', 'scrummasterpooja');
+    const email = 'bookxchangehelp@gmail.com';
+    const serviceId = 'service_7syjpzx';
+    const templateId = 'template_bv4krke';
+    const userId = 'VYsR9kMs96Fm7r3Ne';
 
-    await FlutterEmailSender.send(send_email);
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'service_id': serviceId,
+        'template_id': templateId,
+        'user_id': userId,
+        'template_params': {
+          'from_name': FirebaseAuth.instance.currentUser!.email,
+          'user_email': FirebaseAuth.instance.currentUser!.email,
+          'user_subject': _subject,
+          'user_message': _msg,
+        }
+      }),
+    );
 
-    Navigator.pop(context);
+    print(response.body);
+
+    // final message = Message()
+    //   ..from = const Address(email, ' BookXchange Support Ticket')
+    //   ..subject = _subject
+    //   ..text = _msg
+    //   ..recipients.add('bookxchangehelp@gmail.com');
+
+    // var smtpServer = gmail(email, 'scrummasterpooja');
+    // try {
+    //   final sendReport = await send(message, smtpServer);
+    //   print(sendReport.toString());
+    // } on MailerException catch (e) {
+    //   print('Message not sent.');
+    //   print(e.toString());
+    // }
+    // Navigator.pop(context);
   }
 
   Future<void> _reauthenticateAndDelete() async {
@@ -214,8 +209,6 @@ class _HomePageState extends State<HomePage> {
                 signUserOut();
                 // Navigator.of(context)
                 //   .push(MaterialPageRoute(builder: (context) => LoginSignupScreen()));
-              } else if (value == MenuItem.item3) {
-                reportIssue();
               }
             },
             icon: const Icon(Icons.settings), // Settings icon
