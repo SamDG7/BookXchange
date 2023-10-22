@@ -113,10 +113,6 @@ def user_delete():
     
     uuid = json['uuid']
 
-    # user = db.db.user_collection.delete_one({
-    #     "uuid": uuid,
-    # })
-
     db.db.user_collection.delete_one({
         "uuid": uuid,
     })
@@ -234,9 +230,6 @@ def user_get_picture(user_uid):
 
 # user create book
 
-##@app.route('/user/create_profile', methods=['PUT'])
-
-## WHAT IS THIS LITTLE PATH WHERE IS IT GOING TO ('PUTTING TO')
 @app.route('/book/create_book', methods=['PUT'])
 def user_library_create_book():
 
@@ -245,33 +238,20 @@ def user_library_create_book():
         json = request.json
     else:
         return 'content type not supported'
+    
+    uuid = json['uuid']
+    title = json['title']
+    author = json['author']
+    year = json['year']
+    genre = json['genre']
+    bookCover = json['book_cover']
+    yourReview = json['personal_review']
+    currentStatus = json['status']
+    numSwaps = json['numberOfSwaps']
 
-    #uuid = json['uuid']
-    #user_name = json['user_name']
-    #user_bio = json['user_bio']
-    #user_genre = json['user_genre']
-    #user_zipcode = json['user_zipcode']
-
-    uuid: json['uuid']
-    title: json['title']
-    author: json['author']
-    year: json['year']
-    genre: json['genre']
-    bookCover: json['book_cover']
-    yourReview: json['personal_review']
-    currentStatus: json['status']
-    numSwaps: json['numberOfSwaps']
-
-    #user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
-        #{'$set': {"user_name": user_name,
-        #"user_bio": user_bio,
-        #"user_genre": user_genre, "user_zipcode": user_zipcode}}
-    #)
-
-    book = db.db.book_collection.find_one_and_update(
-        {"uuid": uuid}, 
-
-        {'$set': {
+    book = db.db.book_collection.insert_one(
+        {
+            "uuid": uuid,
             "title": title,
             "author": author,
             "year": year,
@@ -280,15 +260,25 @@ def user_library_create_book():
             "personal_review": yourReview,
             "status": currentStatus,
             "numberOfSwaps": numSwaps
-            }
+            
         }
     )
 
+    newBookID = book.inserted_id
+
+    db.db.library_collection.update_one({'uuid': uuid}, {'$push': {'book_list': newBookID}}, upsert = True)
+
     return json, 201
 
-# user update book
-#@app.route('/user/update_profile', methods=['PUT'])
 
+
+
+
+
+
+
+
+# user update book
 @app.route('/book/update_book', methods=['PUT'])
 def user_library_update_book():
     # (re) setter method so doesn't return anything
@@ -317,34 +307,42 @@ def user_library_update_book():
     return json, 201
 
 
-##@app.route('/user/<user_uid>', methods=['GET'])
-##def user_login(user_uid):
 
 
-@app.route('/book/<user_uid>', methods=['GET'])
-def get_book_widget(user_uid):
 
-    # user = db.db.user_collection.find_one({
-    #     'uuid': user_uid
-    # })
-    # user = pd.DataFrame((user))
-    # if (user.empty):
-    #     return "Resource Not Found", 404
-    # user = user.drop(columns=["_id"])
-    # user = user.groupby(["uuid", "title", "user_phone", "user_name", "user_bio"],as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
-    # print(user)
 
-    book = db.db.book_collection.find_one({
+""" @app.route('/library/<user_uid>', methods=['GET'])
+def get_library(user_uid):
+    print ("function called")
+    library = db.db.library_collection.find_one({
         'uuid': user_uid
     })
-    book = pd.DataFrame((book))
-    if (book.empty):
-        return "Resource Not Found", 404
-    book = book.drop(columns=["_id"])
-    book = book.groupby(["uuid", "title", "author", "book_cover"],as_index=False).agg(lambda genres: ','.join(genres.tolist()))
-    
-    return book.to_json(orient='records')
 
+    pdLibrary = pd.DataFrame([library])
+    
+    if (pdLibrary.empty):
+        return "Resource Not Found", 404
+    
+    pdLibrary = pdLibrary.drop(columns=["_id"])
+    pdLibrary = pdLibrary.drop(columns=["uuid"])
+    
+    print(pdLibrary.to_json(orient='records'))
+  
+    return pdLibrary.to_json(orient='records') """
+
+@app.route('/library/<user_uid>', methods=['GET'])
+def get_library(user_uid):
+    print ("function called")
+    library = db.db.library_collection.find_one({
+        'uuid': user_uid
+    })
+
+    if library is None:
+        return "Resource Not Found", 404
+    
+    book_ids = library.get('book_list', [])
+
+    return jsonify(book_ids)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
