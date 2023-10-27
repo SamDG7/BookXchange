@@ -92,6 +92,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userName = "";
   late String userBio;
   late String userZipCode;
+  late String userRadius;
   List<String> _preferredGenres = [];
   File? _image;
   final picker = ImagePicker();
@@ -155,6 +156,12 @@ Future getImageFromCamera() async {
 
   bool checkNullValue() {
     if (userName.isEmpty) {
+      return false;
+    }
+    if (userZipCode.isEmpty) {
+      return false;
+    }
+    if (userRadius.isEmpty) {
       return false;
     }
     return true;
@@ -294,7 +301,7 @@ Future getImageFromCamera() async {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(40, 50, 40, 10),
+            padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
             child: CustomTextField2(
               textField: TextField(
                 onChanged: (value) {
@@ -328,6 +335,27 @@ Future getImageFromCamera() async {
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 maxLength: 5,
+                
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
+            child: CustomTextField2(
+              textField: TextField(
+                onChanged: (value) {
+                  userRadius = value;
+                },
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+                decoration: kTextInputDecoration.copyWith(
+                  // Set the user's name
+                  hintText: 'Radius (in miles)', 
+                  counterText: "",
+                ),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: 3,
                 
               ),
             ),
@@ -423,7 +451,7 @@ Future getImageFromCamera() async {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
                           child: const Text(
-                              "Make sure to enter your name and bio!",
+                              "Make sure to fill in all the fields!",
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 16))),
                     ),

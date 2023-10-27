@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
+import 'package:bookxchange_flutter/screens/edit_book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -456,9 +457,6 @@ Widget build(BuildContext context) {
                             ],
                           ),
                           ),
-
-                      // Button to edit library
-
                       // TODO: ADD LIBRARY
                     ],
                   ),
