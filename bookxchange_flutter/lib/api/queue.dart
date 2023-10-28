@@ -1,13 +1,8 @@
 //import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
-import 'package:bookxchange_flutter/globals.dart';
-import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 //import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
-import 'book_profile.dart';
 
 //createQueue
 
