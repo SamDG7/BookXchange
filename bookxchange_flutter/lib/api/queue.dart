@@ -10,7 +10,14 @@ import 'dart:io';
 import 'book_profile.dart';
 
 //createQueue
+
+generateQueue() {}
+
 Future<Queue> createQueue(String uuid) async {
+  //actually creating the queue:
+  //Get list of available books
+  //Sort books by user intially set preferences
+
   final response = await http.put(
     Uri.parse('http://http://127.0.0.1:8080/queue/create_queue'),
     headers: <String, String>{

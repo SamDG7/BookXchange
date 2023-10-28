@@ -156,6 +156,20 @@ def user_create_profile():
     )
     return json, 201
 
+#Temporary Route for Queue Creation
+@app.route('/queue/create_queue', methods=['PUT'])
+def create_queue():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+    q = db.db.queue_collection.insert_one({"uuid": uuid})
+
+    return json, 201
+
 # user update profile
 @app.route('/user/update_profile', methods=['PUT'])
 def user_update_profile():
