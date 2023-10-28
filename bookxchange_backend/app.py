@@ -311,6 +311,7 @@ def user_library_update_book():
 
 
 
+
 """ @app.route('/library/<user_uid>', methods=['GET'])
 def get_library(user_uid):
     print ("function called")
@@ -343,6 +344,21 @@ def get_library(user_uid):
     book_ids = library.get('book_list', [])
 
     return jsonify(book_ids)
+
+@app.route('/book/save_picture', methods=['POST'])
+def book_save_picture():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid = json['uuid']
+    picture = json['picture']
+
+    with open("libraries/%s/.png" %uuid, "wb") as fh:
+        fh.write(base64.b64decode(picture, validate=True))
+    return json, 201
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

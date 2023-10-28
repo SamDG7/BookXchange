@@ -6,6 +6,7 @@ import 'package:bookxchange_flutter/api/user_profile.dart';
 
 bool newUser = false;
 var profileImage = getProfilePicture(getUUID());
+String isbn13 = '';
 
 String getUUID() {
     //final User user = FirebaseAuth.instance.currentUser!;
@@ -16,3 +17,5 @@ String getUUID() {
 String getImageURL(String uuid) {
   return ('http://127.0.0.1:8080/user/get_picture/''$uuid');
 }
+
+

@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
+import 'package:bookxchange_flutter/screens/create_book_isbn_page.dart';
+import 'package:bookxchange_flutter/screens/display_book_isbn_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
@@ -433,13 +435,80 @@ Widget build(BuildContext context) {
                               // Add book button
                               OutlinedButton.icon(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddBooktoLibraryScreen()),
+                                  showModalBottomSheet(
+                                context: context,
+                                builder: (context) => Container(
+                                    height: 300,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 20, 0, 0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Add book manually",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineLarge),
+                                        SizedBox(height: 20),
+                                        Text(
+                                            "Click any of these platforms to tell your friends you are on BookXChange!"),
+                                        SizedBox(height: 50),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 15),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                    MaterialPageRoute(
+                                                    builder: (context) =>
+                                                    AddBooktoLibraryScreen()),
                                     // add screen to edit library here
-                                  );
+                                                  );
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(butterfly),
+                                                fixedSize: MaterialStateProperty
+                                                    .all<Size>(Size(150, 50)),
+                                              ),
+                                              child: Text(
+                                                "Add book manually",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            SizedBox(width: 20),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                    MaterialPageRoute(
+                                                    builder: (context) =>
+                                                    //AddBookISBNScreen()),
+                                                    DisplayBookISBNScreen()),
+                                    // add screen to edit library here
+                                                  );
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(butterfly),
+                                                fixedSize: MaterialStateProperty
+                                                    .all<Size>(Size(150, 50)),
+                                              ),
+                                              child: Text(
+                                                "Add book via ISBN",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )));
+                                  
                                 },
                                 icon: Icon(
                                   Icons.add,
