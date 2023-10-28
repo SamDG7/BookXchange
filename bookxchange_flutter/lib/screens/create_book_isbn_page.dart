@@ -1,13 +1,20 @@
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
+import 'package:bookxchange_flutter/screens/display_book_isbn_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:avatars/avatars.dart';
+import 'package:open_library/models/ol_book_model.dart';
+import 'package:open_library/models/ol_search_model.dart';
 import 'package:open_library/open_library.dart';
+import 'package:provider/provider.dart';
+
+
+
 
 class MultiSelect extends StatefulWidget {
   final List<String> items;
@@ -74,32 +81,51 @@ class _MultiSelectState extends State<MultiSelect> {
         ),
         ElevatedButton(
           onPressed: _submit,
-          child: const Text('Submit'),
+           child: const Text('Submit'),
         ),
       ],
     );
   }
 }
 
-class AddBooktoLibraryScreen extends StatefulWidget {
-  const AddBooktoLibraryScreen({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key? key}) : super(key: key);
+//   @override
+//   Widget build(BuildContext context) {
+//     return Provider(
+//         create: (_) => OpenLibrary(),
+//         dispose: (_, OpenLibrary service) => service.dispose(),
+//         child: MaterialApp(
+//           title: 'Book Example',
+//           home: AddBookISBNScreen()
+//         ));
+//   }
+// }
+
+class AddBookISBNScreen extends StatefulWidget {
+  //const AddBookISBNScreen({super.key});
+  AddBookISBNScreen({Key? key}) : super(key: key);
+
+  final List<OLBook> books = [];
 
   @override
-  State<AddBooktoLibraryScreen> createState() => _AddBooktoLibraryScreenState();
+  State<AddBookISBNScreen> createState() => _AddBookISBNScreenState();
 }
 
-class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
-  late String title = '';
-  late String author = '';
-  late int year;
-  late String ISBN = '';
+class _AddBookISBNScreenState extends State<AddBookISBNScreen> {
+  //late String title = '';
+  //late String author = '';
+  //late int year;
+  
   late List<String> genres;
   //late Image bookCover;
   late String yourReview;
+  //late String isbn13 = '';
   late bool currentStatus =
       true; // status is TRUE because the book is IN the user's home
   late int numSwaps = 0;
   List<String> _preferredGenres = [];
+  late bool isLoading = false;
 
   //File? _image;
 
@@ -143,13 +169,13 @@ Future getImageFromCamera() async {
 }
 
   bool checkNullValue() {
-    if (title.isEmpty) {
-      return false;
-    }
-    if (author.isEmpty) {
-      return false;
-    }
-    if (ISBN.length < 13) {
+    // if (title.isEmpty) {
+    //   return false;
+    // }
+    // if (author.isEmpty) {
+    //   return false;
+    // }
+    if (isbn13.length < 13) {
       return false;
     }
     return true;
@@ -246,7 +272,7 @@ Future getImageFromCamera() async {
       appBar: AppBar(
         backgroundColor: butterfly,
         title: Text(
-          'Add Book',
+          'Add Book via ISBN',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -364,62 +390,7 @@ Future getImageFromCamera() async {
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: TextField(
                   onChanged: (value) {
-                    title = value;
-                  },
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20),
-                      ),
-                      borderSide: BorderSide(width: 2, color: butterfly),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20),
-                      ),
-                      borderSide: BorderSide(color: butterfly),
-                    ),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    labelText: "Title",
-                    labelStyle: TextStyle(fontSize: 20, color: Colors.black),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                child: TextField(
-                  onChanged: (value) {
-                    author = value;
-                  },
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20),
-                      ),
-                      borderSide: BorderSide(width: 2, color: butterfly),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(20),
-                      ),
-                      borderSide: BorderSide(color: butterfly),
-                    ),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    labelText: "Author",
-                    labelStyle: TextStyle(fontSize: 20, color: Colors.black),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  maxLines: null,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                child: TextField(
-                  onChanged: (value) {
-                    ISBN = value;
+                    isbn13 = value;
                   },
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   maxLength: 13,
@@ -512,7 +483,7 @@ Future getImageFromCamera() async {
                 padding: EdgeInsets.fromLTRB(100, 0, 10, 100),
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
-                  onPressed: () {
+                  onPressed: () async {
                     if (checkNullValue() == false) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -535,7 +506,39 @@ Future getImageFromCamera() async {
                       );
                     } else {
                       //ADD BOOK HAS BEEN SAVED HERE
+                      
+                      //getCurrentBook(isbn13);
+
+                  //     widget.books.clear();
+                  //     const bool loadCovers = true;
+                  //     const CoverSize size = CoverSize.L;
+                  //     final OLBookBase book1 =
+                  //     await Provider.of<OpenLibrary>(context, listen: false)
+                  //             .getBookByISBN(
+                  //                 isbn: isbn13, loadCover: loadCovers, coverSize: size);
+                  //     print(book1.toString());
+                  //     if (book1 is OLBook) {
+                  //       widget.books.add(book1);
+                  //     }
+                      
+                  //     const SizedBox(height: 20.0);
+                  //     SingleChildScrollView(
+                  //     child: ListView.builder(
+                  //     shrinkWrap: true,
+                  //     itemCount: widget.books.length,
+                  //     itemBuilder: (context, index) {
+                  //     return bookWidget(
+                  //         book: widget.books[index], context: context);
+                  //   },
+                  //   ),
+                  // );
                       addBookConfirmationPopup(context);
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DisplayBookISBNScreen()),
+                            );
+
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -556,4 +559,150 @@ Future getImageFromCamera() async {
       ),
     );
   }
+
+  Widget bookWidget({required OLBook book, required BuildContext context}) {
+    String author = '';
+    if (book.authors.isNotEmpty) {
+      author = book.authors.first.name.trim();
+    }
+    String publish_date = book.publish_date;
+    List<String> genres = book.subjects;
+    return Scaffold(
+      backgroundColor: Colors.blueGrey,
+     // body: !isLoading
+         // ? 
+
+      appBar: AppBar(
+        backgroundColor: butterfly,
+        title: Text(
+          'Add Book via ISBN',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: ListView(
+         children: <Widget>[
+          Row(
+        children: [
+          Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.5,
+        height: 300.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Text(
+                      book.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
+                  child:
+                   Text(
+                    author,
+                    style: const TextStyle(color: Colors.black, fontSize: 12),
+                  ),
+                ),
+
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 12.0, bottom: 4.0, left: 20.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Text(
+                      "Publish Date: $publish_date",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          //fontWeight: FontWeight.bold
+                          ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                      // child: ListView.builder(
+                      //   padding: const EdgeInsets.all(8),
+                      //   itemCount: book.subjects.length,
+                      //   itemBuilder: (BuildContext context, int index) {
+                      //     return Text( book.subjects[index]);
+                      //   }
+                      //   ),
+                    child: Text(
+                      //"Genres/Subjects: $genres",
+                      genres.toString(),
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Text(
+                      book.publishers[0],
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: SizedBox(
+                height: book.covers.isNotEmpty ? 140.0 : 130,
+                child: book.covers.isNotEmpty
+                    ? Image.memory(book.covers.first)
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+        ],
+          ),
+         ],
+    ),
+    );
+  }
 }
+
+
+

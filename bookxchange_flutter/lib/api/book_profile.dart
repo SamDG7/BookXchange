@@ -3,7 +3,7 @@ import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http_interceptor.dart';
+
 //import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'dart:convert';
 import 'dart:async';

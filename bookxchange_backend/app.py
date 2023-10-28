@@ -322,7 +322,7 @@ def user_library_update_book():
 
 
 @app.route('/book/<user_uid>', methods=['GET'])
-def get_book_widget(user_uid):
+def get_all_books(user_uid):
 
     # user = db.db.user_collection.find_one({
     #     'uuid': user_uid
@@ -340,11 +340,26 @@ def get_book_widget(user_uid):
     book = pd.DataFrame((book))
     if (book.empty):
         return "Resource Not Found", 404
-    book = book.drop(columns=["_id"])
-    book = book.groupby(["uuid", "title", "author", "book_cover"],as_index=False).agg(lambda genres: ','.join(genres.tolist()))
+    #book = book.drop(columns=["_id"])
+    book = book.groupby(["_id", "uuid", "title", "author", "book_cover"],as_index=False).agg(lambda genres: ','.join(genres.tolist()))
     
     return book.to_json(orient='records')
 
+
+@app.route('/book/save_picture', methods=['POST'])
+def book_save_picture():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid = json['uuid']
+    picture = json['picture']
+
+    with open("libraries/%s/.png" %uuid, "wb") as fh:
+        fh.write(base64.b64decode(picture, validate=True))
+    return json, 201
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

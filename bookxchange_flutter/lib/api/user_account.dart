@@ -2,7 +2,7 @@ import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http_interceptor.dart';
+
 import 'dart:convert';
 import 'dart:async';
 
