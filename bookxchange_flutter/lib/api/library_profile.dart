@@ -14,7 +14,7 @@ Future<Library> getCurrentLibrary(String uuid) async {
 
   final response = await http
 
-    .get(Uri.parse('http://10.0.0.127:8080/library/''$uuid'));
+    .get(Uri.parse('http://127.0.0.1:8080/library/''$uuid'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -26,6 +26,8 @@ Future<Library> getCurrentLibrary(String uuid) async {
     throw Exception('Failed to load book data');
   }
 }
+
+
 
 class Library {
   
