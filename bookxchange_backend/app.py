@@ -13,6 +13,7 @@ import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
+from alg import createQueue
 user_uid = ""
 
 app = Flask(__name__)
@@ -75,6 +76,11 @@ def user_singup():
             "user_bio": "",
             "user_zipcode": ""
         }, upsert=True)
+    
+    q = createQueue(uuid, list(db.book_collection.find({})))
+    print(list(db.book_collection.find({})))
+
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": [1,2,3]})
 
     return json, 201
 
@@ -157,18 +163,18 @@ def user_create_profile():
     return json, 201
 
 #Temporary Route for Queue Creation
-@app.route('/queue/create_queue', methods=['PUT'])
-def create_queue():
-    content_type = request.headers.get('Content-Type')
-    if(content_type == 'application/json; charset=utf-8'):
-        json = request.json
-    else:
-        return 'content type not supported'
+# @app.route('/queue/create_queue', methods=['PUT'])
+# def create_queue():
+#     content_type = request.headers.get('Content-Type')
+#     if(content_type == 'application/json; charset=utf-8'):
+#         json = request.json
+#     else:
+#         return 'content type not supported'
     
-    uuid = json['uuid']
-    q = db.db.queue_collection.insert_one({"uuid": uuid})
+#     uuid = json['uuid']
+#     q = db.db.queue_collection.insert_one({"uuid": uuid})
 
-    return json, 201
+#     return json, 201
 
 # user update profile
 @app.route('/user/update_profile', methods=['PUT'])

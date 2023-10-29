@@ -18,18 +18,18 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                // debugPrint(newUser as String?);
-                if (newUser == true) {
-                  newUser = false;
-                  return const CreateProfileScreen();
-                } else {
-                  //return const TestPictureScreen();
-                  return const HomePage();
-                }
+              // if (FirebaseAuth.instance.currentUser!.emailVerified) {
+              // debugPrint(newUser as String?);
+              if (newUser == true) {
+                newUser = false;
+                return const CreateProfileScreen();
               } else {
-                return const VerifyScreen();
+                //return const TestPictureScreen();
+                return const HomePage();
               }
+              // } else {
+              //   return const VerifyScreen();
+              // }
             } else {
               return const LoginSignupScreen();
             }
