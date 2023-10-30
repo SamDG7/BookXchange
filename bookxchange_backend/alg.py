@@ -14,19 +14,45 @@ import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
-def createQueue(uuid, collection):
+
+def calcDistance(pref, book_pref):
+
+  encode = {'Fantasy': 0, 
+            'Young-adult': 1,
+            'Romance': 2,
+            'New-adult': 3,
+            'Science Fiction': 4, 
+            'Paranormal': 5, 
+            'Horror': 6, 
+            'Thriller': 7, 
+            'Crime and Mystery': 8, 
+            'Biography': 9, 
+            'Historical': 10}
+  
+  score = 0
+  for bp in book_pref:
+    for p in pref:
+      score += abs(encode[bp] - encode[p])
+
+  return score
+
+
+def createQueue(uuid, collection, preferences):
+  queue = []
   user = list(db.db.user_collection.find({"uuid": uuid}))
-  pref = []
+
   print(f'THIS IS THE USER:::: {user}')
-  if user['user_genre']:
-    pref = user['user_genre']
-    
+  print(f'PREFERENCESEFSE:::{preferences}')
+
   for doc in collection:
     if doc['uuid'] != uuid:
-      #process book by adding to queue
+      current_book_genres = doc['genre']
+      score = calcDistance(preferences, current_book_genres)
+
+      queue.append((doc['_id'], score))
       print(doc['uuid'])
 
-
-  queue = 0
+  
+  queue = queue.sort(key= lambda x: x[1])
 
   return queue

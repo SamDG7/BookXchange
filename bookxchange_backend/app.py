@@ -77,10 +77,7 @@ def user_singup():
             "user_zipcode": ""
         }, upsert=True)
     
-    q = createQueue(uuid, list(db.book_collection.find({})))
-    print(list(db.book_collection.find({})))
-
-    db.db.queue_collection.insert_one({"uuid": uuid, "queue": [1,2,3]})
+    
 
     return json, 201
 
@@ -160,6 +157,12 @@ def user_create_profile():
         "user_genre": user_genre,
         "user_zipcode": user_zipcode}}
     )
+
+    q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
+    print(list(db.book_collection.find({})))
+
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": [1,2,3]})
+
     return json, 201
 
 #Temporary Route for Queue Creation
