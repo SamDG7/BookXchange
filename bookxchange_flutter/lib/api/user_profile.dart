@@ -173,3 +173,17 @@ class ProfileImage {
     );
   }
 }
+
+//checks if zipcode is valid
+Future<List<dynamic>> fetchData(userZipCode) async {
+  final response = await http.get(
+     Uri.parse('https://zipcodedownload.com/ZipList?zipList=''$userZipCode''&state=&country=us5&format=json&pagenumber=1&key=682e852e2e054212b39d494d29ad3a47')
+  );
+  if (response.statusCode == 200) {
+    print(json.decode(response.body));
+    return json.decode(response.body);
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to fetch data');
+  }
+}

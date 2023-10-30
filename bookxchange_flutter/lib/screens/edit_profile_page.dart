@@ -26,20 +26,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
-  
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  late String userName;
-  late String userBio;
-  late String userZipCode;
+  late String userName = '';
+  late String userBio = '';
+  late String userZipCode = '';
   //File? image;
   File? _image;
   final picker = ImagePicker();
-
 
   // Future pickImage(ImageSource source) async {
   //   try {
@@ -54,32 +52,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
 
   //Image Picker function to get image from gallery
-Future getImageFromGallery() async {
-  try {
-    final _image = await picker.pickImage(source: ImageSource.gallery);
-    if (_image == null) return;
+  Future getImageFromGallery() async {
+    try {
+      final _image = await picker.pickImage(source: ImageSource.gallery);
+      if (_image == null) return;
 
-    setState(() => this._image = File(_image.path));
-  } on PlatformException catch (e) {
-    print('Failed to pick image: $e');
-  }
+      setState(() => this._image = File(_image.path));
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
     // if (pickedFile != null) {
     //   _image = File(pickedFile.path);
     // }
-  //);
-}
+    //);
+  }
 
 //Image Picker function to get image from camera
-Future getImageFromCamera() async {
-  try {
-    final _image = await picker.pickImage(source: ImageSource.camera);
-    if (_image == null) return;
+  Future getImageFromCamera() async {
+    try {
+      final _image = await picker.pickImage(source: ImageSource.camera);
+      if (_image == null) return;
 
-    setState(() => this._image = File(_image.path));
-  } on PlatformException catch (e) {
-    print('Failed to pick image: $e');
+      setState(() => this._image = File(_image.path));
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
-}
+
+  bool checkNullValue() {
+    if (userName.isEmpty) {
+      return false;
+    }
+    if (userZipCode.isEmpty) {
+      return false;
+    }
+    if (userBio.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   Future<UpdateProfile>? _editProfile;
   @override
   Widget build(BuildContext context) {
@@ -105,38 +117,36 @@ Future getImageFromCamera() async {
                 child: Container(
                   //children: [
                   child: CircleAvatar(
-                  radius: 75,
-                  //backgroundColor: butterfly,
-                  child: _image == null
-                    //? Image.file(File('assets/profile_pic_elena.png'))
-                    ? Text('N',
-                      style: TextStyle(
-                        color: butterfly,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 80,
-                      ),
-                    )
-                    : Image.file(_image!,
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover),
-                  // child: CircleAvatar(
-                  //   radius: 70,
-                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
-                    
-                  
-                     //backgroundImage: 
-                          // image != null
-                          //   ? ClipOval(
-                          //       child: Image.file(
-                          //         image!,
-                          //         width: 70,
-                          //         height:70,
-                          //         fit: BoxFit.cover,
-                          //     ), 
-                             //AssetImage('assets/profile_pic_default.png'),
-                      //_image == null ? Text('No Image selected') : Image.file(_image),
-                      //) // TODO: REPLACE WITH USER IMAGE
+                    radius: 75,
+                    //backgroundColor: butterfly,
+                    child: _image == null
+                        //? Image.file(File('assets/profile_pic_elena.png'))
+                        ? Text(
+                            'N',
+                            style: TextStyle(
+                              color: butterfly,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 80,
+                            ),
+                          )
+                        : Image.file(_image!,
+                            width: 150, height: 150, fit: BoxFit.cover),
+                    // child: CircleAvatar(
+                    //   radius: 70,
+                    //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+
+                    //backgroundImage:
+                    // image != null
+                    //   ? ClipOval(
+                    //       child: Image.file(
+                    //         image!,
+                    //         width: 70,
+                    //         height:70,
+                    //         fit: BoxFit.cover,
+                    //     ),
+                    //AssetImage('assets/profile_pic_default.png'),
+                    //_image == null ? Text('No Image selected') : Image.file(_image),
+                    //) // TODO: REPLACE WITH USER IMAGE
                     //),
                   ),
                 ),
@@ -309,32 +319,66 @@ Future getImageFromCamera() async {
                 padding: EdgeInsets.fromLTRB(100, 0, 10, 100),
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
-                  onPressed: () {
-                    _editProfile = updateUserProfile(getUUID(), userName, userBio, userZipCode);
-                    if (_image != null) {
-                      saveProfilePicture(getUUID(), _image!);
-                    }
-                    getProfilePicture(getUUID());
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: butterfly,
-                        content: Center(
-                          child: Text('Your changes have been saved!',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500)),
+                  onPressed: () async {
+                     if (checkNullValue() == false) {
+                      //print("the zipcode is empty");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: butterfly,
+                          content: Center(
+                            child: Text('Make sure to fill in all the fields!',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500)),
+                          ),
+                          duration: Duration(seconds: 1),
                         ),
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
-                    Future.delayed(Duration(seconds: 2), () {
-                      //Navigator.pop(context);
-                      Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
-                    });
+                      );
+                    } 
+                    else if ((await fetchData(userZipCode)).isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: butterfly,
+                          content: Center(
+                            child: Text('Please enter a valid zip code!',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500)),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                    } else {
+                      _editProfile = updateUserProfile(
+                          getUUID(), userName, userBio, userZipCode);
+                      if (_image != null) {
+                        saveProfilePicture(getUUID(), _image!);
+                      }
+                      getProfilePicture(getUUID());
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: butterfly,
+                          content: Center(
+                            child: Text('Your changes have been saved!',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500)),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                      Future.delayed(Duration(seconds: 2), () {
+                        //Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        );
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
