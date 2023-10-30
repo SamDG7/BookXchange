@@ -230,7 +230,7 @@ def user_get_picture(user_uid):
 
 # user create book
 
-@app.route('/book/create_book', methods=['PUT'])
+@app.route('/book/create_book', methods=['POST'])
 def user_library_create_book():
 
     content_type = request.headers.get('Content-Type')
@@ -242,24 +242,26 @@ def user_library_create_book():
     uuid = json['uuid']
     title = json['title']
     author = json['author']
-    year = json['year']
-    genre = json['genre']
-    bookCover = json['book_cover']
-    yourReview = json['personal_review']
-    currentStatus = json['status']
-    numSwaps = json['numberOfSwaps']
+    #year = json['year']
+    genres = json['genres']
+    isbn13 = json['isbn13']
+    #bookCover = json['book_cover']
+    #yourReview = json['personal_review']
+    #currentStatus = json['status']
+    #numSwaps = json['numberOfSwaps']
 
     book = db.db.book_collection.insert_one(
         {
             "uuid": uuid,
             "title": title,
             "author": author,
-            "year": year,
-            "genre": genre,
-            "book_cover": bookCover,
-            "personal_review": yourReview,
-            "status": currentStatus,
-            "numberOfSwaps": numSwaps
+            #"year": year,
+            "genres": genres,
+            "isbn13": isbn13
+            #"book_cover": bookCover,
+            #"personal_review": yourReview,
+            #"status": currentStatus,
+            #"numberOfSwaps": numSwaps
             
         }
     )
@@ -356,7 +358,10 @@ def book_save_picture():
     uuid = json['uuid']
     picture = json['picture']
 
-    with open("libraries/%s/.png" %uuid, "wb") as fh:
+    db.db.book_collection.find_one({
+        'uuid': user_uid
+    })
+    with open("book_covers/%s/.png" %uuid, "wb") as fh:
         fh.write(base64.b64decode(picture, validate=True))
     return json, 201
 

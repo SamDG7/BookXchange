@@ -93,7 +93,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author = '';
   late int year;
   late String ISBN = '';
-  late List<String> genres;
+  //late List<String> genres = [];
   //late Image bookCover;
   late String yourReview;
   late bool currentStatus =
@@ -513,6 +513,9 @@ Future getImageFromCamera() async {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
+                    if (_bookCover != null) {
+                      saveBookCoverPicture(getUUID(), _bookCover!);
+                    }
                     if (checkNullValue() == false) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -533,8 +536,10 @@ Future getImageFromCamera() async {
                           duration: Duration(seconds: 2),
                         ),
                       );
+                      
                     } else {
                       //ADD BOOK HAS BEEN SAVED HERE
+                      _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres);
                       addBookConfirmationPopup(context);
                     }
                   },
