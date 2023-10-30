@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
 import 'package:bookxchange_flutter/screens/create_book_isbn_page.dart';
@@ -526,7 +527,46 @@ Widget build(BuildContext context) {
                             ],
                           ),
                           ),
-                      // TODO: ADD LIBRARY
+      //temp right now just for the gridview
+      GridView.count(
+      crossAxisCount: 3,
+      //physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+      shrinkWrap: true, // You won't see infinite size error
+      
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(5),
+          //color: butterfly,
+          child: Image.asset('assets/book_cover_watership_down.png'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+      ],
+    ),
+
                     ],
                   ),
                 ),
@@ -536,8 +576,10 @@ Widget build(BuildContext context) {
           )
         ],
       ),
+      
     );
   }
+  
 
   Widget buildBio(String userbio) {
     return Text(userbio,
