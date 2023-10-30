@@ -50,6 +50,7 @@ dependencies:
   avatars: ^3.0.2
   open_library: ^0.1.5
   provider: ^6.0.5
+  swipe_cards: ^2.0.0+1
 
 
 dev_dependencies:
