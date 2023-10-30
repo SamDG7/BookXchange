@@ -446,13 +446,13 @@ Widget build(BuildContext context) {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text("Add book manually",
+                                        Text("Add a Book!",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineLarge),
                                         SizedBox(height: 20),
                                         Text(
-                                            "Click any of these platforms to tell your friends you are on BookXChange!"),
+                                            "Add a book either manually or enter the ISBN to find your book!"),
                                         SizedBox(height: 50),
                                         Row(
                                           children: [
@@ -477,7 +477,8 @@ Widget build(BuildContext context) {
                                               child: Text(
                                                 "Add book manually",
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.white
+                                                    ),
                                               ),
                                             ),
                                             SizedBox(width: 20),
