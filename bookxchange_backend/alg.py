@@ -30,10 +30,13 @@ def calcDistance(pref, book_pref):
             'Historical': 10}
   
   score = 0
+  print(f'Comparing books with bp {book_pref} and p {pref}')
+ 
   for bp in book_pref:
-    for p in pref:
-      score += abs(encode[bp] - encode[p])
-
+    if bp not in pref and bp in encode:
+      for p in pref:
+        score += abs(encode[bp] - encode[p])
+  
   return score
 
 
@@ -48,11 +51,40 @@ def createQueue(uuid, collection, preferences):
     if doc['uuid'] != uuid:
       current_book_genres = doc['genres']
       score = calcDistance(preferences, current_book_genres)
-      
-      queue.append((doc['_id'], score))
+      print((doc['_id'], score))
+      queue.append([doc['_id'], score])
       print(doc['uuid'])
 
-  
-  queue = queue.sort(key= lambda x: x[1])
+  queue.sort(key= lambda x: x[1])
+
   print(queue)
+
   return queue
+
+#right is a boolean, book_id is the object ID of the book swiped on
+def updateQueueOnSwipe(uuid, book_id, right):
+  queue = list(db.db.queue_collection.find({"uuid": uuid}))
+  book = list(db.db.book_collection.find({"_id": book_id}))
+
+  book_genres = book['genres']
+  if right:
+    for c, b in enumerate(queue):
+      #move books similar to the one swiped on up in the queue, except for the first 5 books remaing constant
+      if c > 5:
+        iterative_book = list(db.db.book_collection.find({"_id": b[0]}))
+        book_score = b[1];
+        overlap = sum(el in iterative_book['genres'] for el in book_genres)
+
+        if overlap > 0:
+          #decrease by 2
+          ...
+        elif overlap > 2:
+          #decrease by 4
+          ...
+      ...
+  else:
+    #move similar books down in queue, except for the first five docts
+    ...
+
+
+  return 1
