@@ -513,9 +513,6 @@ Future getImageFromCamera() async {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
-                    if (_bookCover != null) {
-                      saveBookCoverPicture(getUUID(), _bookCover!);
-                    }
                     if (checkNullValue() == false) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -538,9 +535,16 @@ Future getImageFromCamera() async {
                       );
                       
                     } else {
+                      
                       //ADD BOOK HAS BEEN SAVED HERE
-                      _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres);
+                      if (_bookCover != null) {
+                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, _bookCover!);
+                        
+                      //if (_bookCover != null) {
+                        //saveBookCoverPicture(getUUID(), _bookCover!);
+                      }
                       addBookConfirmationPopup(context);
+                      
                     }
                   },
                   style: ElevatedButton.styleFrom(

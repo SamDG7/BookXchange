@@ -1,6 +1,7 @@
 //import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -13,8 +14,10 @@ import 'dart:io';
 
 // write functions here then import into screen 
 //Future<Book> createBook(String uuid, String title, String author, int year, List<String> genres, Image bookCover, String yourReview, bool currentStatus, int numSwaps) async {
-Future<Book> createBook(String uuid, String title, String author, String isbn13, List<String> genres ) async {
-
+Future<Book> createBook(String uuid, String title, String author, String isbn13, List<String> genres, File pickedImage) async {
+  File imageFile = File(pickedImage.path);
+  List<int> imageBytes = imageFile.readAsBytesSync();
+  String base64Image = base64.encode(imageBytes);
   final response = await http.post(
 
     //Uri.parse('http://10.0.0.127:8080/book/create_book'),
@@ -31,8 +34,47 @@ Future<Book> createBook(String uuid, String title, String author, String isbn13,
       //'year': year,
       'isbn13': isbn13,
       'genres': genres,
+      'book_cover': base64Image
       
-      //'book_cover': bookCover,
+      // 'book_cover': base64Image,
+      //'personal_review': yourReview,
+      //'status': currentStatus,
+      //'numberOfSwaps': numSwaps,
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return Book.fromJson(await jsonDecode(response.body));
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+      throw Exception('Failed to create book.');
+  }
+}
+
+Future<Book> createBookISBN(String uuid, String title, String author, String isbn13, List<String> genres, Uint8List pickedImage) async {
+  String base64Image = base64.encode(pickedImage);
+  final response = await http.post(
+
+    //Uri.parse('http://10.0.0.127:8080/book/create_book'),
+    Uri.parse('http://127.0.0.1:8080/book/create_book'),
+
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, dynamic>{
+
+      'uuid': uuid,
+      'title': title,
+      'author': author,
+      //'year': year,
+      'isbn13': isbn13,
+      'genres': genres,
+      'book_cover': base64Image
+      
+      // 'book_cover': base64Image,
       //'personal_review': yourReview,
       //'status': currentStatus,
       //'numberOfSwaps': numSwaps,
@@ -119,7 +161,7 @@ Future<Map<String,dynamic>> saveBookCoverPicture(String uuid, File pickedImage) 
   },
   body: jsonEncode(<String, dynamic>{
     'uuid': uuid,
-    'picture': base64Image
+    'book_cover': base64Image
   }),
 );
   if (response.statusCode == 201) {

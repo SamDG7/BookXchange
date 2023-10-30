@@ -1,5 +1,6 @@
 import 'package:open_library/models/ol_book_model.dart';
 import 'package:open_library/models/ol_search_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:open_library/open_library.dart';
 import 'package:provider/provider.dart';
@@ -382,8 +383,8 @@ Widget build(BuildContext context) {
     Padding(
                 padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    _newBook = createBook(getUUID(), book.title, author, isbn13, genres);
+                  onPressed: ()  {
+                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genres, book.covers.first);
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
