@@ -161,7 +161,7 @@ def user_create_profile():
     q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
     print(list(db.book_collection.find({})))
 
-    db.db.queue_collection.insert_one({"uuid": uuid, "queue": [1,2,3]})
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": q})
 
     return json, 201
 

@@ -46,13 +46,13 @@ def createQueue(uuid, collection, preferences):
 
   for doc in collection:
     if doc['uuid'] != uuid:
-      current_book_genres = doc['genre']
+      current_book_genres = doc['genres']
       score = calcDistance(preferences, current_book_genres)
-
+      
       queue.append((doc['_id'], score))
       print(doc['uuid'])
 
   
   queue = queue.sort(key= lambda x: x[1])
-
+  print(queue)
   return queue
