@@ -32,7 +32,6 @@ encode = { 'Fairy Tale': 1,
 
 def calcDistance(pref, book_pref):
   score = 0
-  print(f'Comparing books with bp {book_pref} and p {pref}')
  
   for bp in book_pref:
     if bp not in pref and bp in encode:
@@ -72,6 +71,7 @@ def updateQueueOnSwipe(uuid, right):
 
   if right:    
     swiped_book_genres = swiped_book[0]['genres']
+    swiped_book_author = swiped_book[0]['author']
 
     for book in queue:
       curr_book = list(db.db.book_collection.find({'_id': book[0]}))[0]
@@ -83,37 +83,32 @@ def updateQueueOnSwipe(uuid, right):
         book[1] -=2
       elif val < 10:
         book[1] -=1
-   
-    queue.sort(key= lambda x: x[1])
-    print(queue)
+
+      if swiped_book_author == curr_book['author']:
+        book[1] -= 10
     #mark as wanted
   else:
-    print(swiped_book_in_queue)
     swiped_book_in_queue[1] += 30
-    print(swiped_book_in_queue)
 
   
 
   #add 1 new book to queue
   all_books = list(db.book_collection.find({}))
-  new_book_found = False
-  for doc in reversed(all_books):
-    b = doc['_id']
-    for i in queue:
-      i_1 = i[0]
-      if b != i_1:
-        queue.append([b, calcDistance(doc['genres'], user_genres)])
-        new_book_found = True
-        break
-    if new_book_found: break
-
+  for b in all_books:
+    id = b['_id']
+    g = b['genres']
+    if id not in [x[0] for x in queue]:
+      queue.append([id, calcDistance(g, user_genres)])
+      print(f'added {id} because its not in queue')
+      break
 
 
   if not right:
     queue.append(swiped_book_in_queue)
 
 
-  queue.sort(key= lambda x: x[1])
+  queue = queue[:7] + sorted(queue[7:], key=lambda x: x[1])
+  print(queue)
   db.db.queue_collection.find_one_and_update({'uuid': uuid}, {'$set': {
       'queue': queue
     }})
