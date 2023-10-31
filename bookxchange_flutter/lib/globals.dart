@@ -8,6 +8,25 @@ bool newUser = false;
 var profileImage = getProfilePicture(getUUID());
 String isbn13 = '';
 
+final List<String> genreList = [
+      'Crime and Mystery',
+      'Fantasy',
+      'Historical',
+      'Horror',
+      'Romance',
+      'Science Fiction',
+      'Thriller',
+      'Young-adult',
+      'New-adult',
+      'Biography',
+      'Paranormal',
+      'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
+    ];
+
 String getUUID() {
   //final User user = FirebaseAuth.instance.currentUser!;
   final uuid = FirebaseAuth.instance.currentUser!.uid;

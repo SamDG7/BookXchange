@@ -153,6 +153,7 @@ Widget build(BuildContext context) {
           setState(() {
             isLoading = true;
           });
+          
           widget.books.clear();
           const bool loadCovers = true;
           const CoverSize size = CoverSize.L;
@@ -241,11 +242,31 @@ Widget build(BuildContext context) {
     if (book.authors.isNotEmpty) {
       author = book.authors.first.name.trim();
     }
+    List<dynamic> genreFinal = [];
     String publish_date = book.publish_date;
     List<String> genres = book.subjects;
+    //final intersectionSet = genreList.toSet().intersection(genres.toSet());
     if (book.covers.isNotEmpty) {
       Image.memory(book.covers.first);
     }
+    //print(intersectionSet);
+    // for (int i = 0; i < genreList.length; i++) {
+    //   genreList.where((element) => element.contains(genreList[i])).toList();
+    // }r
+    
+    for(var i = 0; i < genreList.length; i++) {
+      for (var j = 0; j < genres.length; j++) {
+        if (genres[j].toLowerCase().contains(genreList.elementAt(i).toLowerCase())){
+          genreFinal.add(genreList[i]);
+        }
+      }
+    }
+    // for (int i = 0; i < genres.length; i++) {
+    //   if (genreList.any((item) => genres[i].toLowerCase().contains(item))) {
+    //     genreFinal.add(genreList.indexed);
+    //   }
+    // //Text has a value from list
+    // }
     //return Row (
       //children: [
    return Stack (
@@ -330,7 +351,14 @@ Widget build(BuildContext context) {
                       //   ),
                     child: Text(
                       //"Genres/Subjects: $genres",
-                      genres.toString(),
+                      // final commonElements =
+                      //   lists.fold<Set>(
+                      //     lists.first.toSet(), 
+                      //     (a, b) => a.intersection(b.toSet()));
+
+                      // print(commonElements);
+                      genreFinal.toString(),
+                      //genres.toString(),
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: Colors.black,
@@ -384,7 +412,7 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
                 child: ElevatedButton(
                   onPressed: ()  {
-                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genres, book.covers.first);
+                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, book.covers.first);
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(

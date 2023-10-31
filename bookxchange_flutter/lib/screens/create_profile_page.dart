@@ -142,6 +142,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(
