@@ -54,7 +54,7 @@ Future<Book> createBook(String uuid, String title, String author, String isbn13,
   }
 }
 
-Future<Book> createBookISBN(String uuid, String title, String author, String isbn13, List<String> genres, Uint8List pickedImage) async {
+Future<Book> createBookISBN(String uuid, String title, String author, String isbn13, List<dynamic> genres, Uint8List pickedImage) async {
   String base64Image = base64.encode(pickedImage);
   final response = await http.post(
 
@@ -196,7 +196,8 @@ class Book {
   final String author;
   //final int year;
   final String isbn13;
-  final List<String> genres;
+  //final List<String> genres;
+  final List<dynamic> genres;
   
   //final Image bookCover;
   //final String yourReview;
