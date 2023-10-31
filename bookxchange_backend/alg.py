@@ -37,8 +37,6 @@ def calcDistance(pref, book_pref):
           score += abs(encode[bp] - encode[p])
   
   return score
-
-
 def createQueue(uuid, collection, preferences):
   queue = []
   user = list(db.db.user_collection.find({"uuid": uuid}))
@@ -61,8 +59,11 @@ def createQueue(uuid, collection, preferences):
 #right is a boolean, book_id is the object ID of the book swiped on
 def updateQueueOnSwipe(uuid, right):
   queue = list(db.db.queue_collection.find({"uuid": uuid}))[0]['queue']
+  user_genres = list(db.db.user_collection.find({'uuid': uuid}))[0]['user_genre']
   swiped_book = list(db.db.book_collection.find({'_id': queue[0][0]}))
   print(f'This is the users current queue: {queue}\n\n\n\n')
+  swiped_book_in_queue = queue[0]
+  
   queue.pop(0)
 
   if right:    
@@ -83,17 +84,33 @@ def updateQueueOnSwipe(uuid, right):
     print(queue)
     #mark as wanted
   else:
-    swiped_book[1] += 30
+    print(swiped_book_in_queue)
+    swiped_book_in_queue[1] += 30
+    print(swiped_book_in_queue)
 
   
 
   #add 1 new book to queue
-    
+  all_books = list(db.book_collection.find({}))
+  new_book_found = False
+  for doc in reversed(all_books):
+    b = doc['_id']
+    for i in queue:
+      i_1 = i[0]
+      if b != i_1:
+        queue.append([b, calcDistance(doc['genres'], user_genres)])
+        new_book_found = True
+        break
+    if new_book_found: break
+
+
+
   if not right:
-    queue.append(swiped_book)
+    queue.append(swiped_book_in_queue)
+
 
   queue.sort(key= lambda x: x[1])
-  db.db.queue_collection.find_one_and_replace({'uuid': uuid}, {'$set': {
+  db.db.queue_collection.find_one_and_update({'uuid': uuid}, {'$set': {
       'queue': queue
     }})
   return 1
@@ -106,7 +123,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  updateQueueOnSwipe('ds3nim2RO6MuNWkngeTRclFNfcZ2', True)
+  updateQueueOnSwipe('ds3nim2RO6MuNWkngeTRclFNfcZ2', False)
   return 0
 if __name__ == "__main__":
     main()
