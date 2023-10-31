@@ -1,5 +1,7 @@
 import 'package:open_library/models/ol_book_model.dart';
 import 'package:open_library/models/ol_search_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:open_library/open_library.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -9,9 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:bookxchange_flutter/globals.dart';
 
 
-const ISBN1 = '9783608980806';
-const ISBN2 = '0674995171';
-const ISBN3 = '3596191130';
+
 //const ISBN = isbn13;
 
 
@@ -162,7 +162,27 @@ Widget build(BuildContext context) {
               await Provider.of<OpenLibrary>(context, listen: false)
                   .getBookByISBN(
                       isbn: isbn13, loadCover: loadCovers, coverSize: size);
-          
+        // SizedBox(height: 25);
+        // Padding(
+        //         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+        
+        //         child: ElevatedButton(
+        //           //TRIGGER SAVE POPUP AND EXIT
+        //           onPressed: () {
+        //                 print("save book");
+        //           },
+        //           style: ElevatedButton.styleFrom(
+        //             shape: RoundedRectangleBorder(
+        //               borderRadius: BorderRadius.circular(20),
+        //             ),
+        //             backgroundColor: butterfly,
+        //           ),
+        //           child: Text(
+        //             "Save",
+        //             style: TextStyle(fontSize: 18, color: Colors.white),
+        //           ),
+        //         ),
+        //       );
           print(book1.toString());
           if (book1 is OLBook) {
             widget.books.add(book1);
@@ -196,17 +216,8 @@ Widget build(BuildContext context) {
           }
           setState(() {
             isLoading = false;
-          });
-
-          
-
-        print("this is an error in creating the book");
-            //}
-
- 
-          
-          
-          
+          });    
+        print("this is an error in creating the book");   
         },
         backgroundColor: butterfly,
         shape: RoundedRectangleBorder(
@@ -225,28 +236,40 @@ Widget build(BuildContext context) {
     );
   }
   Widget bookWidget({required OLBook book, required BuildContext context}) {
+    Future<Book>? _newBook;
     String author = '';
     if (book.authors.isNotEmpty) {
       author = book.authors.first.name.trim();
     }
     String publish_date = book.publish_date;
     List<String> genres = book.subjects;
-    return Padding(
+    if (book.covers.isNotEmpty) {
+      Image.memory(book.covers.first);
+    }
+    //return Row (
+      //children: [
+   return Stack (
+   children: [
+    Padding(
       padding: const EdgeInsets.all(3.0),
+      
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 1,
         height: 300.0,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(10.0),
         ),
+
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
+            //Expanded (
+              Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //Expanded(
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
@@ -261,8 +284,10 @@ Widget build(BuildContext context) {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
+                //),
                 ),
-                Padding(
+                //Expanded(
+                  Padding(
                   padding:
                       const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
                   child:
@@ -271,7 +296,8 @@ Widget build(BuildContext context) {
                     style: const TextStyle(color: Colors.black, fontSize: 12),
                   ),
                 ),
-
+               // ),
+                
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 12.0, bottom: 4.0, left: 20.0),
@@ -288,6 +314,8 @@ Widget build(BuildContext context) {
                     ),
                   ),
                 ),
+                //),
+                //Expanded(
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
@@ -310,8 +338,10 @@ Widget build(BuildContext context) {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
+                //),
                 ),
-                Padding(
+                //Expanded(
+                  Padding(
                   padding:
                       const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 20.0),
                   child: SizedBox(
@@ -326,8 +356,11 @@ Widget build(BuildContext context) {
                     ),
                   ),
                 ),
+                //),
               ],
+            //),
             ),
+            //Expanded(
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: SizedBox(
@@ -337,25 +370,72 @@ Widget build(BuildContext context) {
                     : null,
               ),
             ),
+            //),
           ],
+          
+      
         ),
+
       ),
-    );
+
+    ),
+    SizedBox(height: 25),
+    Padding(
+                padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
+                child: ElevatedButton(
+                  onPressed: ()  {
+                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genres, book.covers.first);
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: butterfly,
+                  ),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+   ],
+   );
+
+
+      
+      //  SizedBox(height: 25,
+      //   child: const DecoratedBox(
+      //     decoration: const BoxDecoration(
+      //     color: Colors.black
+      //   ),
+      //    ),),
+      //   Padding(
+      //           padding: EdgeInsets.fromLTRB(0, 300, 0, 0),
+        
+      //           child: ElevatedButton(
+      //             //TRIGGER SAVE POPUP AND EXIT
+      //             onPressed: () {
+      //                   print("save book");
+      //             },
+      //             style: ElevatedButton.styleFrom(
+      //               shape: RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(20),
+      //               ),
+      //               backgroundColor: butterfly,
+      //             ),
+      //             child: Text(
+      //               "Save",
+      //               style: TextStyle(fontSize: 18, color: Colors.white),
+      //             ),
+      //           ),
+      //         ),
+     //  ],
+    //);
+
+
   }
 
-   Widget buildTitle(String title) {
-    return  Text(
-      title,
-      textAlign: TextAlign.left,
-      softWrap: true,
-      style: TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-        overflow: TextOverflow.clip,
-      ),
-    );
-  //}
-  //);
-  }
+
   //State<DisplayBookISBNScreen> createState() => _DisplayBookISBNScreenState();
 }

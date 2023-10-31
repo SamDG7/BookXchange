@@ -93,7 +93,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author = '';
   late int year;
   late String ISBN = '';
-  late List<String> genres;
+  //late List<String> genres = [];
   //late Image bookCover;
   late String yourReview;
   late bool currentStatus =
@@ -533,9 +533,18 @@ Future getImageFromCamera() async {
                           duration: Duration(seconds: 2),
                         ),
                       );
+                      
                     } else {
+                      
                       //ADD BOOK HAS BEEN SAVED HERE
+                      if (_bookCover != null) {
+                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, _bookCover!);
+                        
+                      //if (_bookCover != null) {
+                        //saveBookCoverPicture(getUUID(), _bookCover!);
+                      }
                       addBookConfirmationPopup(context);
+                      
                     }
                   },
                   style: ElevatedButton.styleFrom(

@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
-import 'package:bookxchange_flutter/screens/create_book_isbn_page.dart';
+
 import 'package:bookxchange_flutter/screens/display_book_isbn_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_book_page.dart';
@@ -445,13 +446,13 @@ Widget build(BuildContext context) {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text("Add book manually",
+                                        Text("Add a Book!",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineLarge),
                                         SizedBox(height: 20),
                                         Text(
-                                            "Click any of these platforms to tell your friends you are on BookXChange!"),
+                                            "Add a book either manually or enter the ISBN to find your book!"),
                                         SizedBox(height: 50),
                                         Row(
                                           children: [
@@ -476,7 +477,8 @@ Widget build(BuildContext context) {
                                               child: Text(
                                                 "Add book manually",
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.white
+                                                    ),
                                               ),
                                             ),
                                             SizedBox(width: 20),
@@ -526,7 +528,46 @@ Widget build(BuildContext context) {
                             ],
                           ),
                           ),
-                      // TODO: ADD LIBRARY
+      //temp right now just for the gridview
+      GridView.count(
+      crossAxisCount: 3,
+      //physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+      shrinkWrap: true, // You won't see infinite size error
+      
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(5),
+          //color: butterfly,
+          child: Image.asset('assets/book_cover_watership_down.png'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+      ],
+    ),
+
                     ],
                   ),
                 ),
@@ -536,8 +577,10 @@ Widget build(BuildContext context) {
           )
         ],
       ),
+      
     );
   }
+  
 
   Widget buildBio(String userbio) {
     return Text(userbio,

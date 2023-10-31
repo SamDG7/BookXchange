@@ -1,5 +1,6 @@
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -37,6 +38,8 @@ class _MultiSelectState extends State<MultiSelect> {
   void _submit() {
     Navigator.pop(context, _preferredGenres);
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +169,25 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     }
     return true;
   }
+  /*
+  bool checkNegative {
+    if (userRadius.isNegative)
+    return false;
+    }
+    return true;
+  }*/
+
+  void _negativeradius() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Radius cannot be negative!'),
+        );
+      },
+    );
+  }
+
 
   void successfullyCreatedAccount(BuildContext context) {
     showDialog(
@@ -343,6 +365,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               textField: TextField(
                 onChanged: (value) {
                   userRadius = value;
+                  _negativeradius(); 
                 },
                 style: const TextStyle(
                   fontSize: 15,
