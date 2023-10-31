@@ -174,6 +174,7 @@ def user_create_profile():
 
     return json, 201
 
+
 #Temporary Route for Queue Creation
 # @app.route('/queue/create_queue', methods=['PUT'])
 # def create_queue():

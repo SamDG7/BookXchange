@@ -14,46 +14,40 @@ import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
+encode = { 'Fairy Tale': 1,
+            'Mythology': 2,
+            'Young-adult': 3,
+            'Romance': 4,
+            'Adventure': 5,
+            'New-adult': 6,
+            'Fiction': 7,
+            'Science Fiction': 8, 
+            'Paranormal': 9, 
+            'Horror': 10, 
+            'Thriller': 11, 
+            'Crime and Mystery': 12, 
+            'Biography': 13, 
+            'Historical': 14,
+            'Classics': 15}
 
 def calcDistance(pref, book_pref):
-
-  encode = {'Fantasy': 0, 
-            'Young-adult': 1,
-            'Romance': 2,
-            'New-adult': 3,
-            'Science Fiction': 4, 
-            'Paranormal': 5, 
-            'Horror': 6, 
-            'Thriller': 7, 
-            'Crime and Mystery': 8, 
-            'Biography': 9, 
-            'Historical': 10}
-  
   score = 0
-  print(f'Comparing books with bp {book_pref} and p {pref}')
  
   for bp in book_pref:
     if bp not in pref and bp in encode:
       for p in pref:
-        score += abs(encode[bp] - encode[p])
+        if p in encode:
+          score += abs(encode[bp] - encode[p])
   
   return score
-
-
 def createQueue(uuid, collection, preferences):
   queue = []
   user = list(db.db.user_collection.find({"uuid": uuid}))
-
-  print(f'THIS IS THE USER:::: {user}')
-  print(f'PREFERENCESEFSE:::{preferences}')
-
   for doc in collection:
     if doc['uuid'] != uuid:
       current_book_genres = doc['genres']
       score = calcDistance(preferences, current_book_genres)
-      print((doc['_id'], score))
       queue.append([doc['_id'], score])
-      print(doc['uuid'])
 
   queue.sort(key= lambda x: x[1])
 
@@ -61,30 +55,74 @@ def createQueue(uuid, collection, preferences):
 
   return queue
 
+
+
+
+
 #right is a boolean, book_id is the object ID of the book swiped on
-def updateQueueOnSwipe(uuid, book_id, right):
-  queue = list(db.db.queue_collection.find({"uuid": uuid}))
-  book = list(db.db.book_collection.find({"_id": book_id}))
+def updateQueueOnSwipe(uuid, right):
+  queue = list(db.db.queue_collection.find({"uuid": uuid}))[0]['queue']
+  user_genres = list(db.db.user_collection.find({'uuid': uuid}))[0]['user_genre']
+  swiped_book = list(db.db.book_collection.find({'_id': queue[0][0]}))
+  print(f'This is the users current queue: {queue}\n\n\n\n')
+  swiped_book_in_queue = queue[0]
+  
+  queue.pop(0)
 
-  book_genres = book['genres']
-  if right:
-    for c, b in enumerate(queue):
-      #move books similar to the one swiped on up in the queue, except for the first 5 books remaing constant
-      if c > 5:
-        iterative_book = list(db.db.book_collection.find({"_id": b[0]}))
-        book_score = b[1];
-        overlap = sum(el in iterative_book['genres'] for el in book_genres)
+  if right:    
+    swiped_book_genres = swiped_book[0]['genres']
+    swiped_book_author = swiped_book[0]['author']
 
-        if overlap > 0:
-          #decrease by 2
-          ...
-        elif overlap > 2:
-          #decrease by 4
-          ...
-      ...
+    for book in queue:
+      curr_book = list(db.db.book_collection.find({'_id': book[0]}))[0]
+      curr_book_genres = curr_book['genres']
+      val = calcDistance(swiped_book_genres, curr_book_genres)
+      if val == 0:
+        book[1] -= 5
+      elif val < 5:
+        book[1] -=2
+      elif val < 10:
+        book[1] -=1
+
+      if swiped_book_author == curr_book['author']:
+        book[1] -= 10
+    #mark as wanted
   else:
-    #move similar books down in queue, except for the first five docts
-    ...
+    swiped_book_in_queue[1] += 30
+
+  
+
+  #add 1 new book to queue
+  all_books = list(db.book_collection.find({}))
+  for b in all_books:
+    id = b['_id']
+    g = b['genres']
+    if id not in [x[0] for x in queue]:
+      queue.append([id, calcDistance(g, user_genres)])
+      print(f'added {id} because its not in queue')
+      break
 
 
+  if not right:
+    queue.append(swiped_book_in_queue)
+
+
+  queue = queue[:7] + sorted(queue[7:], key=lambda x: x[1])
+  print(queue)
+  db.db.queue_collection.find_one_and_update({'uuid': uuid}, {'$set': {
+      'queue': queue
+    }})
   return 1
+
+
+
+
+
+
+
+
+def main():
+  updateQueueOnSwipe('pD1EYTRa4CNoCNu767VYgwytfTR2', True)
+  return 0
+if __name__ == "__main__":
+    main()
