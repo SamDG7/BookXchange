@@ -14,17 +14,21 @@ import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
-encode = {'Fantasy': 0, 
-            'Young-adult': 1,
-            'Romance': 2,
-            'New-adult': 3,
-            'Science Fiction': 4, 
-            'Paranormal': 5, 
-            'Horror': 6, 
-            'Thriller': 7, 
-            'Crime and Mystery': 8, 
-            'Biography': 9, 
-            'Historical': 10}
+encode = { 'Fairy Tale': 1,
+            'Mythology': 2,
+            'Young-adult': 3,
+            'Romance': 4,
+            'Adventure': 5,
+            'New-adult': 6,
+            'Fiction': 7,
+            'Science Fiction': 8, 
+            'Paranormal': 9, 
+            'Horror': 10, 
+            'Thriller': 11, 
+            'Crime and Mystery': 12, 
+            'Biography': 13, 
+            'Historical': 14,
+            'Classics': 15}
 
 def calcDistance(pref, book_pref):
   score = 0
@@ -123,7 +127,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  updateQueueOnSwipe('ds3nim2RO6MuNWkngeTRclFNfcZ2', False)
+  updateQueueOnSwipe('pD1EYTRa4CNoCNu767VYgwytfTR2', True)
   return 0
 if __name__ == "__main__":
     main()
