@@ -421,7 +421,6 @@ def book_get_pictures(user_uid):
     # return user.to_json(orient='records', force_ascii=False)
     for i, s in enumerate(myList):
         myList[i] = base64_string.decode('utf-8')
-        #print(type(i))
     #print(type(myList[1]))
     #print(type(myList))
     #print(myList)

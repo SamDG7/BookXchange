@@ -7,7 +7,7 @@ import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-
+//
   Future<BookCovers> getBookCovers(String uuid) async {
     final response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_pictures/''$uuid'));
     if (response.statusCode == 200) {
