@@ -45,6 +45,7 @@ class DisplayBookISBNScreen extends StatefulWidget {
 class _DisplayBookISBNScreenState extends State<DisplayBookISBNScreen> {
 
   late bool isLoading = false;
+  late String bookStatus = 'Available';
   //final String isbn13 = '';
 
 
@@ -383,7 +384,7 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
                 child: ElevatedButton(
                   onPressed: () {
-                    _newBook = createBook(getUUID(), book.title, author, isbn13, genres);
+                    _newBook = createBook(getUUID(), book.title, author, isbn13, genres, bookStatus);
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(

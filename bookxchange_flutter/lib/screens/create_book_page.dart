@@ -93,6 +93,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author = '';
   late int year;
   late String ISBN = '';
+  late String bookStatus = 'Available';
   //late List<String> genres = [];
   //late Image bookCover;
   late String yourReview;
@@ -539,7 +540,7 @@ Future getImageFromCamera() async {
                       
                     } else {
                       //ADD BOOK HAS BEEN SAVED HERE
-                      _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres);
+                      _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, bookStatus);
                       addBookConfirmationPopup(context);
                     }
                   },

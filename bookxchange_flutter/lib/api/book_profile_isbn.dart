@@ -43,9 +43,10 @@ class Book {
   final String isbn10;
   final String isbn13;
   final String identifiers;
+  final String bookStatus;
   //final int numSwaps;
 
-  const Book({required this.identifiers, required this.title, required this. author, required this.year, required this.genres, required this.isbn10, required this.isbn13});
+  const Book({required this.identifiers, required this.title, required this. author, required this.year, required this.genres, required this.isbn10, required this.isbn13, required this.bookStatus});
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
@@ -58,6 +59,7 @@ class Book {
       genres: json['genres'],
       isbn10: json['isbn_10'],
       isbn13: json['isbn_13'],
+      bookStatus: json['book_status'],
       identifiers: json['identifiers']
       //bookCover: json['book_cover'],
       //yourReview: json['personal_review'],

@@ -1,6 +1,5 @@
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
@@ -38,8 +37,6 @@ class _MultiSelectState extends State<MultiSelect> {
   void _submit() {
     Navigator.pop(context, _preferredGenres);
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +166,7 @@ Future getImageFromCamera() async {
     }
     return true;
   }
+
   /*
   bool checkNegative {
     if (userRadius.isNegative)
@@ -379,6 +377,7 @@ Future getImageFromCamera() async {
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 maxLength: 3,
+                
               ),
             ),
           ),
@@ -473,7 +472,7 @@ Future getImageFromCamera() async {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
                           child: const Text(
-                              "Make sure to fill in all the fields!",
+                              "Make sure to fill in all the fields",
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 16))),
                     ),
