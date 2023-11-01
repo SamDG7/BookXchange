@@ -3,6 +3,7 @@ import base64
 import binascii
 import io
 from json import dumps, loads
+import json
 from tkinter import Image
 from flask import Flask, request, jsonify
 import pandas as pd
@@ -447,6 +448,44 @@ def book_save_picture():
         fh.write(base64.b64decode(book_cover, validate=True))
 
     return json, 201
+
+@app.route('/book/get_pictures/<user_uid>', methods=['GET'])
+def book_get_pictures(user_uid):
+    
+    try:
+        full_fp = ""
+        mypath = './book_covers/%s'% user_uid
+        #print(mypath)
+        myList = []
+
+        
+        # with open("images/%s.png" %user_uid, "rb") as f:
+        #     image = Image.open(f)
+        print(os.listdir(mypath))
+        for image_fp in os.listdir(mypath):
+            #print(image_fp)
+            #print()
+            #print(os.path.join(mypath, image_fp))
+            full_fp = os.path.join(mypath, image_fp)
+            #print(full_fp)
+            with open(full_fp, "rb") as f:
+                base64_string = base64.b64encode(f.read())
+                myList.append(base64_string)
+        #print(base64_string)
+    except:
+        print("file not found");        
+    
+    # return user.to_json(orient='records', force_ascii=False)
+    for i, s in enumerate(myList):
+        myList[i] = base64_string.decode('utf-8')
+        #print(type(i))
+    #print(type(myList[1]))
+    #print(type(myList))
+    #print(myList)
+    #return jsonify({'user_picture': myList})
+    #return json.dumps(myList)
+    return ({'book_covers': myList})
+
 
 
 if __name__ == '__main__':

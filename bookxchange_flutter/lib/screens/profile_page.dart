@@ -15,6 +15,7 @@ import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:bookxchange_flutter/api/display_library.dart';
 import 'dart:convert';
 
 
@@ -28,7 +29,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
   Future<ProfileImage>? _image = getProfilePicture(getUUID());
-  
+  Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
+  String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
   //Future<Image> _image = getProfilePicture(getUUID());
 
   Future<void> shareApp() async {
@@ -528,46 +530,37 @@ Widget build(BuildContext context) {
                             ],
                           ),
                           ),
-      //temp right now just for the gridview
-      GridView.count(
-      crossAxisCount: 3,
-      //physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-      shrinkWrap: true, // You won't see infinite size error
-      
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.all(5),
-          //color: butterfly,
-          child: Image.asset('assets/book_cover_watership_down.png'),
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/book_cover_watership_down.png'),
-
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/book_cover_watership_down.png'),
-
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/book_cover_watership_down.png'),
-
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/book_cover_watership_down.png'),
-
-        ),
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/book_cover_watership_down.png'),
-
-        ),
-      ],
-    ),
-
+      //gridview will go here
+      Padding(
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                
+                child: Container(
+                    child: FutureBuilder<BookCovers>(
+                        future: _bookCovers,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            final bookCovers = snapshot.data!.bookCover;
+                            return buildBook(bookCovers);
+                          } else {
+                            return const Text("There are no books in your library");
+                          }
+                        })
+                  
+                )
+            ),
+      /*
+      GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3, // Number of columns
+  ),
+  itemBuilder: (BuildContext context, int index) {
+    // Use a placeholder image while the actual image is loading
+    return Image.network('$baseUrl/image$index.png');
+  },
+) */
                     ],
                   ),
                 ),
@@ -615,5 +608,26 @@ Widget build(BuildContext context) {
                     )) : CircleAvatar(radius: 75, backgroundImage: Image.memory(base64Decode(image64)).image);
 
   }
+  Widget buildBook(List base64Image) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // Number of columns
+        crossAxisSpacing: 10.0, // Spacing between columns
+        mainAxisSpacing: 10.0, // Spacing between rows
+      ),
+      itemCount: base64Image.length, // Number of items
+      itemBuilder: (BuildContext context, int index) {
+        return Image.memory(
+          _decodeBase64Image(base64Image[index]),
+        );
+      },
+    );
+  }
+   Uint8List _decodeBase64Image(String base64String) {
+    final bytes = base64.decode(base64String.split(',').last);
+    return Uint8List.fromList(bytes);
+  }
+}
 
 }
+main
