@@ -172,7 +172,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void checkRadius() {
-    if (userRadius.isEmpty ||  int.parse(userRadius) <= 0) {
+    if (int.parse(userRadius) <= 0) {
       // Show an alert dialog
       showDialog(
         context: context,
