@@ -10,14 +10,12 @@ import 'dart:io';
 import 'package:open_library/open_library.dart';
 
 Future<Book> getCurrentBook(String bookIsbn) async {
-
   // final queryParameters = {
   //   'uuid': uuid
   // };
 
   final response = await http
-
-    .get(Uri.parse('https://openlibrary.org/isbn/''$bookIsbn''.json'));
+      .get(Uri.parse('https://openlibrary.org/isbn/' '$bookIsbn' '.json'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -31,9 +29,7 @@ Future<Book> getCurrentBook(String bookIsbn) async {
   }
 }
 
-
 class Book {
-
   //final String uuid;
   final String title;
   final String author;
@@ -50,7 +46,6 @@ class Book {
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-
       //uuid: json['uuid'],
       
       title: json['title'],

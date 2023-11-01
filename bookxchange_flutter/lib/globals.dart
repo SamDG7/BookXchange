@@ -8,14 +8,32 @@ bool newUser = false;
 var profileImage = getProfilePicture(getUUID());
 String isbn13 = '';
 
+final List<String> genreList = [
+      'Crime and Mystery',
+      'Fantasy',
+      'Historical',
+      'Horror',
+      'Romance',
+      'Science Fiction',
+      'Thriller',
+      'Young-adult',
+      'New-adult',
+      'Biography',
+      'Paranormal',
+      'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
+    ];
+
 String getUUID() {
-    //final User user = FirebaseAuth.instance.currentUser!;
-    final uuid = FirebaseAuth.instance.currentUser!.uid;
-    return uuid;
+  //final User user = FirebaseAuth.instance.currentUser!;
+  final uuid = FirebaseAuth.instance.currentUser!.uid;
+  return uuid;
 }
 
 String getImageURL(String uuid) {
-  return ('http://127.0.0.1:8080/user/get_picture/''$uuid');
+  // return ('http://127.0.0.1:8080/user/get_picture/''$uuid');
+  return ('http://10.0.2.2:8080/user/get_picture/' '$uuid');
 }
-
-

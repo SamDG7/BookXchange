@@ -6,19 +6,29 @@ from json import dumps, loads
 from tkinter import Image
 from flask import Flask, request, jsonify
 import pandas as pd
-from os import abort
+#from os import abort
+import os 
 from uuid import uuid4, UUID
 import db
 import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
+from alg import createQueue
 user_uid = ""
+new_book_uid = ''
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
+
+def set_new_book_uid(book_uid):
+    new_book_uid = book_uid
+
+def get_new_book_uid():
+    return new_book_uid
 
 @app.route('/')
 def flask_mongodb_atlas():
@@ -75,6 +85,8 @@ def user_singup():
             "user_bio": "",
             "user_zipcode": ""
         }, upsert=True)
+    
+    
 
     return json, 201
 
@@ -154,7 +166,28 @@ def user_create_profile():
         "user_genre": user_genre,
         "user_zipcode": user_zipcode}}
     )
+
+    q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
+    print(list(db.book_collection.find({})))
+
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": q})
+
     return json, 201
+
+
+#Temporary Route for Queue Creation
+# @app.route('/queue/create_queue', methods=['PUT'])
+# def create_queue():
+#     content_type = request.headers.get('Content-Type')
+#     if(content_type == 'application/json; charset=utf-8'):
+#         json = request.json
+#     else:
+#         return 'content type not supported'
+    
+#     uuid = json['uuid']
+#     q = db.db.queue_collection.insert_one({"uuid": uuid})
+
+#     return json, 201
 
 # user update profile
 @app.route('/user/update_profile', methods=['PUT'])
@@ -246,12 +279,13 @@ def user_library_create_book():
     genres = json['genres']
     isbn13 = json['isbn13']
     bookStatus = json['book_status']
-    #bookCover = json['book_cover']
+    book_cover = json['book_cover']
+
     #yourReview = json['personal_review']
     #currentStatus = json['status']
     #numSwaps = json['numberOfSwaps']
 
-    book = db.db.book_collection.insert_one(
+    book = db.db.book_collection.insert_one (
         {
             "uuid": uuid,
             "title": title,
@@ -263,13 +297,28 @@ def user_library_create_book():
             #"book_cover": bookCover,
             #"personal_review": yourReview,
             #"status": currentStatus,
-            #"numberOfSwaps": numSwaps
-            
+            #"numberOfSwaps": numSwaps  
         }
     )
-
+    set_new_book_uid(book.inserted_id);
     newBookID = book.inserted_id
+    new_book_uid = newBookID;
 
+    path = './book_covers/%s' %uuid
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    # if not new_book_uid :
+    #     return json, 404
+    # print(type(newBookID.toString()))
+    # print("new book uid" + newBookID.toString())
+    #book_id = str(newBookID)
+    with open("book_covers/" + uuid + "/" + title + ".png", "wb") as fh:
+   
+    #with open(os.path.join(path, "/%s.png") %new_book_uid, "wb") as fh:
+        fh.write(base64.b64decode(book_cover, validate=True))
+
+    #new_book_uid = newBookID
     db.db.library_collection.update_one({'uuid': uuid}, {'$push': {'book_list': newBookID}}, upsert = True)
 
     return json, 201
@@ -383,14 +432,22 @@ def book_save_picture():
         return 'content type not supported'
 
     uuid = json['uuid']
-    picture = json['picture']
+    book_cover = json['book_cover']
 
-    db.db.book_collection.find_one({
-        'uuid': user_uid
-    })
-    with open("book_covers/%s/.png" %uuid, "wb") as fh:
-        fh.write(base64.b64decode(picture, validate=True))
+    path = './book_covers/%s' %uuid
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    # if not new_book_uid :
+    #     return json, 404
+    print("new bok uid" + new_book_uid)
+    with open("book_covers/" + uuid + "/" + new_book_uid + ".png", "wb") as fh:
+   
+    #with open(os.path.join(path, "/%s.png") %new_book_uid, "wb") as fh:
+        fh.write(base64.b64decode(book_cover, validate=True))
+
     return json, 201
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

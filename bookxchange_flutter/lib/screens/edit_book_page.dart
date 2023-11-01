@@ -128,6 +128,10 @@ class _EditBookScreenState extends State<EditBookScreen> {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(

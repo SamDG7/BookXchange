@@ -170,6 +170,10 @@ Future getImageFromCamera() async {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(
@@ -514,9 +518,6 @@ Future getImageFromCamera() async {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
-                    if (_bookCover != null) {
-                      saveBookCoverPicture(getUUID(), _bookCover!);
-                    }
                     if (checkNullValue() == false) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -539,9 +540,13 @@ Future getImageFromCamera() async {
                       );
                       
                     } else {
+                      
                       //ADD BOOK HAS BEEN SAVED HERE
-                      _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, bookStatus);
+                      if (_bookCover != null) {
+                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, bookStatus, _bookCover!);
+                      }
                       addBookConfirmationPopup(context);
+                      
                     }
                   },
                   style: ElevatedButton.styleFrom(

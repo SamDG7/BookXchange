@@ -99,31 +99,31 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   Future<CreateProfile>? _newProfile;
 
   Future getImageFromGallery() async {
-  try {
-    final _image = await picker.pickImage(source: ImageSource.gallery);
-    if (_image == null) return;
+    try {
+      final _image = await picker.pickImage(source: ImageSource.gallery);
+      if (_image == null) return;
 
-    setState(() => this._image = File(_image.path));
-  } on PlatformException catch (e) {
-    print('Failed to pick image: $e');
-  }
+      setState(() => this._image = File(_image.path));
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
     // if (pickedFile != null) {
     //   _image = File(pickedFile.path);
     // }
-  //);
-}
+    //);
+  }
 
 //Image Picker function to get image from camera
-Future getImageFromCamera() async {
-  try {
-    final _image = await picker.pickImage(source: ImageSource.camera);
-    if (_image == null) return;
+  Future getImageFromCamera() async {
+    try {
+      final _image = await picker.pickImage(source: ImageSource.camera);
+      if (_image == null) return;
 
-    setState(() => this._image = File(_image.path));
-  } on PlatformException catch (e) {
-    print('Failed to pick image: $e');
+      setState(() => this._image = File(_image.path));
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
-}
 
   void _showMultiSelect() async {
     final List<String> items = [
@@ -139,6 +139,10 @@ Future getImageFromCamera() async {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(
@@ -193,14 +197,15 @@ Future getImageFromCamera() async {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Profile Created'),
-          content: Text('Your profile has been successfully created.', style: TextStyle(fontSize: 16)),
+          content: Text('Your profile has been successfully created.',
+              style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
               },
               child: Text('OK'),
             ),
@@ -234,38 +239,36 @@ Future getImageFromCamera() async {
                 child: Container(
                   //children: [
                   child: CircleAvatar(
-                  radius: 75,
-                  //backgroundColor: butterfly,
-                  child: _image == null
-                    //? Image.file(File('assets/profile_pic_elena.png'))
-                    ? Text('N',
-                      style: TextStyle(
-                        color: butterfly,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 80,
-                      ),
-                    )
-                    : Image.file(_image!,
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover),
-                  // child: CircleAvatar(
-                  //   radius: 70,
-                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
-                    
-                  
-                     //backgroundImage: 
-                          // image != null
-                          //   ? ClipOval(
-                          //       child: Image.file(
-                          //         image!,
-                          //         width: 70,
-                          //         height:70,
-                          //         fit: BoxFit.cover,
-                          //     ), 
-                             //AssetImage('assets/profile_pic_default.png'),
-                      //_image == null ? Text('No Image selected') : Image.file(_image),
-                      //) // TODO: REPLACE WITH USER IMAGE
+                    radius: 75,
+                    //backgroundColor: butterfly,
+                    child: _image == null
+                        //? Image.file(File('assets/profile_pic_elena.png'))
+                        ? Text(
+                            'N',
+                            style: TextStyle(
+                              color: butterfly,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 80,
+                            ),
+                          )
+                        : Image.file(_image!,
+                            width: 150, height: 150, fit: BoxFit.cover),
+                    // child: CircleAvatar(
+                    //   radius: 70,
+                    //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+
+                    //backgroundImage:
+                    // image != null
+                    //   ? ClipOval(
+                    //       child: Image.file(
+                    //         image!,
+                    //         width: 70,
+                    //         height:70,
+                    //         fit: BoxFit.cover,
+                    //     ),
+                    //AssetImage('assets/profile_pic_default.png'),
+                    //_image == null ? Text('No Image selected') : Image.file(_image),
+                    //) // TODO: REPLACE WITH USER IMAGE
                     //),
                   ),
                 ),
@@ -350,12 +353,11 @@ Future getImageFromCamera() async {
                 ),
                 decoration: kTextInputDecoration.copyWith(
                   // Set the user's name
-                  hintText: 'Zip Code', 
+                  hintText: 'Zip Code',
                   counterText: "",
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 maxLength: 5,
-                
               ),
             ),
           ),
@@ -372,7 +374,7 @@ Future getImageFromCamera() async {
                 ),
                 decoration: kTextInputDecoration.copyWith(
                   // Set the user's name
-                  hintText: 'Radius (in miles)', 
+                  hintText: 'Radius (in miles)',
                   counterText: "",
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -381,7 +383,6 @@ Future getImageFromCamera() async {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.fromLTRB(40, 20, 40, 10),
             child: SizedBox(
@@ -479,10 +480,10 @@ Future getImageFromCamera() async {
                   );
                 } else {
                   if (_image != null) {
-                      saveProfilePicture(getUUID(), _image!);
-                    }
-                  _newProfile = createUserProfile(
-                      getUUID(), userName, userBio, _preferredGenres, userZipCode);
+                    saveProfilePicture(getUUID(), _image!);
+                  }
+                  _newProfile = createUserProfile(getUUID(), userName, userBio,
+                      _preferredGenres, userZipCode);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
                   //getProfilePicture(getUUID());
