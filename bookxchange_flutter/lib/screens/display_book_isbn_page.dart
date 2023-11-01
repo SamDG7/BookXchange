@@ -9,6 +9,7 @@ import 'package:bookxchange_flutter/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:bookxchange_flutter/screens/home_page.dart';
 
 
 
@@ -257,10 +258,70 @@ Widget build(BuildContext context) {
     for(var i = 0; i < genreList.length; i++) {
       for (var j = 0; j < genres.length; j++) {
         if (genres[j].toLowerCase().contains(genreList.elementAt(i).toLowerCase())){
-          genreFinal.add(genreList[i]);
+          if (!genreFinal.contains(genreList[i])) {
+            genreFinal.add(genreList[i]);
+          }
         }
       }
     }
+
+
+    void successfullyCreatedBook(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Book Created'),
+          content: Text('Your book has successfully been added!',
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+    void addBookConfirmationPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Creation of Book",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Are you sure you want to create this book?", style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                successfullyCreatedBook(context);
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
     // for (int i = 0; i < genres.length; i++) {
     //   if (genreList.any((item) => genres[i].toLowerCase().contains(item))) {
     //     genreFinal.add(genreList.indexed);
@@ -412,8 +473,14 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
                 child: ElevatedButton(
                   onPressed: ()  {
+                    addBookConfirmationPopup(context);
+                    if (book.covers.isEmpty) {
+                      _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, Uint8List(0));
+                    } else {
                     _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, book.covers.first);
-                    Navigator.of(context).pop();
+                    }
+                    
+                    //Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -422,7 +489,7 @@ Widget build(BuildContext context) {
                     backgroundColor: butterfly,
                   ),
                   child: Text(
-                    "Save",
+                    "Add Book",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
