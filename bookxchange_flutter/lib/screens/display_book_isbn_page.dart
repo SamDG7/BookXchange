@@ -471,7 +471,7 @@ Widget build(BuildContext context) {
     ),
     SizedBox(height: 25),
     Padding(
-                padding: EdgeInsets.fromLTRB(150, 250, 0, 0),
+                padding: EdgeInsets.fromLTRB(120, 250, 0, 0),
                 child: ElevatedButton(
                   onPressed: ()  {
                     addBookConfirmationPopup(context);

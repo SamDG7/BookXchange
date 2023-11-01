@@ -16,8 +16,8 @@ Future<CreateProfile> createUserProfile(String uuid, String userName,
     String userBio, List<String> userGenre, String userZipCode) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
-    // Uri.parse('http://127.0.0.1:8080/user/create_profile'),
-    Uri.parse('http://10.0.2.2:8080/user/create_profile'),
+    Uri.parse('http://127.0.0.1:8080/user/create_profile'),
+    //Uri.parse('http://10.0.2.2:8080/user/create_profile'),
     //http://192.168.4.74:8080
     headers: <String, String>{
       'Content-Type': 'application/json',
@@ -47,8 +47,8 @@ Future<UpdateProfile> updateUserProfile(
     String uuid, String userName, String userBio, String userZipCode) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/update_profile'),
-    //Uri.parse('http://127.0.0.1:8080/user/update_profile'),
-    Uri.parse('http://10.0.2.2:8080/user/update_profile'),
+    Uri.parse('http://127.0.0.1:8080/user/update_profile'),
+    //Uri.parse('http://10.0.2.2:8080/user/update_profile'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -85,8 +85,8 @@ Future<Map<String, dynamic>> saveProfilePicture(
   String base64Image = base64.encode(imageBytes);
   final response = await http.post(
     //Uri.parse('http://localhost:8080/user/update_profile'),
-    // Uri.parse('http://127.0.0.1:8080/user/save_picture'),
-    Uri.parse('http://10.0.2.2:8080/user/save_picture'),
+    Uri.parse('http://127.0.0.1:8080/user/save_picture'),
+    //Uri.parse('http://10.0.2.2:8080/user/save_picture'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },

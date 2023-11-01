@@ -100,7 +100,8 @@ Future<Book> getCurrentBook(String uuid) async {
   // final response =
   //     await http.get(Uri.parse('http://10.0.0.127:8080/book/' '$uuid'));
   final response =
-      await http.get(Uri.parse('http://10.0.2.2:8080/book/' '$uuid'));
+      //await http.get(Uri.parse('http://10.0.2.2:8080/book/' '$uuid'));
+      await http.get(Uri.parse('http://127.0.0.1:8080/book/' '$uuid'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -120,7 +121,8 @@ Future<Book> getCurrentBook(String uuid) async {
 Future<Book> updateBook(String uuid, Image bookCover, String yourReview) async {
   final response = await http.put(
     // Route declared in the backend (bookxchange_backend/app.py)
-    Uri.parse('http://10.0.0.127:8080/book/update_book'),
+    //Uri.parse('http://10.0.0.127:8080/book/update_book'),
+    Uri.parse('http://127.0.0.1:8080/book/update_book'),
 
     headers: <String, String>{
       'Content-Type': 'application/json',
@@ -188,7 +190,8 @@ Future<Book> updateBookStatus(String uuid, String bookStatus, String title, Stri
   final response = await http.put(
 
     // Route declared in the backend (bookxchange_backend/app.py)
-    Uri.parse('http://10.0.0.127:8080/book/update_bookstatus'),
+    //Uri.parse('http://10.0.0.127:8080/book/update_bookstatus'),
+    Uri.parse('http://127.0.0.1:8080/book/update_bookstatus'),
     
     headers: <String, String>{
       'Content-Type': 'application/json',

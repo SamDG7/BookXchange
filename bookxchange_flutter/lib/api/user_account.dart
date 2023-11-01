@@ -10,8 +10,8 @@ import 'dart:async';
 Future<NewUser> createUser(String uuid, String email) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/signup'),
-    // Uri.parse('http://127.0.0.1:8080/user/signup'),
-    Uri.parse('http://10.0.2.2:8080/user/signup'),
+    Uri.parse('http://127.0.0.1:8080/user/signup'),
+    //Uri.parse('http://10.0.2.2:8080/user/signup'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -37,8 +37,8 @@ Future<ExistingUser> getUserLogin(String uuid) async {
   final queryParameters = {'uuid': uuid};
   final response = await http
       //.get(Uri.parse('http://localhost:8080/user/''$uuid'));
-      // .get(Uri.parse('http://127.0.0.1:8080/user/''$uuid'));
-      .get(Uri.parse('http://10.0.2.2:8080/user/' '$uuid'));
+       .get(Uri.parse('http://127.0.0.1:8080/user/''$uuid'));
+      //.get(Uri.parse('http://10.0.2.2:8080/user/' '$uuid'));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
