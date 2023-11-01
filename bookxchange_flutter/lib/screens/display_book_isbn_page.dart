@@ -47,6 +47,7 @@ class DisplayBookISBNScreen extends StatefulWidget {
 class _DisplayBookISBNScreenState extends State<DisplayBookISBNScreen> {
 
   late bool isLoading = false;
+  late String bookStatus = 'Available';
   //final String isbn13 = '';
 
 
@@ -475,12 +476,10 @@ Widget build(BuildContext context) {
                   onPressed: ()  {
                     addBookConfirmationPopup(context);
                     if (book.covers.isEmpty) {
-                      _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, Uint8List(0));
+                      _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, bookStatus, Uint8List(0));
                     } else {
-                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, book.covers.first);
+                    _newBook = createBookISBN(getUUID(), book.title, author, isbn13, genreFinal, bookStatus, book.covers.first);
                     }
-                    
-                    //Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

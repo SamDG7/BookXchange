@@ -278,7 +278,9 @@ def user_library_create_book():
     #year = json['year']
     genres = json['genres']
     isbn13 = json['isbn13']
+    bookStatus = json['book_status']
     book_cover = json['book_cover']
+
     #yourReview = json['personal_review']
     #currentStatus = json['status']
     #numSwaps = json['numberOfSwaps']
@@ -291,6 +293,7 @@ def user_library_create_book():
             #"year": year,
             "genres": genres,
             "isbn13": isbn13,
+            "book_status": bookStatus,
             #"book_cover": bookCover,
             #"personal_review": yourReview,
             #"status": currentStatus,
@@ -337,7 +340,6 @@ def user_library_update_book():
     uuid: json['uuid']
     bookCover: json['book_cover']
     yourReview: json['personal_review']
-    currentStatus: json['status']
 
     book = db.db.book_collection.find_one_and_update(
         {"uuid": uuid}, 
@@ -345,7 +347,38 @@ def user_library_update_book():
         {'$set': {
             "book_cover": bookCover,
             "personal_review": yourReview,
-            "status": currentStatus
+        }}
+    )
+
+    return json, 201
+
+# user update bookstatus
+@app.route('/book/update_bookstatus', methods=['PUT'])
+def user_library_update_bookstatus():
+    # (re) setter method so doesn't return anything
+
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid: json['uuid']
+    bookStatus: json['book_status']
+    title: json['title']
+    isbn13: json['isbn13']
+    genres: json['genres']
+
+
+
+    book = db.db.book_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$set': {
+            "book_status": bookStatus,
+            "title": title,
+            "isbn13": isbn13,
+            "genres": genres,
         }}
     )
 

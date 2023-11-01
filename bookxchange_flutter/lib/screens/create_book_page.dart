@@ -93,6 +93,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author = '';
   late int year;
   late String ISBN = '';
+  late String bookStatus = 'Available';
   //late List<String> genres = [];
   //late Image bookCover;
   late String yourReview;
@@ -542,10 +543,7 @@ Future getImageFromCamera() async {
                       
                       //ADD BOOK HAS BEEN SAVED HERE
                       if (_bookCover != null) {
-                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, _bookCover!);
-                        
-                      //if (_bookCover != null) {
-                        //saveBookCoverPicture(getUUID(), _bookCover!);
+                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, bookStatus, _bookCover!);
                       }
                       addBookConfirmationPopup(context);
                       
