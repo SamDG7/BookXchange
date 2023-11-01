@@ -171,14 +171,30 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     return true;
   }
 
-  /*
-  bool checkNegative {
-    if (userRadius.isNegative)
-    return false;
+  void checkRadius() {
+    if (userRadius.isEmpty ||  int.parse(userRadius) <= 0) {
+      // Show an alert dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Invalid Radius'),
+            content: Text('Please enter a positive radius.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
-    return true;
-  }*/
+}
 
+/*
   void _negativeradius() {
     showDialog(
       context: context,
@@ -189,6 +205,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       },
     );
   }
+  */
 
 
   void successfullyCreatedAccount(BuildContext context) {
@@ -367,7 +384,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               textField: TextField(
                 onChanged: (value) {
                   userRadius = value;
-                  _negativeradius(); 
+                  checkRadius(); 
                 },
                 style: const TextStyle(
                   fontSize: 15,
