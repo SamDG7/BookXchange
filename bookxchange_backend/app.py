@@ -15,6 +15,7 @@ import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
 
+from alg import createQueue
 user_uid = ""
 new_book_uid = ''
 
@@ -85,6 +86,8 @@ def user_singup():
             "user_bio": "",
             "user_zipcode": ""
         }, upsert=True)
+    
+    
 
     return json, 201
 
@@ -164,7 +167,28 @@ def user_create_profile():
         "user_genre": user_genre,
         "user_zipcode": user_zipcode}}
     )
+
+    q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
+    print(list(db.book_collection.find({})))
+
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": q})
+
     return json, 201
+
+
+#Temporary Route for Queue Creation
+# @app.route('/queue/create_queue', methods=['PUT'])
+# def create_queue():
+#     content_type = request.headers.get('Content-Type')
+#     if(content_type == 'application/json; charset=utf-8'):
+#         json = request.json
+#     else:
+#         return 'content type not supported'
+    
+#     uuid = json['uuid']
+#     q = db.db.queue_collection.insert_one({"uuid": uuid})
+
+#     return json, 201
 
 # user update profile
 @app.route('/user/update_profile', methods=['PUT'])
@@ -255,7 +279,9 @@ def user_library_create_book():
     #year = json['year']
     genres = json['genres']
     isbn13 = json['isbn13']
+    bookStatus = json['book_status']
     book_cover = json['book_cover']
+
     #yourReview = json['personal_review']
     #currentStatus = json['status']
     #numSwaps = json['numberOfSwaps']
@@ -268,6 +294,7 @@ def user_library_create_book():
             #"year": year,
             "genres": genres,
             "isbn13": isbn13,
+            "book_status": bookStatus,
             #"book_cover": bookCover,
             #"personal_review": yourReview,
             #"status": currentStatus,
@@ -314,7 +341,6 @@ def user_library_update_book():
     uuid: json['uuid']
     bookCover: json['book_cover']
     yourReview: json['personal_review']
-    currentStatus: json['status']
 
     book = db.db.book_collection.find_one_and_update(
         {"uuid": uuid}, 
@@ -322,7 +348,38 @@ def user_library_update_book():
         {'$set': {
             "book_cover": bookCover,
             "personal_review": yourReview,
-            "status": currentStatus
+        }}
+    )
+
+    return json, 201
+
+# user update bookstatus
+@app.route('/book/update_bookstatus', methods=['PUT'])
+def user_library_update_bookstatus():
+    # (re) setter method so doesn't return anything
+
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid: json['uuid']
+    bookStatus: json['book_status']
+    title: json['title']
+    isbn13: json['isbn13']
+    genres: json['genres']
+
+
+
+    book = db.db.book_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$set': {
+            "book_status": bookStatus,
+            "title": title,
+            "isbn13": isbn13,
+            "genres": genres,
         }}
     )
 

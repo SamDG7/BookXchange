@@ -628,3 +628,6 @@ Widget build(BuildContext context) {
     return Uint8List.fromList(bytes);
   }
 }
+
+}
+main

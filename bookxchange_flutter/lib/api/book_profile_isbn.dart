@@ -10,14 +10,12 @@ import 'dart:io';
 import 'package:open_library/open_library.dart';
 
 Future<Book> getCurrentBook(String bookIsbn) async {
-
   // final queryParameters = {
   //   'uuid': uuid
   // };
 
   final response = await http
-
-    .get(Uri.parse('https://openlibrary.org/isbn/''$bookIsbn''.json'));
+      .get(Uri.parse('https://openlibrary.org/isbn/' '$bookIsbn' '.json'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -31,9 +29,7 @@ Future<Book> getCurrentBook(String bookIsbn) async {
   }
 }
 
-
 class Book {
-
   //final String uuid;
   final String title;
   final String author;
@@ -43,13 +39,13 @@ class Book {
   final String isbn10;
   final String isbn13;
   final String identifiers;
+  final String bookStatus;
   //final int numSwaps;
 
-  const Book({required this.identifiers, required this.title, required this. author, required this.year, required this.genres, required this.isbn10, required this.isbn13});
+  const Book({required this.identifiers, required this.title, required this. author, required this.year, required this.genres, required this.isbn10, required this.isbn13, required this.bookStatus});
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-
       //uuid: json['uuid'],
       
       title: json['title'],
@@ -58,6 +54,7 @@ class Book {
       genres: json['genres'],
       isbn10: json['isbn_10'],
       isbn13: json['isbn_13'],
+      bookStatus: json['book_status'],
       identifiers: json['identifiers']
       //bookCover: json['book_cover'],
       //yourReview: json['personal_review'],

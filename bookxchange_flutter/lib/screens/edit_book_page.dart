@@ -1,6 +1,8 @@
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
+import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -126,6 +128,10 @@ class _EditBookScreenState extends State<EditBookScreen> {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(
@@ -176,7 +182,8 @@ class _EditBookScreenState extends State<EditBookScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Are you sure you want to edit this book?", style: TextStyle(fontSize: 16)),
+          content: Text("Are you sure you want to edit this book?",
+              style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
@@ -364,7 +371,11 @@ class _EditBookScreenState extends State<EditBookScreen> {
                 padding: EdgeInsets.fromLTRB(50, 0, 0, 100),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    //Navigator.of(context).pop();
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(builder: (context) => const BookAboutScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -382,8 +393,9 @@ class _EditBookScreenState extends State<EditBookScreen> {
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
-                      //EDIT BOOK HAS BEEN SAVED HERE
-                      editBookConfirmationPopup(context);
+                    //EDIT BOOK HAS BEEN SAVED HERE
+                    //_updateBook = createBook(getUUID(), title, author, ISBN, _preferredGenres);
+                    editBookConfirmationPopup(context);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

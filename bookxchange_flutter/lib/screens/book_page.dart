@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:bookxchange_flutter/screens/edit_book_page.dart';
 import 'package:flutter/material.dart';
 
 class BookAboutScreen extends StatefulWidget {
@@ -11,9 +14,46 @@ class BookAboutScreen extends StatefulWidget {
   State<BookAboutScreen> createState() => _BookAboutScreenState();
 }
 
-class _BookAboutScreenState extends State<BookAboutScreen> {
+//popup that allows user to change book status
+Future<String> _showStatusDialog(BuildContext context) {
+  Completer<String> completer = Completer<String>();
 
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return SimpleDialog(
+        title: Center(
+          child: Text('Book Status',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        ),
+        children: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              completer.complete('Available');
+            },
+            child: Text('Available',
+                style: TextStyle(color: Colors.black, fontSize: 16)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              completer.complete('Loaned');
+            },
+            child: Text('Loaned',
+                style: TextStyle(color: Colors.black, fontSize: 16)),
+          ),
+        ],
+      );
+    },
+  );
+  return completer.future;
+}
+
+class _BookAboutScreenState extends State<BookAboutScreen> {
   Future<Book> _currentBook = getCurrentBook(getUUID());
+  late String bookStatus = '';
+  Future<Book>? _updateBookStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +155,11 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                         //         builder: (context) => BookAboutScreen()),
                         // add screen to edit library here
                         //     );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditBookScreen()),
+                        );
                       },
                       icon: Icon(
                         Icons.edit,
@@ -182,29 +227,52 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [ Padding(
-                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
                       child: OutlinedButton.icon(
-                      onPressed: () {
-                        //Navigator.push(
-                        //    context,
-                        //    MaterialPageRoute(
-                        //         builder: (context) => BookAboutScreen()),
-                        // add screen to edit library here
-                        //     );
-                      },
-                      icon: Icon(
-                        Icons.remove,
-                        color: butterfly,
-                      ),
-                      label: Text(
-                        'Remove book from library',
-                        style: TextStyle(color: Colors.grey[800]),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: butterfly),
+                        onPressed: () {
+                          //Navigator.push(
+                          //    context,
+                          //    MaterialPageRoute(
+                          //         builder: (context) => BookAboutScreen()),
+                          // add screen to edit library here
+                          //     );
+                        },
+                        icon: Icon(
+                          Icons.remove,
+                          color: butterfly,
+                        ),
+                        label: Text(
+                          'Remove Book',
+                          style: TextStyle(color: Colors.grey[800]),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 1.0, color: butterfly),
+                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                        ),
                       ),
                     ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 20, 15, 0),
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          bookStatus = _showStatusDialog(context) as String;
+                          //_updateBookStatus = updateBookStatus(getUUID(), bookStatus, );
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: butterfly,
+                        ),
+                        label: Text(
+                          'Change Book Status',
+                          style: TextStyle(color: Colors.grey[800]),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(width: 1.0, color: butterfly),
+                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                        ),
+                      ),
                     ),
                   ],
                 ),

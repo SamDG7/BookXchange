@@ -93,6 +93,7 @@ class _AddBooktoLibraryScreenState extends State<AddBooktoLibraryScreen> {
   late String author = '';
   late int year;
   late String ISBN = '';
+  late String bookStatus = 'Available';
   //late List<String> genres = [];
   //late Image bookCover;
   late String yourReview;
@@ -152,6 +153,9 @@ Future getImageFromCamera() async {
     if (ISBN.length < 13) {
       return false;
     }
+    if (_bookCover == null) {
+      return false;
+    }
     return true;
   }
 
@@ -169,6 +173,10 @@ Future getImageFromCamera() async {
       'Biography',
       'Paranormal',
       'Classics',
+      'Adventure',
+      'Fairy Tale',
+      'Mythology',
+      'Fiction'
     ];
 
     final List<String>? results = await showDialog(
@@ -527,7 +535,7 @@ Future getImageFromCamera() async {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
                               child: const Text(
-                                  "Make sure to fill in all the fields!",
+                                  "Make sure to fill in all the fields and add a picture!",
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 16))),
                           duration: Duration(seconds: 2),
@@ -538,11 +546,8 @@ Future getImageFromCamera() async {
                       
                       //ADD BOOK HAS BEEN SAVED HERE
                       if (_bookCover != null) {
-                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, _bookCover!);
-                        
-                      //if (_bookCover != null) {
-                        //saveBookCoverPicture(getUUID(), _bookCover!);
-                      }
+                        _newBook = createBook(getUUID(), title, author, ISBN, _preferredGenres, bookStatus, _bookCover!);
+                      } 
                       addBookConfirmationPopup(context);
                       
                     }
