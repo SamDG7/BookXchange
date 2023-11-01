@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'dart:convert';
 
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -27,8 +28,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
   Future<ProfileImage>? _image = getProfilePicture(getUUID());
-  bool isEditing = false;
-
+  
   //Future<Image> _image = getProfilePicture(getUUID());
 
   Future<void> shareApp() async {
@@ -42,10 +42,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: 'Share App', text: message, linkUrl: appLink);
   }
 
-  
-
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       // Vertical scrollable layout
       body: ListView(
@@ -55,91 +53,95 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-                  child: Container(
-                    //children: [
-                    child: CircleAvatar(
-                        radius: 75,
-                        //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
-                        child: FutureBuilder<ProfileImage>(
-                            // pass the list (postsFuture)
-                            future: _image,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // do something till waiting for data, we can show here a loader
-                                return const CircularProgressIndicator();
-                              } else if (snapshot.hasData) {
-                                //final bio = snapshot.data!.userBio;
-                                final userPicture = snapshot.data!.userPicture;
-                                return buildPicture(userPicture);
-                                // Text(posts);
-                                // we have the data, do stuff here
-                              } else {
-                                return const Text("No image available");
-                                // we did not recieve any data, maybe show error or no data available
-                              }
-                            })),
-                    // width: 150,
-                    // height: 150,
-                    //fit: BoxFit.cover)
-                  )
-
-                  //child: FutureBuilder<Image>(
-                  // pass the list (postsFuture)
-                  //future: _image,
-                  //builder: (context, snapshot) {
-                  //if (snapshot.connectionState ==
-                  //ConnectionState.waiting) {
-                  // do something till waiting for data, we can show here a loader
-                  //return const CircularProgressIndicator();
-                  //} else if (snapshot.hasData) {
-                  //final name = snapshot.data!.user_picture;
-                  //]
-
-                  // )
-                  // Text(posts);
-                  // we have the data, do stuff here
-                  //} else {
-                  //return const Text("N");
-                  // we did not recieve any data, maybe show error or no data available
-                  //}
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                
+                child: Container(
+                  //children: [
+                  child: CircleAvatar(
+                  radius: 75,
+                    //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
+                    child: FutureBuilder<ProfileImage>(
+                        // pass the list (postsFuture)
+                        future: _image,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // do something till waiting for data, we can show here a loader
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            //final bio = snapshot.data!.userBio;
+                            final userPicture = snapshot.data!.userPicture;
+                            return buildPicture(userPicture);
+                            // Text(posts);
+                            // we have the data, do stuff here
+                          } else {
+                            return const Text("No image available");
+                            // we did not recieve any data, maybe show error or no data available
+                          }
+                        })
                   ),
-
-              //backgroundColor: butterfly,
-              // child: getProfilePicture(getUUID())  == null
-              //   //? Image.file(File('assets/profile_pic_elena.png'))
-              //   ? Text('N',
-              //     style: TextStyle(
-              //       color: butterfly,
-              //       fontWeight: FontWeight.w500,
-              //       fontSize: 80,
-              //     ),
-              //   )
-              //   child: Image.memory(base64Decode(await getProfilePicture(getUUID())),
-              //   width: 150,
-              //   height: 150,
-              //   fit: BoxFit.cover),
-              // child: CircleAvatar(
-              //   radius: 70,
-              //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
-
-              //backgroundImage:
-              // image != null
-              //   ? ClipOval(
-              //       child: Image.file(
-              //         image!,
-              //         width: 70,
-              //         height:70,
-              //         fit: BoxFit.cover,
-              //     ),
-              //AssetImage('assets/profile_pic_default.png'),
-              //_image == null ? Text('No Image selected') : Image.file(_image),
-              //) // TODO: REPLACE WITH USER IMAGE
+                  // width: 150,
+                  // height: 150,
+                  //fit: BoxFit.cover)
+                )
+                
+                    //child: FutureBuilder<Image>(
+                          // pass the list (postsFuture)
+                          //future: _image,
+                          //builder: (context, snapshot) {
+                            //if (snapshot.connectionState ==
+                                //ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              //return const CircularProgressIndicator();
+                            //} else if (snapshot.hasData) {
+                              //final name = snapshot.data!.user_picture;
+                              //]
+                    
+                   // )
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            //} else {
+                              //return const Text("N");
+                              // we did not recieve any data, maybe show error or no data available
+                            //}
+            ),
+            
+                    
+                  //backgroundColor: butterfly,
+                  // child: getProfilePicture(getUUID())  == null
+                  //   //? Image.file(File('assets/profile_pic_elena.png'))
+                  //   ? Text('N',
+                  //     style: TextStyle(
+                  //       color: butterfly,
+                  //       fontWeight: FontWeight.w500,
+                  //       fontSize: 80,
+                  //     ),
+                  //   )
+                  //   child: Image.memory(base64Decode(await getProfilePicture(getUUID())),
+                  //   width: 150,
+                  //   height: 150,
+                  //   fit: BoxFit.cover),
+                  // child: CircleAvatar(
+                  //   radius: 70,
+                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
+                    
+                  
+                     //backgroundImage: 
+                          // image != null
+                          //   ? ClipOval(
+                          //       child: Image.file(
+                          //         image!,
+                          //         width: 70,
+                          //         height:70,
+                          //         fit: BoxFit.cover,
+                          //     ), 
+                             //AssetImage('assets/profile_pic_default.png'),
+                      //_image == null ? Text('No Image selected') : Image.file(_image),
+                      //) // TODO: REPLACE WITH USER IMAGE
+                    //),
+                  
               //),
-
-              //),
-
+              
               // Padding(
               //   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               //   child: Container(
@@ -162,6 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               //     //             // we did not recieve any data, maybe show error or no data available
               //     //           }
               //     //         }),
+
 
               //     // child: CircleAvatar(
               //     //   radius: 80,
@@ -398,38 +401,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child:
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child:
 
-                            // Title and edit button
-                            Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            OutlinedButton.icon(
-                              onPressed: () {
-                                 Navigator.push(
+                              // Title and edit button
+                              Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              OutlinedButton.icon(
+                                onPressed: () {
+                                  /* Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => BookAboutScreen()),
                                 // add screen to edit library here
-                              ); 
-                              
-                                
-                              },
-                              icon: Icon(
-                                Icons.edit,
-                                color: butterfly,
+                              ); */
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: butterfly,
+                                ),
+                                label: Text(
+                                  'Edit Library',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side:
+                                      BorderSide(width: 1.0, color: butterfly),
+                                ),
                               ),
-                              label: Text(
-                                'Edit Library',
-                                style: TextStyle(color: Colors.grey[800]),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(width: 1.0, color: butterfly),
-                              ),
-                            ),
 
-                            SizedBox(width: 10),
+                              SizedBox(width: 10),
+
                               // Add book button
                               OutlinedButton.icon(
                                 onPressed: () {
@@ -504,71 +507,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ),
                                             ),
                                           ],
-                                        )));
-                              },
-                              icon: Icon(
-                                Icons.add,
-                                color: butterfly,
+                                        ),
+                                      ],
+                                    )));
+                                  
+                                },
+                                icon: Icon(
+                                  Icons.add,
+                                  color: butterfly,
+                                ),
+                                label: Text(
+                                  'Add Book',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side:
+                                      BorderSide(width: 1.0, color: butterfly),
+                                ),
                               ),
-                              label: Text(
-                                'Add Book',
-                                style: TextStyle(color: Colors.grey[800]),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(width: 1.0, color: butterfly),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      //temp right now just for the gridview
-                      GridView.count(
-                        crossAxisCount: 3,
-                        //physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-                        shrinkWrap: true, // You won't see infinite size error
+                            ],
+                          ),
+                          ),
+      //temp right now just for the gridview
+      GridView.count(
+      crossAxisCount: 3,
+      //physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+      shrinkWrap: true, // You won't see infinite size error
+      
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(5),
+          //color: butterfly,
+          child: Image.asset('assets/book_cover_watership_down.png'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
 
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            //color: butterfly,
-                            /*
-                            child: ColorFiltered(
-                              colorFilter: ColorFilter.mode(
-                                  Colors.grey, BlendMode.saturation),
-                              child: Image.asset(
-                                  'assets/book_cover_watership_down.png'),
-                            ),
-                            */
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(0, 30, 10, 0),
-                            child: Image.asset(
-                                'assets/book_cover_watership_down.png'),
-                          ),
-                        ],
-                      ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+        Container(
+          padding: const EdgeInsets.all(5),
+          child: Image.asset('assets/book_cover_watership_down.png'),
+
+        ),
+      ],
+    ),
+
                     ],
                   ),
                 ),
@@ -578,8 +577,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         ],
       ),
+      
     );
   }
+  
 
   Widget buildBio(String userbio) {
     return Text(userbio,
@@ -589,7 +590,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildName(String username) {
-    return Text(
+    return  Text(
       username,
       textAlign: TextAlign.left,
       softWrap: true,
@@ -599,25 +600,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         overflow: TextOverflow.clip,
       ),
     );
-    //}
-    //);
+  //}
+  //);
   }
 
   Widget buildPicture(String image64) {
     // ignore: unnecessary_null_comparison
-    return profileImage == null
-        ? CircleAvatar(
-            radius: 75,
-            child: Text(
-              'N',
-              style: TextStyle(
-                color: butterfly,
-                fontWeight: FontWeight.w500,
-                fontSize: 80,
-              ),
-            ))
-        : CircleAvatar(
-            radius: 75,
-            backgroundImage: Image.memory(base64Decode(image64)).image);
+    return  profileImage == null ? CircleAvatar(radius: 75, child: Text('N',
+                      style: TextStyle(
+                        color: butterfly,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 80,
+                      ),
+                    )) : CircleAvatar(radius: 75, backgroundImage: Image.memory(base64Decode(image64)).image);
+
   }
+
 }
