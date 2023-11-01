@@ -608,6 +608,7 @@ Widget build(BuildContext context) {
                     )) : CircleAvatar(radius: 75, backgroundImage: Image.memory(base64Decode(image64)).image);
 
   }
+  //should buildgrid
   Widget buildBook(List base64Image) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
