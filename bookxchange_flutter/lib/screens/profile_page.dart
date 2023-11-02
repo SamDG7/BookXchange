@@ -10,6 +10,7 @@ import 'package:bookxchange_flutter/screens/create_book_page.dart';
 import 'package:bookxchange_flutter/screens/display_book_isbn_page.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:bookxchange_flutter/screens/edit_book_page.dart';
+import 'package:bookxchange_flutter/screens/edit_library_page.dart';
 import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -309,12 +310,12 @@ Widget build(BuildContext context) {
                             children: [
                               OutlinedButton.icon(
                                 onPressed: () {
-                                  /* Navigator.push(
+                                   Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BookAboutScreen()),
+                                    builder: (context) => EditLibraryScreen()),
                                 // add screen to edit library here
-                              ); */
+                              ); 
                                 },
                                 icon: Icon(
                                   Icons.edit,

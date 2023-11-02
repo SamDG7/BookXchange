@@ -410,24 +410,96 @@ def user_library_update_bookstatus():
 
 
 
-""" @app.route('/library/<user_uid>', methods=['GET'])
+@app.route('/library/<user_uid>', methods=['GET'])
 def get_library(user_uid):
-    print ("function called")
+    #print ("function called")
     library = db.db.library_collection.find_one({
         'uuid': user_uid
     })
+    library_df = pd.DataFrame(columns=['book_list', 'book_covers'])
+    print(library)
+    print(library['book_list'])
+    book_cover_encode = "";
+    #row_dict = {}
+    book_list_add = []
+    book_cover_add = []
+    for i in library['book_list']:
+        # try:
+            full_fp = ""
+            mypath = './book_covers/%s' %user_uid
+            #print(str(library_df.book_list[0]))
+            #print(os.listdir(mypath))
+            #myList = []
+            #for image_fp in os.listdir(mypath):
+                #print(i)
+            book_picture = str(i)
+            #print(book_picture)
+            full_fp = os.path.join(mypath, '%s.png' %book_picture)
+            print(full_fp)
+            #print(full_fp)
+            with open(full_fp, "rb") as f:
+                base64_string = base64.b64encode(f.read())
+                book_cover_encode = (base64_string.decode('utf-8'))
+                    #library_df.book_covers[i] = base64_string.decode('utf-8')
+            #row_dict = {"book_list": str(i), "book_covers": str(book_cover_encode)}
+            book_list_add.append(str(i))
+            book_cover_add.append(str(book_cover_encode))
+        # except:
+        #     print("file not found"); 
+        
+        #library_df = library_df.add({row_dict})
+    #print(book_list_add)
+    #print(book_cover_add)
+    library_df = pd.DataFrame({'book_list': book_list_add, 'book_covers': book_cover_add})
 
-    pdLibrary = pd.DataFrame([library])
+    # print(library_df)
+    #for i,j in library_df._id.len
+    if (library_df.empty):
+            return "Resource Not Found", 404
     
-    if (pdLibrary.empty):
-        return "Resource Not Found", 404
     
-    pdLibrary = pdLibrary.drop(columns=["_id"])
-    pdLibrary = pdLibrary.drop(columns=["uuid"])
+    # #library_df["book_covers"] = ""
+    # #print(library_df);
+    # #print(library_df.info())
+    # for i in library_df.book_list:
+         
+    #     try:
+    #         full_fp = ""
+    #         mypath = './book_covers/%s' %user_uid
+    #         #print(str(library_df.book_list[0]))
+    #         #print(os.listdir(mypath))
+    #         myList = []
+    #         for i in library_df.book_list[0]:
+    #         #for image_fp in os.listdir(mypath):
+    #             #print(i)
+    #             book_picture = str(i)
+    #             print(book_picture)
+    #             full_fp = os.path.join(mypath, '%s.png' %str(book_picture))
+    #             #print(full_fp)
+    #             #print(full_fp)
+    #             with open(full_fp, "rb") as f:
+    #                 base64_string = base64.b64encode(f.read())
+    #                 myList.append(base64_string.decode('utf-8'))
+    #                 #library_df.book_covers[i] = base64_string.decode('utf-8')
+    #     except:
+    #         print("file not found");    
+    # library_df["book_covers"] : myList;    
+        
+        # return user.to_json(orient='records', force_ascii=False)
+        # returnList = [];
+        # for i, s in enumerate(myList):
+        #     myList[i] = myList[i].decode('utf-8')
+        
     
-    print(pdLibrary.to_json(orient='records'))
+    #library_df = library_df.drop(columns=["_id"])
+    #print(library_df);
+    #library_df[book_list]
+    #pdLibrary = pdLibrary.drop(columns=["uuid"])
+    
+    #print(library_df.to_json(orient='records'))
   
-    return pdLibrary.to_json(orient='records') """
+    return library_df.to_json(orient='records')
+    #return "test"
 
 # @app.route('/library/<user_uid>', methods=['GET'])
 # def get_library(user_uid):
