@@ -8,21 +8,27 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 //
-  Future<BookCovers> getBookCovers(String uuid) async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_pictures/''$uuid'));
+Future<BookCovers> getBookCovers(String uuid) async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_pictures/''$uuid'), headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
-      return BookCovers.fromJson(jsonDecode((response.body)));
+
+      var result = BookCovers.fromJson(json.decode(response.body));
+      return result;
     } else {
+      print("Error in getting book covers");
       throw Exception('Failed to load image');
     }
   }
 
-  class BookCovers {
-  final List<String> bookCover;
+
+class BookCovers {
+ 
+
+  final List<dynamic> bookCover;
 
   const BookCovers({required this.bookCover});
 
-  factory BookCovers.fromJson(Map<String, dynamic> json) {
+  factory BookCovers.fromJson(dynamic json) {
     return BookCovers(
       bookCover: json['book_covers'],
     );

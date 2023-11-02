@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bookxchange_flutter/api/book_profile.dart';
+import 'package:bookxchange_flutter/api/display_library.dart';
 import 'package:bookxchange_flutter/api/library_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
@@ -30,10 +31,11 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Future<ExistingUser>? _existingUser = getUserLogin(getUUID());
   Future<ProfileImage>? _image = getProfilePicture(getUUID());
+  //Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
   //Future<Image> _image = getProfilePicture(getUUID());
-  Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
+  // Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
 
   Future<void> shareApp() async {
     // Set the app link and the message to be shared
@@ -84,103 +86,8 @@ Widget build(BuildContext context) {
                           }
                         })
                   ),
-                  // width: 150,
-                  // height: 150,
-                  //fit: BoxFit.cover)
                 )
-                
-                    //child: FutureBuilder<Image>(
-                          // pass the list (postsFuture)
-                          //future: _image,
-                          //builder: (context, snapshot) {
-                            //if (snapshot.connectionState ==
-                                //ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              //return const CircularProgressIndicator();
-                            //} else if (snapshot.hasData) {
-                              //final name = snapshot.data!.user_picture;
-                              //]
-                    
-                   // )
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            //} else {
-                              //return const Text("N");
-                              // we did not recieve any data, maybe show error or no data available
-                            //}
             ),
-            
-                    
-                  //backgroundColor: butterfly,
-                  // child: getProfilePicture(getUUID())  == null
-                  //   //? Image.file(File('assets/profile_pic_elena.png'))
-                  //   ? Text('N',
-                  //     style: TextStyle(
-                  //       color: butterfly,
-                  //       fontWeight: FontWeight.w500,
-                  //       fontSize: 80,
-                  //     ),
-                  //   )
-                  //   child: Image.memory(base64Decode(await getProfilePicture(getUUID())),
-                  //   width: 150,
-                  //   height: 150,
-                  //   fit: BoxFit.cover),
-                  // child: CircleAvatar(
-                  //   radius: 70,
-                  //   backgroundImage: _image != null ? Image.file(_image!, fit: BoxFit.cover) as ImageProvider :  AssetImage('assets/profile_pic_elena.png'),
-                    
-                  
-                     //backgroundImage: 
-                          // image != null
-                          //   ? ClipOval(
-                          //       child: Image.file(
-                          //         image!,
-                          //         width: 70,
-                          //         height:70,
-                          //         fit: BoxFit.cover,
-                          //     ), 
-                             //AssetImage('assets/profile_pic_default.png'),
-                      //_image == null ? Text('No Image selected') : Image.file(_image),
-                      //) // TODO: REPLACE WITH USER IMAGE
-                    //),
-                  
-              //),
-              
-              // Padding(
-              //   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-              //   child: Container(
-              //     child: getProfilePicture(getUUID())
-              //     // child: FutureBuilder<Image>(
-              //     //         // pass the list (postsFuture)
-              //     //         future: Image,
-              //     //         builder: (context, snapshot) {
-              //     //           if (snapshot.connectionState ==
-              //     //               ConnectionState.waiting) {
-              //     //             // do something till waiting for data, we can show here a loader
-              //     //             return const CircularProgressIndicator();
-              //     //           } else if (snapshot.hasData) {
-              //     //             //final name = snapshot.data!.userName;
-              //     //             return Image;
-              //     //             // Text(posts);
-              //     //             // we have the data, do stuff here
-              //     //           } else {
-              //     //             return const Text("No name available");
-              //     //             // we did not recieve any data, maybe show error or no data available
-              //     //           }
-              //     //         }),
-
-
-              //     // child: CircleAvatar(
-              //     //   radius: 80,
-              //     //   backgroundColor: butterfly,
-              //     //   child: CircleAvatar(
-              //     //     radius: 75,
-              //     //     backgroundImage:
-              //     //         AssetImage('assets/profile_pic_elena.png'),
-              //     //   ),
-              //     // ),
-              //   ),
-              // ),
               Padding(
                 padding: EdgeInsets.fromLTRB(10, 25, 10, 0),
                 child: Container(
@@ -359,18 +266,6 @@ Widget build(BuildContext context) {
                             // we did not recieve any data, maybe show error or no data available
                           }
                         })),
-                //       Padding(
-                //         padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                //         child: Text(
-                //           "Hello! My name is Elena and I live in West Lafayette with my three cats. I have soooo many books and I want to swap with you! (Especially if you have historical fiction books -- I LOVE those!!) My current favorites are Watership Down by Richard Adams and Half of a Yellow Sun by Chimamanda Ngoze Adichi! 🌿🐱🐝🌞",
-                //           style: TextStyle(
-                //             fontSize: 15,
-                //           ),
-                //         ),
-                //       ), // TODO: REPLACE WITH USER BIO
-                //     ],
-                //   ),
-                // ),
 
                 // Community rating
                 Padding(
@@ -537,32 +432,25 @@ Widget build(BuildContext context) {
                 padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
                 
                 child: Container(
-                    child: FutureBuilder<BookCovers>(
-                        future: _bookCovers,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasData) {
-                            final bookCovers = snapshot.data!.bookCover;
-                            return buildBook(bookCovers);
-                          } else {
-                            return const Text("There are no books in your library");
-                          }
-                        })
+                          child: FutureBuilder<BookCovers>(
+                          future: _bookCovers,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                                final covers = snapshot.data!;
+                                return buildBook(covers);
+                            } else {
+                              return const Text("There are no books in your library");
+                            }
+                          }),
+                        
                   
                 )
             ),
-      /*
-      GridView.builder(
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 3, // Number of columns
-  ),
-  itemBuilder: (BuildContext context, int index) {
-    // Use a placeholder image while the actual image is loading
-    return Image.network('$baseUrl/image$index.png');
-  },
-) */
+
+
                     ],
                   ),
                 ),
@@ -611,23 +499,23 @@ Widget build(BuildContext context) {
 
   }
   //should buildgrid
-  Widget buildBook(List base64Image) {
+  Widget buildBook(BookCovers covers) {
     return GridView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Number of columns
-        crossAxisSpacing: 10.0, // Spacing between columns
+        crossAxisSpacing: 2.0, // Spacing between columns
         mainAxisSpacing: 10.0, // Spacing between rows
       ),
-      itemCount: base64Image.length, // Number of items
+      itemCount: covers.bookCover.length, // Number of items
       itemBuilder: (BuildContext context, int index) {
         return Image.memory(
-          _decodeBase64Image(base64Image[index]),
+          base64.decode(covers.bookCover[index]),
         );
       },
+
     );
   }
-   Uint8List _decodeBase64Image(String base64String) {
-    final bytes = base64.decode(base64String.split(',').last);
-    return Uint8List.fromList(bytes);
-  }
+
 }
