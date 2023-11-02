@@ -32,8 +32,8 @@ class _EditLibraryScreenState extends State<EditLibraryScreen> {
       //       mainAxisAlignment: MainAxisAlignment.start,
       //       children: [
         body: Center(
-              // Padding(
-              //   padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+              child: Padding(
+                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                   child: FutureBuilder<List<LibraryBooks>>(
                     future: _userLibrary,
                     builder: (context, snapshot) {
@@ -47,6 +47,7 @@ class _EditLibraryScreenState extends State<EditLibraryScreen> {
                       }
                     },
                   ),
+        ),
             //   ),
             // ],
           //),
