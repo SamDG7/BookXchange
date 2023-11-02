@@ -42,6 +42,8 @@ Future<ExistingUser> getUserLogin(String uuid) async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
+    print(ExistingUser.fromJson(
+        jsonDecode(response.body)[0] as Map<String, dynamic>));
     return ExistingUser.fromJson(
         jsonDecode(response.body)[0] as Map<String, dynamic>);
   } else {

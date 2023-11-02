@@ -457,8 +457,6 @@ def book_get_pictures(user_uid):
         mypath = './book_covers/%s'% user_uid
         #print(mypath)
         myList = []
-
-        
         # with open("images/%s.png" %user_uid, "rb") as f:
         #     image = Image.open(f)
         print(os.listdir(mypath))
@@ -467,22 +465,27 @@ def book_get_pictures(user_uid):
             #print()
             #print(os.path.join(mypath, image_fp))
             full_fp = os.path.join(mypath, image_fp)
-            #print(full_fp)
+            print(full_fp)
             with open(full_fp, "rb") as f:
                 base64_string = base64.b64encode(f.read())
                 myList.append(base64_string)
-        #print(base64_string)
+       #print(myList)
+        
+        print()
     except:
         print("file not found");        
     
     # return user.to_json(orient='records', force_ascii=False)
+    returnList = [];
     for i, s in enumerate(myList):
-        myList[i] = base64_string.decode('utf-8')
+        myList[i] = myList[i].decode('utf-8')
+
     #print(type(myList[1]))
     #print(type(myList))
     #print(myList)
     #return jsonify({'user_picture': myList})
     #return json.dumps(myList)
+    #return json.dumps({'book_covers': myList})
     return ({'book_covers': myList})
 
 
