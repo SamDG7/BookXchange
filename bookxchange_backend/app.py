@@ -579,6 +579,8 @@ def book_get_pictures(user_uid):
     #return json.dumps({'book_covers': myList})
     return ({'book_covers': myList})
 
+#THIS IS THE TEMP QUEUE BACKEND
+
 @app.route('/book/get_cover/<int:index>', methods=['GET'])
 def get_book_cover(index):
     if index < 0 or index >= len(queue):
