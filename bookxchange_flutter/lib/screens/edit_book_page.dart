@@ -106,7 +106,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
   File? bookCover;
   final picker = ImagePicker();
 
-  Future<Book>? _newBook;
+  Future<Book>? _updatedBook;
 
   // get image from camera roll
 
@@ -394,7 +394,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () {
                     //EDIT BOOK HAS BEEN SAVED HERE
-                    //_updateBook = createBook(getUUID(), title, author, ISBN, _preferredGenres);
+                    _updatedBook = updateBook(getUUID(), title, author, ISBN, _preferredGenres);
                     editBookConfirmationPopup(context);
                   },
                   style: ElevatedButton.styleFrom(

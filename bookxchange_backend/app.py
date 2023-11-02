@@ -356,15 +356,33 @@ def user_library_update_book():
         return 'content type not supported'
 
     uuid: json['uuid']
-    bookCover: json['book_cover']
-    yourReview: json['personal_review']
+    title: json['title']
+    author: json['author']
+    isbn13: json['isbn13']
+    genres: json['genres']  
+
+    update_fields = {}
+
+    if len(title) != 0:
+        update_fields['title'] = title
+    
+    if len(author) != 0:
+        update_fields['author'] = author
+        
+    if len(isbn13) != 0:
+        update_fields['isbn13'] = isbn13
+    
+    if genres:
+        update_fields['genres'] = genres
 
     book = db.db.book_collection.find_one_and_update(
         {"uuid": uuid}, 
 
         {'$set': {
-            "book_cover": bookCover,
-            "personal_review": yourReview,
+            "title": title,
+            "author": author,
+            "isbn13": isbn13,
+            "genres": genres,
         }}
     )
 
@@ -382,7 +400,7 @@ def user_library_update_bookstatus():
         return 'content type not supported'
 
     uuid: json['uuid']
-    bookStatus: json['book_status']
+    bookStatus: json['bookStatus']
     title: json['title']
     isbn13: json['isbn13']
     genres: json['genres']

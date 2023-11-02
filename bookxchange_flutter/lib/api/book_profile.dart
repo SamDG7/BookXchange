@@ -118,7 +118,7 @@ Future<Book> getCurrentBook(String uuid) async {
 
 // edit a Book with the corresponding uuid
 
-Future<Book> updateBook(String uuid, Image bookCover, String yourReview) async {
+Future<Book> updateBook(String uuid, String title, String author, String isbn13, List<dynamic> genres) async {
   final response = await http.put(
     // Route declared in the backend (bookxchange_backend/app.py)
     //Uri.parse('http://10.0.0.127:8080/book/update_book'),
@@ -129,8 +129,12 @@ Future<Book> updateBook(String uuid, Image bookCover, String yourReview) async {
     },
     body: jsonEncode(<String, dynamic>{
       'uuid': uuid,
-      'book_cover': bookCover,
-      'personal_review': yourReview,
+      'title': title,
+      'author': author,
+      'isbn13': isbn13,
+      'genres': genres,
+      //'book_cover': bookCover,
+      //'personal_review': yourReview,
     }
     ),
   );
