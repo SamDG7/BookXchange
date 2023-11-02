@@ -47,7 +47,7 @@ def flask_mongodb_atlas():
 @cross_origin()
 def user_singup():
     content_type = request.headers.get('Content-Type')
-    print(content_type);
+    print(content_type)
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
     else:
@@ -318,9 +318,11 @@ def user_library_create_book():
             #"numberOfSwaps": numSwaps  
         }
     )
-    set_new_book_uid(book.inserted_id);
+    set_new_book_uid(book.inserted_id)
     newBookID = book.inserted_id
-    new_book_uid = newBookID;
+
+    new_book_uid = str(newBookID)
+    #print(new_book_uid)
 
     path = './book_covers/%s' %uuid
     if not os.path.exists(path):
@@ -331,7 +333,7 @@ def user_library_create_book():
     # print(type(newBookID.toString()))
     # print("new book uid" + newBookID.toString())
     #book_id = str(newBookID)
-    with open("book_covers/" + uuid + "/" + title + ".png", "wb") as fh:
+    with open("book_covers/" + uuid + "/" + new_book_uid + ".png", "wb") as fh:
    
     #with open(os.path.join(path, "/%s.png") %new_book_uid, "wb") as fh:
         fh.write(base64.b64decode(book_cover, validate=True))
@@ -427,19 +429,19 @@ def get_library(user_uid):
   
     return pdLibrary.to_json(orient='records') """
 
-@app.route('/library/<user_uid>', methods=['GET'])
-def get_library(user_uid):
-    print ("function called")
-    library = db.db.library_collection.find_one({
-        'uuid': user_uid
-    })
+# @app.route('/library/<user_uid>', methods=['GET'])
+# def get_library(user_uid):
+#     print ("function called")
+#     library = db.db.library_collection.find_one({
+#         'uuid': user_uid
+#     })
 
-    if library is None:
-        return "Resource Not Found", 404
+#     if library is None:
+#         return "Resource Not Found", 404
     
-    book_ids = library.get('book_list', [])
+#     book_ids = library.get('book_list', [])
 
-    return jsonify(book_ids)
+#     return jsonify(book_ids)
 
 @app.route('/book/save_picture', methods=['POST'])
 def book_save_picture():

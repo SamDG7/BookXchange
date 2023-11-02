@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
   //Future<Image> _image = getProfilePicture(getUUID());
-  Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
+  // Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
 
   Future<void> shareApp() async {
     // Set the app link and the message to be shared
