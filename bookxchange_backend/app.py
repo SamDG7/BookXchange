@@ -596,6 +596,20 @@ def get_book_cover(index):
 
     return jsonify({'error': 'Cover image not found'})
 
+@app.route('/book/<book_id>', methods=['GET'])
+def get_book_info(book_id):
+
+    book = db.db.book_collection.find_one({
+        '_id': ObjectId(book_id)
+    })
+    book = pd.DataFrame([book])
+    book = book.astype({"_id": str, "uuid": str})
+    print(book)
+    return book.to_json(orient='records')
+
+
+
+
 
 
 
