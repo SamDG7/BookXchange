@@ -14,6 +14,7 @@ import db
 import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
+from bson.objectid import ObjectId
 
 from alg import createQueue
 user_uid = ""
@@ -501,6 +502,42 @@ def get_book_cover(index):
             return jsonify({'error': 'Failed to decode cover image'})
 
     return jsonify({'error': 'Cover image not found'})
+
+@app.route('/book/delete/<book_id>', methods=['DELETE'])
+def book_delete(book_id):
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+
+    db.db.book_collection.delete_one({
+        "_id": ObjectId(book_id),
+    })
+    
+
+    return json, 204
+
+@app.route('/library/delete_book/<uuid>/<book_id>', methods=['PUT'])
+def library_delete_book(uuid, book_id):
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    db.db.library_collection.update_one(
+        {'uuid': uuid},
+        {'$pull':
+         {'book_list': ObjectId(book_id)}
+        }
+    )
+
+    return json, 201
+    
+
+
 
 
 
