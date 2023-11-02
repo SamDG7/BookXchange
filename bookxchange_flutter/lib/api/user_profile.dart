@@ -72,6 +72,32 @@ Future<UpdateProfile> updateUserProfile(
   }
 }
 
+Future<Map<String, dynamic>> resetUserAlgo(String uuid, List<String> userGenre) async {
+  final response = await http.put(
+    //Uri.parse('http://localhost:8080/user/update_profile'),
+    Uri.parse('http://127.0.0.1:8080/user/reset_algo'),
+    //Uri.parse('http://10.0.2.2:8080/user/update_profile'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, dynamic>{
+      'uuid': uuid,
+      'user_genre': userGenre
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return jsonDecode(response.body);
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    //debugPrint(jsonDecode(response.body));
+    throw Exception('Failed to edit profile.');
+  }
+}
+
 Future<Map<String, dynamic>> saveProfilePicture(
     String uuid, File pickedImage) async {
   // var request =

@@ -1,3 +1,4 @@
+import 'package:bookxchange_flutter/screens/reset_algo_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/constants.dart';
@@ -14,7 +15,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:swipe_cards/swipe_cards.dart';
 
-enum MenuItem { item1, item2, item3 }
+enum MenuItem { item1, item2, item3, item4 }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -194,6 +195,45 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void resetAlgoConfirmationPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Reset Personal Feed",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Are you sure you want to reset your personal feed?",
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                //successfullyDeletedAccount(context);
+                Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ResetAlgoScreen()),
+                            );
+                //deleteUserAccount();
+              },
+              child: Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,6 +347,14 @@ class _HomePageState extends State<HomePage> {
                               )
                             ],
                           )));
+                },
+              ),
+              PopupMenuItem(
+                value: MenuItem.item4,
+                child: Text('Reset Feed'),
+                onTap: () {
+                  //deleteUserConfirmationPopup(context);
+                  resetAlgoConfirmationPopup(context);
                 },
               ),
             ],

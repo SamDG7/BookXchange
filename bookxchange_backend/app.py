@@ -149,10 +149,10 @@ def user_create_profile():
     user_bio = json['user_bio']
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
-    print(user_name)
-    print(user_bio)
-    print(user_genre)
-    print(user_zipcode)
+    # print(user_name)
+    # print(user_bio)
+    # print(user_genre)
+    # print(user_zipcode)
     # global user_uid = json['uuid']
 
     # user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
@@ -219,6 +219,22 @@ def user_update_profile():
 
     return json, 201
 
+@app.route('/user/reset_algo', methods=['PUT'])
+def user_reset_algo():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+    user_genre = json['user_genre']
+
+    db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+        {'$set': {"user_genre": user_genre}}
+    )
+
+    return json, 201
 
 @app.route('/user/save_picture', methods=['POST'])
 def user_save_picture():
