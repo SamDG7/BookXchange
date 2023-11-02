@@ -497,37 +497,6 @@ Widget build(BuildContext context) {
    );
 
 
-      
-      //  SizedBox(height: 25,
-      //   child: const DecoratedBox(
-      //     decoration: const BoxDecoration(
-      //     color: Colors.black
-      //   ),
-      //    ),),
-      //   Padding(
-      //           padding: EdgeInsets.fromLTRB(0, 300, 0, 0),
-        
-      //           child: ElevatedButton(
-      //             //TRIGGER SAVE POPUP AND EXIT
-      //             onPressed: () {
-      //                   print("save book");
-      //             },
-      //             style: ElevatedButton.styleFrom(
-      //               shape: RoundedRectangleBorder(
-      //                 borderRadius: BorderRadius.circular(20),
-      //               ),
-      //               backgroundColor: butterfly,
-      //             ),
-      //             child: Text(
-      //               "Save",
-      //               style: TextStyle(fontSize: 18, color: Colors.white),
-      //             ),
-      //           ),
-      //         ),
-     //  ],
-    //);
-
-
   }
 
 

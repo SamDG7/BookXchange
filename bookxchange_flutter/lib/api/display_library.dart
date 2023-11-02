@@ -20,10 +20,22 @@ Future<BookCovers> getBookCovers(String uuid) async {
     }
   }
 
+Future<List<LibraryBooks>> getLibraryBooks(String uuid) async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8080/library/''$uuid'));
+    
+    if (response.statusCode == 200) {
+      // var result = BookCovers.fromJson(json.decode(response.body));
+      // return result;
+      final List body = json.decode(response.body);
+      return body.map((e) => LibraryBooks.fromJson(e)).toList();
+    } else {
+      print("Error in getting book covers");
+      throw Exception('Failed to load image');
+    }
+  }
+
 
 class BookCovers {
- 
-
   final List<dynamic> bookCover;
 
   const BookCovers({required this.bookCover});
@@ -34,5 +46,20 @@ class BookCovers {
     );
   }
 }
+
+class LibraryBooks {
+  final String bookUID;
+  final String bookCover;
+
+  const LibraryBooks({required this.bookUID, required this.bookCover});
+
+  factory LibraryBooks.fromJson(Map<String, dynamic> json) {
+    return LibraryBooks(
+      bookUID: json['book_list'],
+      bookCover: json['book_covers'],
+    );
+  }
+}
+
 
 
