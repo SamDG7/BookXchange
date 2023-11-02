@@ -596,6 +596,11 @@ def get_book_cover(index):
 
     return jsonify({'error': 'Cover image not found'})
 
+
+
+
+
+
 @app.route('/book/delete/<book_id>', methods=['DELETE'])
 def book_delete(book_id):
     content_type = request.headers.get('Content-Type')
