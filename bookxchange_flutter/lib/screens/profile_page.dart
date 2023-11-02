@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/api/display_library.dart';
+import 'package:bookxchange_flutter/api/library_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/create_book_page.dart';
 
@@ -34,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
   //Future<Image> _image = getProfilePicture(getUUID());
+  Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
 
   Future<void> shareApp() async {
     // Set the app link and the message to be shared
@@ -45,29 +47,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await FlutterShare.share(
         title: 'Share App', text: message, linkUrl: appLink);
   }
-
-  // gridView(AsyncSnapshot<List<BookCovers>> snapshot) {
-  //   return Padding (
-  //     padding: EdgeInsets.all(5),,
-  //     child: GridView.count(
-  //     //gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //       crossAxisCount: 2, // Number of columns
-  //       childAspectRatio: 1,
-  //       crossAxisSpacing: 10.0, // Spacing between columns
-  //       mainAxisSpacing: 10.0, // Spacing between rows
-  //       children: snapshot.data.map((cover ) {
-  //         return GestureDetector(
-  //           child: GridTile(
-  //             child: Text('dummy'), 
-  //           ),
-  //           onTap: () {
-  //             //gotoDetailpage(context, cover);
-  //           }
-  //         );
-  //       }).toList();
-  //     ),
-  //   );
-  // }
 
   @override
 Widget build(BuildContext context) {

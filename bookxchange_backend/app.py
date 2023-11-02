@@ -14,6 +14,7 @@ import db
 import requests
 from flask_cors import CORS, cross_origin
 from requests_toolbelt.multipart import decoder
+from bson.objectid import ObjectId
 
 from alg import createQueue
 user_uid = ""
@@ -148,10 +149,10 @@ def user_create_profile():
     user_bio = json['user_bio']
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
-    print(user_name)
-    print(user_bio)
-    print(user_genre)
-    print(user_zipcode)
+    # print(user_name)
+    # print(user_bio)
+    # print(user_genre)
+    # print(user_zipcode)
     # global user_uid = json['uuid']
 
     # user = db.db.user_collection.find_one_and_update({"uuid": uuid}, 
@@ -218,6 +219,22 @@ def user_update_profile():
 
     return json, 201
 
+@app.route('/user/reset_algo', methods=['PUT'])
+def user_reset_algo():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+    user_genre = json['user_genre']
+
+    db.db.user_collection.find_one_and_update({"uuid": uuid}, 
+        {'$set': {"user_genre": user_genre}}
+    )
+
+    return json, 201
 
 @app.route('/user/save_picture', methods=['POST'])
 def user_save_picture():
@@ -487,6 +504,60 @@ def book_get_pictures(user_uid):
     #return json.dumps(myList)
     #return json.dumps({'book_covers': myList})
     return ({'book_covers': myList})
+
+@app.route('/book/get_cover/<int:index>', methods=['GET'])
+def get_book_cover(index):
+    if index < 0 or index >= len(queue):
+        return jsonify({'error': 'Invalid index'})
+
+    book = queue[index]
+    cover_base64 = book.get('cover', None)
+
+    if cover_base64:
+        try:
+            cover_bytes = base64.b64decode(cover_base64)
+            return send_file(BytesIO(cover_bytes), mimetype='image/jpeg')
+        except Exception as e:
+            return jsonify({'error': 'Failed to decode cover image'})
+
+    return jsonify({'error': 'Cover image not found'})
+
+@app.route('/book/delete/<book_id>', methods=['DELETE'])
+def book_delete(book_id):
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+
+    db.db.book_collection.delete_one({
+        "_id": ObjectId(book_id),
+    })
+    
+
+    return json, 204
+
+@app.route('/library/delete_book/<uuid>/<book_id>', methods=['PUT'])
+def library_delete_book(uuid, book_id):
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    db.db.library_collection.update_one(
+        {'uuid': uuid},
+        {'$pull':
+         {'book_list': ObjectId(book_id)}
+        }
+    )
+
+    return json, 201
+    
+
+
+
 
 
 
