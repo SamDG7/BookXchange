@@ -485,6 +485,24 @@ def book_get_pictures(user_uid):
     #return json.dumps(myList)
     return ({'book_covers': myList})
 
+@app.route('/book/get_cover/<int:index>', methods=['GET'])
+def get_book_cover(index):
+    if index < 0 or index >= len(queue):
+        return jsonify({'error': 'Invalid index'})
+
+    book = queue[index]
+    cover_base64 = book.get('cover', None)
+
+    if cover_base64:
+        try:
+            cover_bytes = base64.b64decode(cover_base64)
+            return send_file(BytesIO(cover_bytes), mimetype='image/jpeg')
+        except Exception as e:
+            return jsonify({'error': 'Failed to decode cover image'})
+
+    return jsonify({'error': 'Cover image not found'})
+
+
 
 
 if __name__ == '__main__':
