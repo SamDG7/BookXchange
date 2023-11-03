@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -30,6 +31,11 @@ Future<String> _showStatusDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => BookAboutScreen()));
+
               completer.complete('Available');
             },
             child: Text('Available',
@@ -38,9 +44,13 @@ Future<String> _showStatusDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              completer.complete('Loaned');
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => BookAboutScreen()));
+              completer.complete('Out for Loan');
             },
-            child: Text('Loaned',
+            child: Text('Out for Loan',
                 style: TextStyle(color: Colors.black, fontSize: 16)),
           ),
         ],
@@ -52,9 +62,12 @@ Future<String> _showStatusDialog(BuildContext context) {
 
 class _BookAboutScreenState extends State<BookAboutScreen> {
   Future<Book>? _currentBook = getBook(currentBookUID);
+  Future<BookCoverImage>? _currentBookCover =
+      getBookCoverPicture(currentBookUID, getUUID());
   //Future<Book> _currentBook = currentBookUID;
   late String bookStatus = '';
-  Future<Book>? _updateBookStatus;
+  late bool isLoading = false;
+  Future<BookStatus>? _updateBookStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -95,64 +108,81 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                 //           }),
 
                 //TODO: DO THIS FOR ALL
-                      FutureBuilder<Book>(
-                          // pass the list (postsFuture)
-                          future: _currentBook,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final title = snapshot.data!.title;
-                              //return buildName(name);
-                               return Text(
-                                  title,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No title available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
-                          FutureBuilder<Book>(
-                          // pass the list (postsFuture)
-                          future: _currentBook,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final author = snapshot.data!.author;
-                              //return buildName(name);
-                               return Text(
-                                  "by $author",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                );
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No author available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
+                FutureBuilder<Book>(
+                    // pass the list (postsFuture)
+                    future: _currentBook,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final title = snapshot.data!.title;
+                        //return buildName(name);
+                        return Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No title available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
+                FutureBuilder<Book>(
+                    // pass the list (postsFuture)
+                    future: _currentBook,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final author = snapshot.data!.author;
+                        //return buildName(name);
+                        return Text(
+                          "by $author",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        );
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No author available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                  child: Image.asset(
-                    'assets/book_cover_watership_down.png',
-                    height: 200,
-                    fit: BoxFit.fill,
-                  ),
-                ),
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    child: FutureBuilder<BookCoverImage>(
+                        // pass the list (postsFuture)
+                        future: _currentBookCover,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // do something till waiting for data, we can show here a loader
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            //final bio = snapshot.data!.userBio;
+                            final coverPicture = snapshot.data!;
+                            return buildPicture(coverPicture);
+                            // Text(posts);
+                            // we have the data, do stuff here
+                          } else {
+                            return const Text("No image available");
+                            // we did not recieve any data, maybe show error or no data available
+                          }
+                        })
+                    // child: Image.asset(
+                    //   'assets/book_cover_watership_down.png',
+                    //   height: 200,
+                    //   fit: BoxFit.fill,
+                    // ),
+                    ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,78 +254,75 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                 ),
                 SizedBox(height: 5),
                 FutureBuilder<Book>(
-                          // pass the list (postsFuture)
-                          future: _currentBook,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final bookStatus = snapshot.data!.bookStatus;
-                              //return buildName(name);
-                               return Text(
-                                  "Status: $bookStatus",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                );
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No status available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
+                    // pass the list (postsFuture)
+                    future: _currentBook,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final bookStatus = snapshot.data!.bookStatus;
+                        //return buildName(name);
+                        return Text(
+                          "Status: $bookStatus",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        );
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No status available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
                 FutureBuilder<Book>(
-                          // pass the list (postsFuture)
-                          future: _currentBook,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final isbn13 = snapshot.data!.isbn13;
-                              //return buildName(name);
-                               return Text(
-                                  "ISBN Number: $isbn13",
-                                  style: TextStyle(
-                                    fontSize:18,
-                                  ),
-                                );
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No ISBN number available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
+                    // pass the list (postsFuture)
+                    future: _currentBook,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final isbn13 = snapshot.data!.isbn13;
+                        //return buildName(name);
+                        return Text(
+                          "ISBN Number: $isbn13",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        );
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No ISBN number available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
                 FutureBuilder<Book>(
-                          // pass the list (postsFuture)
-                          future: _currentBook,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // do something till waiting for data, we can show here a loader
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                              final genres = snapshot.data!.genres;
-                              //return buildName(name);
-                               return Text(
-                                  "Genres: $genres",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    //fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              // Text(posts);
-                              // we have the data, do stuff here
-                            } else {
-                              return const Text("No status available");
-                              // we did not recieve any data, maybe show error or no data available
-                            }
-                          }),
+                    // pass the list (postsFuture)
+                    future: _currentBook,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final genres = snapshot.data!.genres;
+                        //return buildName(name);
+                        return Text(
+                          "Genres: $genres",
+                          style: TextStyle(
+                            fontSize: 18,
+                            //fontWeight: FontWeight.bold,
+                          ),
+                        );
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No status available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
                 SizedBox(height: 10),
                 Text(
                   "Your Review:",
@@ -317,8 +344,7 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                         icon: Icon(
                           Icons.remove,
                           color: butterfly,
@@ -329,7 +355,8 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(width: 1.0, color: butterfly),
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                         ),
                       ),
                     ),
@@ -337,8 +364,10 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                       padding: EdgeInsets.fromLTRB(0, 20, 15, 0),
                       child: OutlinedButton.icon(
                         onPressed: () async {
-                          //bookStatus = await _showStatusDialog(context);
-                          //_updateBookStatus = updateBookStatus(currentBookUID, bookStatus);
+                          bookStatus = await _showStatusDialog(context);
+                          _updateBookStatus =
+                              updateBookStatus(currentBookUID, bookStatus);
+                          print(bookStatus);
                         },
                         icon: Icon(
                           Icons.edit,
@@ -350,7 +379,8 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(width: 1.0, color: butterfly),
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                         ),
                       ),
                     ),
@@ -364,15 +394,11 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
     );
   }
 
-  Widget buildTitle(String title) {
-    return Text(
-      title,
-      textAlign: TextAlign.left,
-      softWrap: true,
-      style: TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      ),
-    );
+  Widget buildPicture(BookCoverImage coverImage) {
+    // ignore: unnecessary_null_comparison
+    return Container(
+        width: 250,
+        height: 250,
+        child: Image.memory(base64.decode(coverImage.bookPicture)));
   }
 }
