@@ -635,6 +635,7 @@ def book_delete(book_id):
 
 @app.route('/library/delete_book/<uuid>/<book_id>', methods=['PUT'])
 def library_delete_book(uuid, book_id):
+
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
@@ -647,6 +648,17 @@ def library_delete_book(uuid, book_id):
          {'book_list': ObjectId(book_id)}
         }
     )
+
+    try:
+        full_fp = ""
+        mypath = './book_covers/%s/%s.png' % (uuid, book_id)
+        print(mypath)
+        os.remove(mypath)
+        
+        
+        print()
+    except:
+        print("book not found");  
 
     return json, 201
     
