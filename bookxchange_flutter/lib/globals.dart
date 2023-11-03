@@ -7,6 +7,7 @@ import 'package:bookxchange_flutter/api/user_profile.dart';
 bool newUser = false;
 var profileImage = getProfilePicture(getUUID());
 String isbn13 = '';
+String currentBookUID = '';
 
 final List<String> genreList = [
       'Crime and Mystery',
