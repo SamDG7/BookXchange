@@ -86,7 +86,8 @@ def user_singup():
             "user_phone": "",
             "user_name": "",
             "user_bio": "",
-            "user_zipcode": ""
+            "user_zipcode": "",
+            "user_radius": ""
         }, upsert=True)
     
     
@@ -156,6 +157,7 @@ def user_create_profile():
     user_bio = json['user_bio']
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
+    user_radius = json['user_radius']
     # print(user_name)
     # print(user_bio)
     # print(user_genre)
@@ -173,7 +175,8 @@ def user_create_profile():
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
         "user_genre": user_genre,
-        "user_zipcode": user_zipcode}}
+        "user_zipcode": user_zipcode,
+        "user_radius": user_radius}}
     )
 
     q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
@@ -211,6 +214,7 @@ def user_update_profile():
     user_name = json['user_name']
     user_bio = json['user_bio']
     user_zipcode = json['user_zipcode']
+    user_radius = json['user_radius']
 
     # global user_uid = json['uuid']
 
@@ -221,7 +225,7 @@ def user_update_profile():
 
     db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
-        "user_bio": user_bio, "user_zipcode": user_zipcode}}
+        "user_bio": user_bio, "user_zipcode": user_zipcode, "user_radius": user_radius}}
     )
 
     return json, 201

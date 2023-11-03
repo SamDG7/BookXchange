@@ -72,6 +72,7 @@ class ExistingUser {
   final String userName;
   final String userBio;
   final String userZipCode;
+  final String userRadius;
 
   const ExistingUser(
       {required this.uuid,
@@ -79,7 +80,8 @@ class ExistingUser {
       required this.userPhone,
       required this.userName,
       required this.userBio,
-      required this.userZipCode});
+      required this.userZipCode,
+      required this.userRadius});
   //const NewUser({required this.uuid});
 
   factory ExistingUser.fromJson(Map<String, dynamic> json) {
@@ -89,6 +91,7 @@ class ExistingUser {
         userPhone: json['user_phone'],
         userName: json['user_name'],
         userBio: json['user_bio'],
-        userZipCode: json['user_zipcode']);
+        userZipCode: json['user_zipcode'],
+        userRadius: json['user_radius']);
   }
 }

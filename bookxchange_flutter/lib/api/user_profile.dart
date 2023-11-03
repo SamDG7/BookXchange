@@ -13,7 +13,7 @@ import 'dart:io';
 
 // write functions here then import into screen
 Future<CreateProfile> createUserProfile(String uuid, String userName,
-    String userBio, List<String> userGenre, String userZipCode) async {
+    String userBio, List<String> userGenre, String userZipCode, String userRadius) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
     Uri.parse('http://127.0.0.1:8080/user/create_profile'),
@@ -28,6 +28,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName,
       'user_bio': userBio,
       'user_genre': userGenre,
       'user_zipcode': userZipCode,
+      'user_radius': userRadius
     }),
   );
 
@@ -44,7 +45,7 @@ Future<CreateProfile> createUserProfile(String uuid, String userName,
 }
 
 Future<UpdateProfile> updateUserProfile(
-    String uuid, String userName, String userBio, String userZipCode) async {
+    String uuid, String userName, String userBio, String userZipCode, String userRadius) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/update_profile'),
     Uri.parse('http://127.0.0.1:8080/user/update_profile'),
@@ -57,6 +58,7 @@ Future<UpdateProfile> updateUserProfile(
       'user_name': userName,
       'user_bio': userBio,
       'user_zipcode': userZipCode,
+      'user_radius': userRadius
     }),
   );
 
@@ -154,13 +156,15 @@ class CreateProfile {
   final String userBio;
   final List<String> userGenre;
   final String userZipCode;
+  final String userRadius;
 
   const CreateProfile(
       {required this.uuid,
       required this.userName,
       required this.userBio,
       required this.userGenre,
-      required this.userZipCode});
+      required this.userZipCode,
+      required this.userRadius});
   //const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
@@ -169,7 +173,8 @@ class CreateProfile {
         userName: json['user_name'],
         userBio: json['user_bio'],
         userGenre: json['user_genre'],
-        userZipCode: json['user_zipcode']);
+        userZipCode: json['user_zipcode'],
+        userRadius: json['user_radius']);
   }
 }
 
@@ -178,19 +183,22 @@ class UpdateProfile {
   final String userName;
   final String userBio;
   final String userZipCode;
+  final String userRadius;
 
   const UpdateProfile(
       {required this.uuid,
       required this.userName,
       required this.userBio,
-      required this.userZipCode});
+      required this.userZipCode,
+      required this.userRadius});
 
   factory UpdateProfile.fromJson(Map<String, dynamic> json) {
     return UpdateProfile(
         uuid: json['uuid'],
         userName: json['user_name'],
         userBio: json['user_bio'],
-        userZipCode: json['user_zipcode']);
+        userZipCode: json['user_zipcode'],
+        userRadius: json['user_radius']);
   }
 }
 
