@@ -1,4 +1,5 @@
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/display_library.dart';
 import 'dart:convert';
@@ -72,7 +73,12 @@ Widget buildLibrary(List<LibraryBooks> library) {
           final book = library[index];
           return GestureDetector(
             onTap: () {
+              currentBookUID = book.bookUID;
               print(book.bookUID);
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+              );
             },
             child: Image.memory(
           base64.decode(book.bookCover),
