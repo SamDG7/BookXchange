@@ -81,6 +81,10 @@ Widget buildLibrary(List<LibraryBooks> library) {
                 // add screen to edit library here
               );
               print(book.bookUID);
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+              );
             },
             child: Image.memory(
           base64.decode(book.bookCover),
