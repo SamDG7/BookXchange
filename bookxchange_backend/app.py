@@ -610,15 +610,18 @@ def get_book_cover(user_uid, right):
     #     return jsonify({'error': 'Invalid index'})
     
     book_uid = (db.db.queue_collection.find({"uuid": user_uid}))[0]['queue'][0][0];
+    print(book_uid)
     book = db.db.book_collection.find_one({"_id": book_uid})
     book = pd.DataFrame([book])
     book = book.astype({"_id": str, "uuid": str})
+    print(book['uuid'].to_string(index=False))
 
     try:
 
-        mypath = './book_covers/%s' %user_uid
+        mypath = './book_covers/%s' %(book['uuid'].to_string(index=False))
 
         full_fp = os.path.join(mypath, '%s.png' %book_uid)
+        print(full_fp)
             #print(full_fp)
         with open(full_fp, "rb") as f:
             base64_string = base64.b64encode(f.read())
