@@ -76,7 +76,7 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
 }
 
 
- 
+ //THIS IS THE CODE THAT GIVES THE FRONTEND ERRORS
 /*
 @override
   Widget build(BuildContext context) {

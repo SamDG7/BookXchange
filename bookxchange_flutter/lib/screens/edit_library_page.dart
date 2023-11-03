@@ -1,12 +1,11 @@
 import 'package:bookxchange_flutter/globals.dart';
-import 'package:bookxchange_flutter/screens/book_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/display_library.dart';
 import 'dart:convert';
 import 'package:bookxchange_flutter/constants.dart';
 
 class EditLibraryScreen extends StatefulWidget {
-  const EditLibraryScreen({super.key});
+ const EditLibraryScreen({super.key});
 
   @override
   State<EditLibraryScreen> createState() => _EditLibraryScreenState();
@@ -32,32 +31,33 @@ class _EditLibraryScreenState extends State<EditLibraryScreen> {
       //     Row(
       //       mainAxisAlignment: MainAxisAlignment.start,
       //       children: [
-      body: Center(
-        // Padding(
-        //   padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-        child: FutureBuilder<List<LibraryBooks>>(
-          future: _userLibrary,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasData) {
-              final books = snapshot.data!;
-              return buildLibrary(books);
-            } else {
-              return const Text("No data available");
-            }
-          },
+        body: Center(
+              child: Padding(
+                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: FutureBuilder<List<LibraryBooks>>(
+                    future: _userLibrary,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final books = snapshot.data!;
+                        return buildLibrary(books);
+                      } else {
+                        return const Text("No data available");
+                      }
+                    },
+                  ),
         ),
-        //   ),
-        // ],
-        //),
+            //   ),
+            // ],
+          //),
         //],
-        //),
-      ),
-    );
+      //),
+        ),
+);
   }
 
-  Widget buildLibrary(List<LibraryBooks> library) {
+Widget buildLibrary(List<LibraryBooks> library) {
     // ListView Builder to show data in a list
     return GridView.builder(
       scrollDirection: Axis.vertical,
@@ -69,23 +69,15 @@ class _EditLibraryScreenState extends State<EditLibraryScreen> {
       ),
       itemCount: library.length,
       itemBuilder: (context, index) {
-        final book = library[index];
-        return GestureDetector(
+          final book = library[index];
+          return GestureDetector(
             onTap: () {
-              currentBookUID = book.bookUID;
-              print(currentBookUID);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => BookAboutScreen()),
-
-                // add screen to edit library here
-              );
-              
-              //print(book.bookUID);
+              print(book.bookUID);
             },
             child: Image.memory(
-              base64.decode(book.bookCover),
-            ));
+          base64.decode(book.bookCover),
+          )
+        );
       },
     );
   }
