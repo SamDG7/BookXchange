@@ -609,12 +609,6 @@ def get_book_info(book_id):
 
 
 
-
-
-
-
-
-
 @app.route('/book/delete/<book_id>', methods=['DELETE'])
 def book_delete(book_id):
     content_type = request.headers.get('Content-Type')
@@ -648,23 +642,14 @@ def library_delete_book(uuid, book_id):
     )
 
     try:
-        full_fp = ""
         mypath = './book_covers/%s/%s.png' % (uuid, book_id)
         print(mypath)
         os.remove(mypath)
-        
-        
-        print()
     except:
         print("book not found");  
 
     return json, 201
     
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
