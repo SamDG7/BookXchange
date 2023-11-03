@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bookxchange_flutter/api/queue.dart';
+import 'package:bookxchange_flutter/globals.dart';
 
 class BookSwiperScreen extends StatefulWidget {
   const BookSwiperScreen({Key? key});
@@ -11,6 +16,7 @@ class BookSwiperScreen extends StatefulWidget {
 }
 
 class _BookSwiperScreenState extends State<BookSwiperScreen> {
+  Future<NextBook>? _nextBook = getNextBook(getUUID(), "initial"); 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -31,13 +37,37 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
             child: AppinioSwiper(
               cardsCount: 15,
               onSwiping: (AppinioSwiperDirection direction) {
-                print(direction.toString());
+                if (direction == AppinioSwiperDirection.right) {
+                    _nextBook = getNextBook(getUUID(), "true"); 
+                } else {
+                    _nextBook = getNextBook(getUUID(), "false"); 
+                }
               },
+              swipeOptions: AppinioSwipeOptions.symmetric(horizontal:true, vertical: false),
               cardsBuilder: (BuildContext context, int index) {
                 return Container(
                   alignment: Alignment.center,
-                  color: CupertinoColors.activeBlue,
-                  child: const Text('Book Cover Image'), // You can replace this with an actual book cover image
+                  color: CupertinoColors.lightBackgroundGray,
+                  child: FutureBuilder<NextBook>(
+                        // pass the list (postsFuture)
+                        future: _nextBook,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // do something till waiting for data, we can show here a loader
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasData) {
+                            //final bio = snapshot.data!.userBio;
+                            final nextBook = snapshot.data!;
+                            return buildNextBook(nextBook);
+                            // Text(posts);
+                            // we have the data, do stuff here
+                          } else {
+                            return const Text("Book Cover Image");
+                            // we did not recieve any data, maybe show error or no data available
+                          }
+                        })
+                  //child: const Text('Book Cover Image'), // You can replace this with an actual book cover image
                 );
               },
             ),
@@ -72,6 +102,39 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
         ],
       ),
     );
+  }
+  Widget buildNextBook(NextBook book) {
+    // return GridView.builder(
+    //   scrollDirection: Axis.vertical,
+    //   shrinkWrap: true,
+    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //     crossAxisCount: 2, // Number of columns
+    //     crossAxisSpacing: 2.0, // Spacing between columns
+    //     mainAxisSpacing: 10.0, // Spacing between rows
+    //   ),
+    //   itemCount: covers.bookCover.length, // Number of items
+    //   itemBuilder: (BuildContext context, int index) {
+        return Card (
+          elevation: 4.0,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(book.title),
+                subtitle: Text("by: $book.author"),
+                trailing: Icon(Icons.favorite_outline),
+              ),
+              Container(
+                height: 200.0,
+                child: Image.memory(
+                  base64.decode(book.bookCover)
+                ),
+               ),
+            ], 
+          ),
+        );
+  //     },
+
+  //   );
   }
 }
 
