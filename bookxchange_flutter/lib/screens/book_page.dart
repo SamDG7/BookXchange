@@ -6,6 +6,8 @@ import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/screens/edit_book_page.dart';
+import 'package:bookxchange_flutter/screens/edit_library_page.dart';
+import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class BookAboutScreen extends StatefulWidget {
@@ -68,6 +70,64 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
   late String bookStatus = '';
   late bool isLoading = false;
   Future<BookStatus>? _updateBookStatus;
+
+
+  void successfullyDeletedBook(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Book Deleted'),
+          content: Text('Your book has successfully been deleted!',
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  ProfileScreen()),
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void deleteBookConfirmationPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Deletion of Book",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Are you sure you want to delete this book?", style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                successfullyDeletedBook(context);
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +404,29 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
                       child: OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+
+
+
+
+
+
+
+
+                          deleteBookFromLibrary(getUUID(), currentBookUID);
+                          deleteBookFromCollection(currentBookUID);
+                          deleteBookConfirmationPopup(context);
+
+
+
+
+
+
+
+
+
+
+                        },
                         icon: Icon(
                           Icons.remove,
                           color: butterfly,
@@ -401,4 +483,5 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
         height: 250,
         child: Image.memory(base64.decode(coverImage.bookPicture)));
   }
+
 }

@@ -138,7 +138,62 @@ Future<Book> getBook(String book_uid) async {
   }
 }
 
-// TODO: BUT MANY BOOKS WILL HAVE THE SAME UUID???
+Future<Book> deleteBookFromLibrary(String userID, String bookID) async {
+
+  final response =
+      await http.put(
+        Uri.parse('http://127.0.0.1:8080/library/delete_book/'),
+
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+
+        body: jsonEncode(<String, dynamic>{
+          'uuid': userID,
+          'book_uid': bookID
+        }
+        ),
+      );
+
+      if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return jsonDecode(response.body);
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to edit book.');
+  }
+
+}
+
+Future<Book> deleteBookFromCollection(String bookID) async {
+
+  final response = 
+      await http.delete(
+        Uri.parse('http://127.0.0.1:8080/book/delete/'),
+
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+
+        body: jsonEncode(<String, dynamic>{
+          'book_uid': bookID
+        }
+        ),
+      );
+
+      if (response.statusCode == 204) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return jsonDecode(response.body);
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to edit book.');
+  }
+
+}
 
 // edit a Book with the corresponding uuid
 

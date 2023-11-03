@@ -654,24 +654,26 @@ def get_book_info(book_id):
 
 
 
-@app.route('/book/delete/<book_id>', methods=['DELETE'])
-def book_delete(book_id):
+@app.route('/book/delete/', methods=['DELETE'])
+def book_delete():
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
     else:
         return 'content type not supported'
     
+    book_uid = json['book_uid']
+    
 
     db.db.book_collection.delete_one({
-        "_id": ObjectId(book_id),
+        "_id": ObjectId(book_uid),
     })
     
 
     return json, 204
 
-@app.route('/library/delete_book/<uuid>/<book_id>', methods=['PUT'])
-def library_delete_book(uuid, book_id):
+@app.route('/library/delete_book/', methods=['PUT'])
+def library_delete_book():
 
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
@@ -679,15 +681,18 @@ def library_delete_book(uuid, book_id):
     else:
         return 'content type not supported'
     
+    uuid = json['uuid']
+    book_uid = json['book_uid']
+    
     db.db.library_collection.update_one(
         {'uuid': uuid},
         {'$pull':
-         {'book_list': ObjectId(book_id)}
+         {'book_list': ObjectId(book_uid)}
         }
     )
 
     try:
-        mypath = './book_covers/%s/%s.png' % (uuid, book_id)
+        mypath = './book_covers/%s/%s.png' % (uuid, book_uid)
         print(mypath)
         os.remove(mypath)
     except:
