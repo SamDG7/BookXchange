@@ -35,6 +35,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late String userName = '';
   late String userBio = '';
   late String userZipCode = '';
+  late String userRadius = '';
   //File? image;
   File? _image;
   final picker = ImagePicker();
@@ -262,6 +263,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
               ),
+              
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                child: TextField(
+                  onChanged: (value) {
+                    userRadius = value;
+                  },
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: 2,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(20),
+                      ),
+                      borderSide: BorderSide(width: 2, color: butterfly),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(20),
+                      ),
+                      borderSide: BorderSide(color: butterfly),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    labelText: "Radius",
+                    labelStyle: TextStyle(fontSize: 20, color: Colors.black),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                ),
+              ), 
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
                 child: TextField(
@@ -293,7 +325,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ],
           ),
 
-          SizedBox(height: 210),
+          SizedBox(height: 100),
 
           Row(
             children: [
@@ -352,7 +384,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       );
                     } else {
                       _editProfile = updateUserProfile(
-                          getUUID(), userName, userBio, userZipCode);
+                          getUUID(), userName, userBio, userZipCode, userRadius);
                       if (_image != null) {
                         saveProfilePicture(getUUID(), _image!);
                       }

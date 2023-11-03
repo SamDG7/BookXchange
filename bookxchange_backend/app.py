@@ -17,6 +17,7 @@ from requests_toolbelt.multipart import decoder
 from bson.objectid import ObjectId
 
 from alg import createQueue
+from alg import updateQueueOnSwipe
 user_uid = ""
 new_book_uid = ''
 
@@ -85,7 +86,8 @@ def user_singup():
             "user_phone": "",
             "user_name": "",
             "user_bio": "",
-            "user_zipcode": ""
+            "user_zipcode": "",
+            "user_radius": ""
         }, upsert=True)
     
     
@@ -103,10 +105,16 @@ def user_login(user_uid):
         # 'uuid': str(user_uid)
         'uuid': user_uid
     })
-    user = pd.DataFrame([user])
-    if (user.empty):
+    if (user == None):
         return "Resource Not Found", 404
+    user = pd.DataFrame([user])
+    # print(user);
+    # print(user.empty)
+    # if (user.empty):
+    #     print("true")
+    #     return "Resource Not Found", 404
     #user = user.astype({"uuid": str, "_id": str})
+   
     user = user.drop(columns=["_id"])
     #user = user.groupby(["uuid", "user_email", "user_phone", "user_name", "user_bio", "user_zipcode"], as_index=False).agg(lambda user_genre: ','.join(user_genre.tolist()))
     #user = user.astype({"user_genre" : list})
@@ -149,6 +157,7 @@ def user_create_profile():
     user_bio = json['user_bio']
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
+    user_radius = json['user_radius']
     # print(user_name)
     # print(user_bio)
     # print(user_genre)
@@ -166,7 +175,8 @@ def user_create_profile():
         {'$set': {"user_name": user_name,
         "user_bio": user_bio,
         "user_genre": user_genre,
-        "user_zipcode": user_zipcode}}
+        "user_zipcode": user_zipcode,
+        "user_radius": user_radius}}
     )
 
     q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
@@ -204,6 +214,7 @@ def user_update_profile():
     user_name = json['user_name']
     user_bio = json['user_bio']
     user_zipcode = json['user_zipcode']
+    user_radius = json['user_radius']
 
     # global user_uid = json['uuid']
 
@@ -214,7 +225,7 @@ def user_update_profile():
 
     db.db.user_collection.find_one_and_update({"uuid": uuid}, 
         {'$set': {"user_name": user_name,
-        "user_bio": user_bio, "user_zipcode": user_zipcode}}
+        "user_bio": user_bio, "user_zipcode": user_zipcode, "user_radius": user_radius}}
     )
 
     return json, 201
@@ -568,15 +579,17 @@ def book_get_pictures(user_uid):
                 base64_string = base64.b64encode(f.read())
                 myList.append(base64_string)
        #print(myList)
+        returnList = [];
+        for i, s in enumerate(myList):
+            myList[i] = myList[i].decode('utf-8')
         
-        print()
+        #print()
     except:
-        print("file not found");        
+        print("file not found");
+        return(myList)        
     
     # return user.to_json(orient='records', force_ascii=False)
-    returnList = [];
-    for i, s in enumerate(myList):
-        myList[i] = myList[i].decode('utf-8')
+    
 
     #print(type(myList[1]))
     #print(type(myList))
@@ -588,22 +601,45 @@ def book_get_pictures(user_uid):
 
 #THIS IS THE TEMP QUEUE BACKEND
 
-@app.route('/book/get_cover/<int:index>', methods=['GET'])
-def get_book_cover(index):
-    if index < 0 or index >= len(queue):
-        return jsonify({'error': 'Invalid index'})
+@app.route('/book/get_next/<user_uid>/<right>', methods=['GET'])
+def get_book_cover(user_uid, right):
+    if (right == "false"):
+        updateQueueOnSwipe(user_uid, False)
+    elif (right == "true"): 
+        updateQueueOnSwipe(user_uid, True)
+    
+        
+    #queue = list(db.db.queue_collection.find({"uuid": user_uid}))[0]['queue'];
+    # if index < 0 or index >= len(queue):
+    #     return jsonify({'error': 'Invalid index'})
+    
+    book_uid = (db.db.queue_collection.find({"uuid": user_uid}))[0]['queue'][0][0];
+    print(book_uid)
+    book = db.db.book_collection.find_one({"_id": book_uid})
+    book = pd.DataFrame([book])
+    book = book.astype({"_id": str, "uuid": str})
+    print(book['uuid'].to_string(index=False))
 
-    book = queue[index]
-    cover_base64 = book.get('cover', None)
+    try:
 
-    if cover_base64:
-        try:
-            cover_bytes = base64.b64decode(cover_base64)
-            return send_file(BytesIO(cover_bytes), mimetype='image/jpeg')
-        except Exception as e:
-            return jsonify({'error': 'Failed to decode cover image'})
+        mypath = './book_covers/%s' %(book['uuid'].to_string(index=False))
 
-    return jsonify({'error': 'Cover image not found'})
+        full_fp = os.path.join(mypath, '%s.png' %book_uid)
+        print(full_fp)
+            #print(full_fp)
+        with open(full_fp, "rb") as f:
+            base64_string = base64.b64encode(f.read())
+            book_cover_encode = (base64_string.decode('utf-8'))
+        book['book_cover'] = book_cover_encode
+        print(book)
+    
+        #print(base64_string)
+    except:
+        print("file not found");     
+    
+    
+
+    return book.to_json(orient='records')
 
 @app.route('/book/<book_id>', methods=['GET'])
 def get_book_info(book_id):
@@ -615,12 +651,6 @@ def get_book_info(book_id):
     book = book.astype({"_id": str, "uuid": str})
     print(book)
     return book.to_json(orient='records')
-
-
-
-
-
-
 
 
 
@@ -657,23 +687,14 @@ def library_delete_book(uuid, book_id):
     )
 
     try:
-        full_fp = ""
         mypath = './book_covers/%s/%s.png' % (uuid, book_id)
         print(mypath)
         os.remove(mypath)
-        
-        
-        print()
     except:
         print("book not found");  
 
     return json, 201
     
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

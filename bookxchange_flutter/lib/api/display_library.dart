@@ -11,11 +11,13 @@ import 'package:http/http.dart' as http;
 Future<BookCovers> getBookCovers(String uuid) async {
     final response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_pictures/''$uuid'), headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
-
+      // if (response.body.isEmpty) {
+      //   return 
+      // }
       var result = BookCovers.fromJson(json.decode(response.body));
       return result;
     } else {
-      print("Error in getting book covers");
+      //print("Error in getting book covers");
       throw Exception('Failed to load image');
     }
   }
