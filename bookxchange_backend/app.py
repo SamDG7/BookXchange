@@ -352,22 +352,42 @@ def user_library_update_book():
     # (re) setter method so doesn't return anything
 
     content_type = request.headers.get('Content-Type')
+    #if(content_type == 'application/json; charset=utf-8'):
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
     else:
         return 'content type not supported'
 
-    uuid: json['uuid']
-    bookCover: json['book_cover']
-    yourReview: json['personal_review']
+    book_uid = json['book_uid']
+    title = json['title']
+    author = json['author']
+    isbn13 = json['isbn13']
+    genres = json['genres']  
+
+    update_fields = {}
+
+    if len(title) != 0:
+        update_fields['title'] = title
+    
+    if len(author) != 0:
+        update_fields['author'] = author
+        
+    if len(isbn13) != 0:
+        update_fields['isbn13'] = isbn13
+    
+    if genres:
+        update_fields['genres'] = genres
 
     book = db.db.book_collection.find_one_and_update(
-        {"uuid": uuid}, 
+        {"_id": ObjectId(book_uid)}, 
 
-        {'$set': {
-            "book_cover": bookCover,
-            "personal_review": yourReview,
-        }}
+        {'$set': 
+            # "title": title,
+            # "author": author,
+            # "isbn13": isbn13,
+            # "genres": genres,
+            update_fields
+        }
     )
 
     return json, 201
@@ -383,31 +403,18 @@ def user_library_update_bookstatus():
     else:
         return 'content type not supported'
 
-    uuid: json['uuid']
-    bookStatus: json['book_status']
-    title: json['title']
-    isbn13: json['isbn13']
-    genres: json['genres']
-
-
+    book_uid = json['book_uid']
+    bookStatus = json['bookStatus']
 
     book = db.db.book_collection.find_one_and_update(
-        {"uuid": uuid}, 
+        {"_id": ObjectId(book_uid)}, 
 
         {'$set': {
             "book_status": bookStatus,
-            "title": title,
-            "isbn13": isbn13,
-            "genres": genres,
         }}
     )
 
     return json, 201
-
-
-
-
-
 
 
 @app.route('/library/<user_uid>', methods=['GET'])
@@ -419,7 +426,7 @@ def get_library(user_uid):
     library_df = pd.DataFrame(columns=['book_list', 'book_covers'])
     print(library)
     print(library['book_list'])
-    book_cover_encode = "";
+    book_cover_encode = ""
     #row_dict = {}
     book_list_add = []
     book_cover_add = []
@@ -578,6 +585,8 @@ def book_get_pictures(user_uid):
     #return json.dumps(myList)
     #return json.dumps({'book_covers': myList})
     return ({'book_covers': myList})
+
+#THIS IS THE TEMP QUEUE BACKEND
 
 @app.route('/book/get_cover/<int:index>', methods=['GET'])
 def get_book_cover(index):
