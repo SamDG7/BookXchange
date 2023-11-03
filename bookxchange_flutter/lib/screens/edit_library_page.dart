@@ -75,9 +75,11 @@ Widget buildLibrary(List<LibraryBooks> library) {
             onTap: () {
               currentBookUID = book.bookUID;
               Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BookAboutScreen()),
-                );
+                context,
+                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+
+                // add screen to edit library here
+              );
               print(book.bookUID);
             },
             child: Image.memory(

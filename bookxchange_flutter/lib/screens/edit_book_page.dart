@@ -1,6 +1,7 @@
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/book_page.dart';
+import 'package:bookxchange_flutter/screens/edit_library_page.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -371,11 +372,9 @@ class _EditBookScreenState extends State<EditBookScreen> {
                 padding: EdgeInsets.fromLTRB(50, 0, 0, 100),
                 child: ElevatedButton(
                   onPressed: () {
-                    //Navigator.of(context).pop();
-                    Navigator.pop(
-                      context,
-                      MaterialPageRoute(builder: (context) => const BookAboutScreen()),
-                    );
+                    //Navigator.popUntil(context, ModalRoute.withName('/edit_library_page'));
+                    int count = 0;
+                    Navigator.of(context).popUntil((_) => count++ >= 3);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

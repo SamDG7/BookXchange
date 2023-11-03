@@ -200,8 +200,8 @@ Future<Map<String,dynamic>> saveBookCoverPicture(String uuid, File pickedImage) 
   }
 }
 
-Future<BookCoverImage> getBookCoverPicture(String uuid) async {
-  http.Response response = await http.get(Uri.parse(getImageURL(uuid)));
+Future<BookCoverImage> getBookCoverPicture(String book_uid, String uuid) async {
+  http.Response response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_picture/''$uuid/$book_uid'));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -214,7 +214,7 @@ Future<BookCoverImage> getBookCoverPicture(String uuid) async {
 }
 
 // edit book status with the corresponding uuid
-Future<Book> updateBookStatus(String book_uid, String bookStatus) async {
+Future<BookStatus> updateBookStatus(String bookUID, String bookStatus) async {
   final response = await http.put(
 
     // Route declared in the backend (bookxchange_backend/app.py)
@@ -225,7 +225,7 @@ Future<Book> updateBookStatus(String book_uid, String bookStatus) async {
       'Content-Type': 'application/json',
     },
     body: jsonEncode(<String, dynamic>{
-      'book_uid': book_uid,
+      'book_uid': bookUID,
       'book_status': bookStatus,
     }
     ),
@@ -234,7 +234,7 @@ Future<Book> updateBookStatus(String book_uid, String bookStatus) async {
   if (response.statusCode == 201) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return Book.fromJson(await jsonDecode(response.body));
+    return BookStatus.fromJson(await jsonDecode(response.body));
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -278,14 +278,27 @@ class Book {
   }
 }
 
-class BookCoverImage {
-  final String userPicture;
+class BookStatus {
+  final String bookUID;
+  final String bookStatus;
 
-  const BookCoverImage({required this.userPicture});
+   const BookStatus({required this.bookUID, required this.bookStatus});
+  factory BookStatus.fromJson(Map<String, dynamic> json) {
+    return BookStatus(
+      bookUID: json['book_uid'],
+      bookStatus: json['book_status'],
+    );
+  }
+}
+
+class BookCoverImage {
+  final String bookPicture;
+
+  const BookCoverImage({required this.bookPicture});
 
   factory BookCoverImage.fromJson(Map<String, dynamic> json) {
     return BookCoverImage(
-      userPicture: json['user_picture'],
+      bookPicture: json['book_picture'],
     );
   }
 }
