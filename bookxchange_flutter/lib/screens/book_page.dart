@@ -51,7 +51,8 @@ Future<String> _showStatusDialog(BuildContext context) {
 }
 
 class _BookAboutScreenState extends State<BookAboutScreen> {
-  Future<Book> _currentBook = getCurrentBook(getUUID());
+  Future<Book>? _currentBook = getBook(currentBookUID);
+  //Future<Book> _currentBook = currentBookUID;
   late String bookStatus = '';
   Future<Book>? _updateBookStatus;
 
@@ -94,26 +95,56 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                 //           }),
 
                 //TODO: DO THIS FOR ALL
-
-                Text(
-                  "Watership Down",
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "By Richard Adams",
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                Text(
-                  "1972",
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
+                      FutureBuilder<Book>(
+                          // pass the list (postsFuture)
+                          future: _currentBook,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final title = snapshot.data!.title;
+                              //return buildName(name);
+                               return Text(
+                                  title,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No title available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
+                          FutureBuilder<Book>(
+                          // pass the list (postsFuture)
+                          future: _currentBook,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final author = snapshot.data!.author;
+                              //return buildName(name);
+                               return Text(
+                                  "by $author",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                );
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No author available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Image.asset(
@@ -185,31 +216,86 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Statistics",
+                  "More Details:",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  "Status:", //swapped or in library
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  "Number of Swaps:",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  "Time on Profile:",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
+                SizedBox(height: 5),
+                FutureBuilder<Book>(
+                          // pass the list (postsFuture)
+                          future: _currentBook,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final bookStatus = snapshot.data!.bookStatus;
+                              //return buildName(name);
+                               return Text(
+                                  "Status: $bookStatus",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                );
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No status available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
+                FutureBuilder<Book>(
+                          // pass the list (postsFuture)
+                          future: _currentBook,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final isbn13 = snapshot.data!.isbn13;
+                              //return buildName(name);
+                               return Text(
+                                  "ISBN Number: $isbn13",
+                                  style: TextStyle(
+                                    fontSize:18,
+                                  ),
+                                );
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No ISBN number available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
+                FutureBuilder<Book>(
+                          // pass the list (postsFuture)
+                          future: _currentBook,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // do something till waiting for data, we can show here a loader
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasData) {
+                              final genres = snapshot.data!.genres;
+                              //return buildName(name);
+                               return Text(
+                                  "Genres: $genres",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              // Text(posts);
+                              // we have the data, do stuff here
+                            } else {
+                              return const Text("No status available");
+                              // we did not recieve any data, maybe show error or no data available
+                            }
+                          }),
                 SizedBox(height: 10),
                 Text(
                   "Your Review:",
@@ -232,12 +318,6 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                       padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          //Navigator.push(
-                          //    context,
-                          //    MaterialPageRoute(
-                          //         builder: (context) => BookAboutScreen()),
-                          // add screen to edit library here
-                          //     );
                         },
                         icon: Icon(
                           Icons.remove,
@@ -256,9 +336,9 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 20, 15, 0),
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                          bookStatus = _showStatusDialog(context) as String;
-                          //_updateBookStatus = updateBookStatus(getUUID(), bookStatus, );
+                        onPressed: () async {
+                          //bookStatus = await _showStatusDialog(context);
+                          //_updateBookStatus = updateBookStatus(currentBookUID, bookStatus);
                         },
                         icon: Icon(
                           Icons.edit,

@@ -114,11 +114,34 @@ Future<Book> getCurrentBook(String uuid) async {
   }
 }
 
+Future<Book> getBook(String book_uid) async {
+  //final queryParameters = {'book_uid': book_uid};
+
+  // final response =
+  //     await http.get(Uri.parse('http://10.0.0.127:8080/book/' '$uuid'));
+  final response =
+      //await http.get(Uri.parse('http://10.0.2.2:8080/book/' '$uuid'));
+      await http.get(Uri.parse('http://127.0.0.1:8080/book/' '$book_uid'));
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    //print(Book.fromJson(jsonDecode(response.body)));
+    return Book.fromJson(
+        jsonDecode(response.body)[0] as Map<String, dynamic>);
+    // return Book.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load book data');
+  }
+}
+
 // TODO: BUT MANY BOOKS WILL HAVE THE SAME UUID???
 
 // edit a Book with the corresponding uuid
 
-Future<Book> updateBook(String uuid, Image bookCover, String yourReview) async {
+Future<Book> updateBook(String book_uid, String title, String author, String isbn13, List<dynamic> genres) async {
   final response = await http.put(
     // Route declared in the backend (bookxchange_backend/app.py)
     //Uri.parse('http://10.0.0.127:8080/book/update_book'),
@@ -128,9 +151,13 @@ Future<Book> updateBook(String uuid, Image bookCover, String yourReview) async {
       'Content-Type': 'application/json',
     },
     body: jsonEncode(<String, dynamic>{
-      'uuid': uuid,
-      'book_cover': bookCover,
-      'personal_review': yourReview,
+      'book_uid': book_uid,
+      'title': title,
+      'author': author,
+      'isbn13': isbn13,
+      'genres': genres,
+      //'book_cover': bookCover,
+      //'personal_review': yourReview,
     }
     ),
   );
@@ -186,7 +213,7 @@ Future<BookCoverImage> getBookCoverPicture(String uuid) async {
 }
 
 // edit book status with the corresponding uuid
-Future<Book> updateBookStatus(String uuid, String bookStatus, String title, String isbn13, List<String> genres) async {
+Future<Book> updateBookStatus(String book_uid, String bookStatus) async {
   final response = await http.put(
 
     // Route declared in the backend (bookxchange_backend/app.py)
@@ -197,11 +224,8 @@ Future<Book> updateBookStatus(String uuid, String bookStatus, String title, Stri
       'Content-Type': 'application/json',
     },
     body: jsonEncode(<String, dynamic>{
-      'uuid': uuid,
+      'book_uid': book_uid,
       'book_status': bookStatus,
-      'title': title,
-      'isbn13': isbn13,
-      'genres': genres,
     }
     ),
   );
