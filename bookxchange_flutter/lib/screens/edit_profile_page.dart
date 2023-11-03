@@ -263,7 +263,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
               ),
-              /*
+              
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: TextField(
@@ -293,7 +293,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                 ),
-              ), */
+              ), 
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
                 child: TextField(
@@ -325,7 +325,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ],
           ),
 
-          SizedBox(height: 210),
+          SizedBox(height: 100),
 
           Row(
             children: [
