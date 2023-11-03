@@ -239,6 +239,19 @@ Widget build(BuildContext context) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                FutureBuilder<ExistingUser>(
+                future: _existingUser,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasData) {
+                    final radius = snapshot.data!.userRadius;
+                    return buildRadius(radius);
+                  } else {
+                    return Text("No radius available");
+                  }
+                },
+              ),
                 Text(
                   "About Me:",
                   textAlign: TextAlign.left,
@@ -267,7 +280,7 @@ Widget build(BuildContext context) {
                             // we did not recieve any data, maybe show error or no data available
                           }
                         })),
-
+                
                 // Community rating
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -518,5 +531,32 @@ Widget build(BuildContext context) {
 
     );
   }
+  
+  Widget buildRadius(String userRadius) {
+  return Row(
+    children: [
+      Text(
+        "My Radius: ",
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Text(
+        userRadius,
+        style: TextStyle(
+          fontSize: 15,
+        ),
+      ),
+      Text(
+        " miles",
+        style: TextStyle(
+          fontSize: 15,
+        ),
+      ),
+    ],
+  );
+}
+
 
 }

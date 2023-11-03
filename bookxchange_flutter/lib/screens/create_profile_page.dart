@@ -192,6 +192,25 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         },
       );
     }
+    else if (int.parse(userRadius) >= 100) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Invalid Radius'),
+            content: Text('Please enter a radius less than 100'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 }
 
 /*
@@ -500,7 +519,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     saveProfilePicture(getUUID(), _image!);
                   }
                   _newProfile = createUserProfile(getUUID(), userName, userBio,
-                      _preferredGenres, userZipCode);
+                      _preferredGenres, userZipCode, userRadius);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
                   //getProfilePicture(getUUID());
