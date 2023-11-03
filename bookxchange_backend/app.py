@@ -658,6 +658,7 @@ def get_book_info(book_id):
 def book_delete():
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
+    #if(content_type == 'application/json'):
         json = request.json
     else:
         return 'content type not supported'
@@ -677,6 +678,7 @@ def library_delete_book():
 
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
+    #if(content_type == 'application/json'):
         json = request.json
     else:
         return 'content type not supported'

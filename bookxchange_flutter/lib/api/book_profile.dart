@@ -138,7 +138,7 @@ Future<Book> getBook(String book_uid) async {
   }
 }
 
-Future<Book> deleteBookFromLibrary(String userID, String bookID) async {
+Future<Map<String, dynamic>> deleteBookFromLibrary(String userID, String bookID) async {
 
   final response =
       await http.put(
@@ -158,7 +158,8 @@ Future<Book> deleteBookFromLibrary(String userID, String bookID) async {
       if (response.statusCode == 201) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return jsonDecode(response.body);
+        print(response.body[0]);
+        return jsonDecode(response.body);
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
@@ -167,7 +168,7 @@ Future<Book> deleteBookFromLibrary(String userID, String bookID) async {
 
 }
 
-Future<Book> deleteBookFromCollection(String bookID) async {
+void deleteBookFromCollection(String bookID) async {
 
   final response = 
       await http.delete(
@@ -186,7 +187,9 @@ Future<Book> deleteBookFromCollection(String bookID) async {
       if (response.statusCode == 204) {
     // If the server did return a 201 CREATED response,
     // then parse the JSON.
-    return jsonDecode(response.body);
+          //print(response.body);
+          //return jsonDecode(response.body);
+          return;
   } else {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.

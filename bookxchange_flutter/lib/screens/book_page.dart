@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bookxchange_flutter/api/book_profile.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
+import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/screens/edit_book_page.dart';
@@ -85,7 +86,7 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  ProfileScreen()),
+                  MaterialPageRoute(builder: (context) =>  HomePage()),
                 );
               },
               child: Text('OK'),
@@ -412,10 +413,10 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
 
 
 
-
+                          deleteBookConfirmationPopup(context);
                           deleteBookFromLibrary(getUUID(), currentBookUID);
                           deleteBookFromCollection(currentBookUID);
-                          deleteBookConfirmationPopup(context);
+                          
 
 
 
