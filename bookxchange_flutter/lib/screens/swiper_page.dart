@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:bookxchange_flutter/constants.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:bookxchange_flutter/api/queue.dart';
@@ -16,20 +17,10 @@ class BookSwiperScreen extends StatefulWidget {
 }
 
 class _BookSwiperScreenState extends State<BookSwiperScreen> {
-  Future<NextBook>? _nextBook = getNextBook(getUUID(), "initial"); 
+  Future<NextBook>? _nextBook = getNextBook(getUUID(), "initial");
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        //leading: Image.asset('assets/logo_no_text.png'), //looks kinda ugly
-        middle: Text(
-          'Happy Swiping!',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold, // Set text to bold
-          ),
-        ),
-      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -38,17 +29,19 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
               cardsCount: 15,
               onSwiping: (AppinioSwiperDirection direction) {
                 if (direction == AppinioSwiperDirection.right) {
-                    _nextBook = getNextBook(getUUID(), "true"); 
+                  _nextBook = getNextBook(getUUID(), "true");
                 } else {
-                    _nextBook = getNextBook(getUUID(), "false"); 
+                  _nextBook = getNextBook(getUUID(), "false");
                 }
               },
-              swipeOptions: AppinioSwipeOptions.symmetric(horizontal:true, vertical: false),
+              swipeOptions: AppinioSwipeOptions.symmetric(
+                  horizontal: true, vertical: false),
               cardsBuilder: (BuildContext context, int index) {
                 return Container(
-                  alignment: Alignment.center,
-                  color: CupertinoColors.lightBackgroundGray,
-                  child: FutureBuilder<NextBook>(
+                    alignment: Alignment.center,
+                    //color: CupertinoColors.lightBackgroundGray,
+                    color: Colors.transparent,
+                    child: FutureBuilder<NextBook>(
                         // pass the list (postsFuture)
                         future: _nextBook,
                         builder: (context, snapshot) {
@@ -67,43 +60,45 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
                             // we did not recieve any data, maybe show error or no data available
                           }
                         })
-                  //child: const Text('Book Cover Image'), // You can replace this with an actual book cover image
-                );
+                    //child: const Text('Book Cover Image'), // You can replace this with an actual book cover image
+                    );
               },
             ),
           ),
+          /*
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Handle "Dislike" action
-                },
-                icon: Icon(Icons.arrow_back, size: 32), // Arrow pointing left
-                label: Text(
-                  'Dislike',
-                  style: TextStyle(color: Colors.black), // Set text color to black
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 18.0),
+                child: IconButton(
+                  onPressed: () {       
+                  },
+                  icon: Icon(Icons.thumb_down_rounded,
+                      size: 32, color: Colors.white),
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
                 ),
-                style: ElevatedButton.styleFrom(primary: Colors.red),
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Handle "Like" action
-                },
-                icon: Icon(Icons.arrow_forward, size: 32), // Arrow pointing right
-                label: Text(
-                  'Like',
-                  style: TextStyle(color: Colors.black), // Set text color to black
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 18.0), 
+                child: IconButton(
+                  onPressed: () {
+                  },
+                  icon: Icon(Icons.thumb_up_rounded,
+                      size: 32, color: Colors.white),
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
                 ),
-                style: ElevatedButton.styleFrom(primary: Colors.green),
               ),
             ],
           ),
+          */
         ],
       ),
     );
   }
+
   Widget buildNextBook(NextBook book) {
+    String book_author = book.author;
     // return GridView.builder(
     //   scrollDirection: Axis.vertical,
     //   shrinkWrap: true,
@@ -114,27 +109,53 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
     //   ),
     //   itemCount: covers.bookCover.length, // Number of items
     //   itemBuilder: (BuildContext context, int index) {
-        return Card (
-          elevation: 4.0,
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(book.title),
-                subtitle: Text("by: $book.author"),
-                trailing: Icon(Icons.favorite_outline),
-              ),
-              Container(
-                height: 200.0,
-                child: Image.memory(
-                  base64.decode(book.bookCover)
-                ),
-               ),
-            ], 
+    return Card(
+      elevation: 4.0,
+      //color: butterfly_light,
+      //color: Colors.grey[100],
+      child: Column(
+        children: [
+          SizedBox(height: 20,),
+          Container(
+            height: 450.0,
+            child: Image.memory(base64.decode(book.bookCover)),
           ),
-        );
-  //     },
+          SizedBox(height: 10,),
+          ListTile(
+            title: Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
+              child: Center(
+                child: Text(
+                  book.title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            subtitle: Padding(
+              padding: EdgeInsets.fromLTRB(30, 5, 30, 0),
+              child: Center(
+                child: Text(
+                  "by $book_author",
+                  style: TextStyle(
+                    fontSize: 18, // Font size
+                    color: Colors.black, // Text color
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+          
+        ],
+      ),
+    );
+    //     },
 
-  //   );
+    //   );
   }
 }
 
