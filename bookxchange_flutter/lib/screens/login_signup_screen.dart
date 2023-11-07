@@ -1,5 +1,3 @@
-// Import packages from different files in the bookxchange_flutter directory
-// import 'dart:js_interop';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
@@ -67,7 +65,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   }
 
   static String getUUID() {
-    //final User user = FirebaseAuth.instance.currentUser!;
     final uuid = FirebaseAuth.instance.currentUser!.uid;
     return uuid;
   }
@@ -78,28 +75,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   }
 
   void signUserUp() async {
-    // showDialog(
-    //   context: context,
-    //   builder: (context) {
-    //     return const Center(
-    //       child: CircularProgressIndicator(),
-    //     );
-    //   },
-    // );
-    // final list = await FirebaseAuth.instance.fetchSignInMethodsForEmail(_email);
-    // if (list.isEmpty) {
-    //   emailAlreadyInUse();
-    // } else
     if (checkForValidPass() && _password == _confirmpassword) {
       try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
         newUser = true;
-        // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
-        // Navigator.pop(context);
-
         //WRONG LOGIN CREDENTIALS
         print(e.code);
         if (e.code == 'email-already-in-use') {
@@ -111,7 +93,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         }
       }
     } else {
-      // Navigator.pop(context);
       if (checkForValidPass() == false) {
         badPassword();
       } else {
@@ -145,16 +126,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
-    //create loading circle while signing in
-    // showDialog(
-    //   context: context,
-    //   builder: (context) {
-    //     return const Center(
-    //       child: CircularProgressIndicator(),
-    //     );
-    //   },
-    // );
-
     //try sign in
     try {
       await FirebaseAuth.instance
@@ -164,8 +135,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => HomePage()));
     } on FirebaseAuthException catch (e) {
-      // Navigator.pop(context);
-
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
         wrongEmailMessage();
@@ -201,6 +170,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //////////////////////////////
   // UI
   //////////////////////////////
+  ///
   @override
   Widget build(BuildContext context) {
     TextStyle linkStyle = TextStyle(
@@ -331,82 +301,74 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
                                               showModalBottomSheet(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(80),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                  "Enter Your Email Below!",
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .headlineLarge),
-                                                              Text(""),
-                                                              Text(
-                                                                  "Please check your email for a password reset link"),
-                                                              Text(""),
-                                                              CustomTextField(
-                                                                textField:
-                                                                    TextField(
-                                                                  onChanged:
-                                                                      (value) {
-                                                                    // Set the user's email
-                                                                    _email =
-                                                                        value;
-                                                                  },
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                  ),
-                                                                  decoration: kTextInputDecoration
-                                                                      .copyWith(
-                                                                          hintText:
-                                                                              'Email'),
-                                                                ),
-                                                              ),
-                                                              Text(""),
-                                                              Center(
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        butterfly, // Set the background color to blue
-                                                                    minimumSize:
-                                                                        const Size(
-                                                                            100,
-                                                                            50), // Set the button size (width x height)
-                                                                  ),
-                                                                  onPressed:
-                                                                      resetPassword,
-                                                                  child:
-                                                                      const Text(
-                                                                    "Send Email",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          )));
+                                                context: context,
+                                                builder: (context) => Container(
+                                                  padding:
+                                                      const EdgeInsets.all(80),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          "Enter Your Email Below!",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headlineLarge),
+                                                      Text(""),
+                                                      Text(
+                                                          "Please check your email for a password reset link"),
+                                                      Text(""),
+                                                      CustomTextField(
+                                                        textField: TextField(
+                                                          onChanged: (value) {
+                                                            // Set the user's email
+                                                            _email = value;
+                                                          },
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 15,
+                                                          ),
+                                                          decoration:
+                                                              kTextInputDecoration
+                                                                  .copyWith(
+                                                                      hintText:
+                                                                          'Email'),
+                                                        ),
+                                                      ),
+                                                      Text(""),
+                                                      Center(
+                                                        child: ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                butterfly, // Set the background color to blue
+                                                            minimumSize: const Size(
+                                                                100,
+                                                                50), // Set the button size (width x height)
+                                                          ),
+                                                          onPressed:
+                                                              resetPassword,
+                                                          child: const Text(
+                                                            "Send Email",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
                                             },
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                //const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -471,33 +433,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     obscureText: true,
                                   ),
                                 ),
-                                // SizedBox(
-                                //   height: 20,
-                                // ),
-                                // Row(
-                                //   children: [
-                                //     AnimatedContainer(
-                                //       duration: Duration(milliseconds: 500),
-                                //       width: 20,
-                                //       height: 20,
-                                //       decoration: BoxDecoration(
-                                //           border: Border.all(color: butterfly),
-                                //           borderRadius:
-                                //               BorderRadius.circular(50)),
-                                //       child: Center(
-                                //         child: Icon(
-                                //           Icons.check,
-                                //           color: Colors.white,
-                                //           size: 15,
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     SizedBox(
-                                //       width: 10,
-                                //     ),
-                                //     Text("Contains at least 8 Characters")
-                                //   ],
-                                // ),
+
                                 CustomTextField(
                                   textField: TextField(
                                     onChanged: (value) {
@@ -525,6 +461,31 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ),
             ),
           ),
+
+
+
+// LOGIN AS MODERATOR FIELD
+          Padding(
+            padding: const EdgeInsets.fromLTRB(200, 10, 0, 0),
+            child: Row(
+              children: [
+                RichText(
+                  textAlign: TextAlign.right,
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Login as Moderator',
+                        style: linkStyle,
+                        recognizer: TapGestureRecognizer()..onTap = () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+
 
           //////////////////////////////
           // LOGIN BUTTON
