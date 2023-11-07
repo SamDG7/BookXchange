@@ -148,20 +148,23 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   //method to sign in moderators (firebaseAuth)
   void signModIn() async {
-    //try sign in
+
+    const moderatorEmail = "bookxchangehelp@gmail.com";
+
     try {
-
-
-
-      // need to indicate mod credentials somehow
-
 
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
-      // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
-      Navigator.of(context)
+
+      if (_email == moderatorEmail) {
+        Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ModHomePage()));
+      }
+      else { 
+        wrongEmailMessage();
+      }
+      
     } on FirebaseAuthException catch (e) {
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
@@ -170,9 +173,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       }
     }
   }
-
-
-
 
   //pop up for when the wrong email is entered
   void wrongEmailMessage() {
