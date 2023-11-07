@@ -476,7 +476,83 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       TextSpan(
                         text: 'Login as Moderator',
                         style: linkStyle,
-                        recognizer: TapGestureRecognizer()..onTap = () {},
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => Container(
+                                padding: const EdgeInsets.all(50),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Enter Your Moderator Account Information Below",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall),
+                                    Text(""),
+                                    Text(""),
+                                    CustomTextField(
+                                      textField: TextField(
+                                        onChanged: (value) {
+                                          // Set the user's email
+                                          _email = value;
+                                        },
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                        decoration: kTextInputDecoration
+                                            .copyWith(hintText: 'Email'),
+                                      ),
+                                    ),
+
+                                    Text(""),
+                                    
+                                    CustomTextField(
+                                      textField: TextField(
+                                        onChanged: (value) {
+                                          // Set the user's email
+                                          _password = value;
+                                        },
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                        decoration: kTextInputDecoration
+                                            .copyWith(hintText: 'Password'),
+                                      ),
+                                    ),
+                                    Text(""),
+                                    Center(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              butterfly, // Set the background color to blue
+                                          minimumSize: const Size(100,
+                                              50), // Set the button size (width x height)
+                                        ),
+                                        onPressed:
+
+
+                                            // 
+                                            // TODO: REPLACE WITH OTHER FUNCTION
+                                            //
+                                            resetPassword,
+
+
+                                        child: const Text(
+                                          "Log In",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                       ),
                     ],
                   ),
@@ -486,14 +562,14 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           ),
 
 
+          //////////////////
+
 
           //////////////////////////////
           // LOGIN BUTTON
           //////////////////////////////
 
           Padding(
-            //TODO: MAKE BUTTON SWITCH TO A SIGN UP BUTTON WHEN ON THE SIGN UP TAB
-
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
