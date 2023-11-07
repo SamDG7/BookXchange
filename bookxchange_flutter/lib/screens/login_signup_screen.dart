@@ -2,6 +2,7 @@ import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/components/square_tile.dart';
 import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/mod_page.dart';
 import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
@@ -142,6 +143,36 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       }
     }
   }
+
+
+
+  //method to sign in moderators (firebaseAuth)
+  void signModIn() async {
+    //try sign in
+    try {
+
+
+
+      // need to indicate mod credentials somehow
+
+
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
+      // Navigator.pop(context);
+      futureUser = getUserLogin(getUUID());
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ModHomePage()));
+    } on FirebaseAuthException catch (e) {
+      //WRONG LOGIN CREDENTIALS
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        wrongEmailMessage();
+        print('WRONG Something');
+      }
+    }
+  }
+
+
+
 
   //pop up for when the wrong email is entered
   void wrongEmailMessage() {
@@ -519,6 +550,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                         ),
                                         decoration: kTextInputDecoration
                                             .copyWith(hintText: 'Password'),
+                                            obscureText: true,
                                       ),
                                     ),
                                     Text(""),
@@ -536,7 +568,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                             // 
                                             // TODO: REPLACE WITH OTHER FUNCTION
                                             //
-                                            resetPassword,
+                                            signModIn,
 
 
                                         child: const Text(
