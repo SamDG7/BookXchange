@@ -208,7 +208,7 @@ Widget build(BuildContext context) {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
                               child: const Text(
-                                  "Please Enter a Valid ISBN!",
+                                  "Book not found! Enter manually.",
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 16)),
                                       alignment:Alignment.center
