@@ -183,13 +183,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         children: [
           // Display logo above login/sign up bar options
           SizedBox(
-            height: 175,
-            child: Image.asset('assets/logo_with_text.png'),
+            height: 100,
+            child: Image.asset('assets/logo_with_text_compressed.png'),
           ),
 
           // Pad the container holding the login/sign up options
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: Container(
               height: MediaQuery.of(context).size.height - 510,
 
@@ -466,7 +466,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
 // LOGIN AS MODERATOR FIELD
           Padding(
-            padding: const EdgeInsets.fromLTRB(200, 10, 0, 0),
+            padding: const EdgeInsets.fromLTRB(200, 15, 0, 5),
             child: Row(
               children: [
                 RichText(
@@ -570,7 +570,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           //////////////////////////////
 
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: butterfly, // Set the background color to blue
