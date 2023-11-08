@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/gestures.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,6 +25,9 @@ class LoginSignupScreen extends StatefulWidget {
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
   Future<NewUser>? _futureUser;
   late Future<ExistingUser> futureUser;
+
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // @override
   // void initState() {
@@ -78,10 +81,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   void signUserUp() async {
     if (checkForValidPass() && _password == _confirmpassword) {
       try {
-        await FirebaseAuth.instance
+        UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: _email, password: _password);
         _futureUser = createUser(getUUID(), _email);
         newUser = true;
+
+        _firebaseFirestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'uid': userCredential.user!.uid,
+          'email': _email,
+        });
       } on FirebaseAuthException catch (e) {
         //WRONG LOGIN CREDENTIALS
         print(e.code);
@@ -129,10 +140,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   void signUserIn() async {
     //try sign in
     try {
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
       // Navigator.pop(context);
       futureUser = getUserLogin(getUUID());
+
+      _firebaseFirestore.collection('users').doc(userCredential.user!.uid).set({
+        'uid': userCredential.user!.uid,
+        'email': _email,
+      }, SetOptions(merge: true));
+
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => HomePage()));
     } on FirebaseAuthException catch (e) {
@@ -144,10 +161,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     }
   }
 
-
-
   //method to sign in moderators (firebaseAuth)
   void signModIn() async {
+
+    //try sign in
+    try {
+      // need to indicate mod credentials somehow
 
     const moderatorEmail = "bookxchangehelp@gmail.com";
 
@@ -493,8 +512,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
           ),
 
-
-
 // LOGIN AS MODERATOR FIELD
           Padding(
             padding: const EdgeInsets.fromLTRB(200, 15, 0, 5),
@@ -536,9 +553,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                             .copyWith(hintText: 'Email'),
                                       ),
                                     ),
-
                                     Text(""),
-                                    
                                     CustomTextField(
                                       textField: TextField(
                                         onChanged: (value) {
@@ -550,7 +565,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                         ),
                                         decoration: kTextInputDecoration
                                             .copyWith(hintText: 'Password'),
-                                            obscureText: true,
+                                        obscureText: true,
                                       ),
                                     ),
                                     Text(""),
@@ -564,13 +579,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                         ),
                                         onPressed:
 
-
-                                            // 
+                                            //
                                             // TODO: REPLACE WITH OTHER FUNCTION
                                             //
                                             signModIn,
-
-
                                         child: const Text(
                                           "Log In",
                                           style: TextStyle(
@@ -593,9 +605,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
           ),
 
-
           //////////////////
-
 
           //////////////////////////////
           // LOGIN BUTTON
