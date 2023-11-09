@@ -713,7 +713,6 @@ def library_delete_book():
 def book_check_match():
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
-    #if(content_type == 'application/json'):
         json = request.json
     else:
         return 'content type not supported'
@@ -721,17 +720,6 @@ def book_check_match():
     uuid = json['uuid']
     book_uid = json['book_uid']
     book_user_id = json['book_user_id']
-    #book_list = db.db.user_collection.find_one({"user_swipe.book_user_ud": book_user_id})
-
-    # if not book_list:
-    #     #book_list.append(book_uid)
-    #     #db.db.user_collection.update_one({uuid: {"$exists": True}}, {"$set": {{"user_swipe": {"$elemMatch": book_user_id}} : book_list}}, upsert = True)
-    #     db.db.user_collection.update_one({"uuid": uuid}, {"$push": {"user_swipe": {"book_user_id": book_user_id, "book_list": [book_uid]}}}, upsert = True)
-    # #else :
-    # db.db.user_collection.update(
-    #     { "uuid" : uuid},
-    #     { $pull: {"user_swipe.book_user_id": book_user_id}}
-    # )
 
     result = db.db.user_collection.update_one({"uuid": uuid, "user_swipe.book_user_id": book_user_id}, {"$push": {"user_swipe.$.book_list": book_uid}})
     print(result)
@@ -751,37 +739,6 @@ def book_check_match():
         }
      );
     
-    
-    # db.db.user_collection.update_one({ "uuid": uuid },
-    #     [{"$set": {
-    #         "user_swipe": {
-    #             "$cond": [
-    #             { "$in": [book_user_id, "$user_swipe.book_user_id"] },
-    #             {
-    #                 "$map": {
-    #                     "input": "$user_swipe",
-    #                     "in": {
-    #                         "$mergeObjects": [
-    #                         "$$this",
-    #                         {
-    #                             "$cond": [
-    #                             { $eq: ["$$this.book_user_id", book_user_id] },
-    #                             {"book_user_id": book_user_id,
-    #                             "book_list": book_list},
-    #                             {}
-    #                             ]
-    #                         }
-    #                         ]
-    #                     }
-    #                 }
-    #             },
-    #             { $concatArrays: ["$user_swipe", [{"book_user_id": book_user_id,
-    #                         "book_list": book_list}]] }
-    #             ]
-    #         }
-    #     }
-    #     }]
-    # )
     return json, 201
 
 
