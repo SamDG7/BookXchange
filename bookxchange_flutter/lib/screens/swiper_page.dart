@@ -18,6 +18,12 @@ class BookSwiperScreen extends StatefulWidget {
 
 class _BookSwiperScreenState extends State<BookSwiperScreen> {
   Future<NextBook>? _nextBook = getNextBook(getUUID(), "initial");
+  Future<SwipeRight>? swipe;
+  late NextBook? _currentBook;
+  //Future<NextBook>? _currentBook = _nextBook;
+  bool right = false;
+  //Future<SwipeRight>? _swipeRight = swipeRight(getUUID(), _nextBook![])
+  //print(_nextBook.title)
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -27,15 +33,30 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
           Expanded(
             child: AppinioSwiper(
               cardsCount: 15,
-              onSwiping: (AppinioSwiperDirection direction) {
+              //onSwipe: 
+              onSwiping: (AppinioSwiperDirection direction) async {
+              //onSwiping: (AppinioSwiperDirection direction)  {
+                print(direction.toString());
                 if (direction == AppinioSwiperDirection.right) {
+                  print("right");
+                  right = true;
+                  
+                  _currentBook = await _nextBook;
+                  swipe = swipeRight(getUUID(), _currentBook!.bookUid, _currentBook!.uuid);
+                  print(_currentBook!.title);
+                  print(_currentBook!.author);
                   _nextBook = getNextBook(getUUID(), "true");
+                  //currentBook = _nextBook as NextBook;
+                  //print(currentBook.title);
                 } else {
+                  right = false;
+                  print("left");
+                  _currentBook = await _nextBook;
                   _nextBook = getNextBook(getUUID(), "false");
                 }
               },
-              swipeOptions: AppinioSwipeOptions.symmetric(
-                  horizontal: true, vertical: false),
+              // swipeOptions: AppinioSwipeOptions.symmetric(
+              //     horizontal: true, vertical: false),
               cardsBuilder: (BuildContext context, int index) {
                 return Container(
                     alignment: Alignment.center,
@@ -50,9 +71,12 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
                             // do something till waiting for data, we can show here a loader
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasData) {
+                            //print(right);
                             //final bio = snapshot.data!.userBio;
-                            final nextBook = snapshot.data!;
-                            return buildNextBook(nextBook);
+                              final nextBook = snapshot.data!;
+                            //print(nextBook.title);
+                            //print(nextBook.author);
+                              return buildNextBook(nextBook);
                             // Text(posts);
                             // we have the data, do stuff here
                           } else {
