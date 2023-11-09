@@ -62,13 +62,17 @@ def user_singup():
 
     # global user_uid = json['uuid']
 
-    # user = db.db.user_collection.insert_one({
-    #     "uuid": uuid,
-    #     "user_email": user_email,
-    #     "user_phone": "",
-    #     "user_name": "",
-    #     "user_bio": "",
-    # })
+    user = db.db.user_collection.insert_one({
+        "uuid": uuid,
+        "user_email": user_email,
+        "user_phone": "",
+        "user_name": "",
+        "user_bio": "",
+        "user_zipcode": "",
+        "user_radius": "",
+        #"user_swipe" : property.__dict__
+        "user_swipe" : []
+    })
     # user = db.db.user_collection.replace_one({"uuid": uuid},
     #     {
     #         "uuid": uuid,
@@ -79,16 +83,18 @@ def user_singup():
     #         "user_zipcode": ""
     #     }, upsert=True)
 
-    db.db.user_collection.replace_one({"uuid": uuid},
-        {
-            "uuid": uuid,
-            "user_email": user_email,
-            "user_phone": "",
-            "user_name": "",
-            "user_bio": "",
-            "user_zipcode": "",
-            "user_radius": ""
-        }, upsert=True)
+    # db.db.user_collection.replace_one({"uuid": uuid},
+    #     {
+    #         "uuid": uuid,
+    #         "user_email": user_email,
+    #         "user_phone": "",
+    #         "user_name": "",
+    #         "user_bio": "",
+    #         "user_zipcode": "",
+    #         "user_radius": "",
+    #         #"user_swipe" : {},
+    #         "user_swipe" : property.__dict__
+    #     }, upsert=True)
     
     
 
@@ -618,7 +624,8 @@ def get_book_cover(user_uid, right):
     book = db.db.book_collection.find_one({"_id": book_uid})
     book = pd.DataFrame([book])
     book = book.astype({"_id": str, "uuid": str})
-    print(book['uuid'].to_string(index=False))
+    print(book['title'])
+    #print(book['uuid'].to_string(index=False))
 
     try:
 
@@ -631,7 +638,7 @@ def get_book_cover(user_uid, right):
             base64_string = base64.b64encode(f.read())
             book_cover_encode = (base64_string.decode('utf-8'))
         book['book_cover'] = book_cover_encode
-        print(book)
+        #print(book)
     
         #print(base64_string)
     except:
@@ -702,6 +709,38 @@ def library_delete_book():
 
     return json, 201
     
+@app.route('/book/check_match', methods=['PUT'])
+def book_check_match():
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+    
+    uuid = json['uuid']
+    book_uid = json['book_uid']
+    book_user_id = json['book_user_id']
+
+    result = db.db.user_collection.update_one({"uuid": uuid, "user_swipe.book_user_id": book_user_id}, {"$push": {"user_swipe.$.book_list": book_uid}})
+    print(result)
+
+    if result.modified_count == 0:
+        db.db.user_collection.update_one(
+        {
+            "uuid": uuid
+        },
+        {
+            "$addToSet": {
+                "user_swipe": {
+                    "book_user_id": book_user_id,
+                    "book_list": [book_uid]
+                }
+            }
+        }
+     );
+    
+    return json, 201
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
