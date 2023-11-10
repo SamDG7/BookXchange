@@ -53,14 +53,28 @@ class _MessagesScreenState extends State<MessagesScreen> {
   if (_auth.currentUser!.email != data['email']) {
     return ListTile(
       title: Text(data['email']),
-      leading: Icon(Icons.person), // Add a little icon next to the email
+      leading: GestureDetector(
+        onTap: () {
+          // Navigate to user profile
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtherUser(
+                userId: data['uid'],
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.person), // Add a little icon next to the email
+      ),
       onTap: () {
-        // Navigate to a different page when the ListTile is pressed
+        // Navigate to chat page
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OtherUser(
-              userId: data['uid'],
+            builder: (context) => ChatPage(
+              receiverUserEmail: data['email'],
+              receiverUserID: data['uid'],
             ),
           ),
         );
@@ -70,6 +84,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     return Container();
   }
 }
+
 }
 
 //current user list -- all users except current logged in user
