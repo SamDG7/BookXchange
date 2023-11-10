@@ -1,3 +1,4 @@
+import 'package:bookxchange_flutter/api/other_profile.dart';
 import 'package:bookxchange_flutter/screens/chat_page.dart';
 import 'package:bookxchange_flutter/screens/other_user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -59,6 +60,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => OtherUser(
+              userId: data['uid'],
             ),
           ),
         );

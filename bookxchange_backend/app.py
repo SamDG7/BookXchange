@@ -741,6 +741,30 @@ def book_check_match():
     
     return json, 201
 
+# Route to get another user's about me, community rating, and bio
+@app.route('/user/profile/<other_user_uid>', methods=['GET'])
+def get_other_user_profile(other_user_uid):
+    user = db.db.user_collection.find_one({
+        'uuid': other_user_uid
+    })
+
+    if user is None:
+        return "Resource Not Found", 404
+
+    # Extract relevant information (about me, bio, community rating) from the user document
+    about_me = user.get('user_about_me', '')
+    bio = user.get('user_bio', '')
+    community_rating = user.get('community_rating', 0.0)
+
+    # Create a JSON response with the extracted information
+    response = {
+        'user_about_me': about_me,
+        'user_bio': bio,
+        'community_rating': community_rating
+    }
+
+    return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
