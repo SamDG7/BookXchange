@@ -14,7 +14,7 @@ Future<Queue> createQueue(String uuid) async {
   //Sort books by user intially set preferences
 
   final response = await http.put(
-    Uri.parse('http://http://127.0.0.1:8080/queue/create_queue'),
+    Uri.parse('http://127.0.0.1:8080/queue/create_queue'),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },
@@ -51,8 +51,30 @@ Future<NextBook> getNextBook(String uuid, String direction) async {
     }
 }
 
+Future<SwipeRight> swipeRight(String uuid, String bookUID, String bookUserID) async {
+
+  final response = await http.put(
+    Uri.parse('http://127.0.0.1:8080/book/check_match'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, dynamic>{
+      'uuid': uuid,
+      'book_uid': bookUID,
+      'book_user_id': bookUserID
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    return SwipeRight.fromJson(await jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to add to right list');
+  }
+}
+
 class NextBook {
   final String uuid;
+  final String bookUid;
   final String title;
   final String author;
   //final int year;
@@ -67,10 +89,11 @@ class NextBook {
   //final int numSwaps;
 
   //const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps});
-    const NextBook({required this.uuid, required this.title, required this.author, required this.isbn13, required this.genres, required this.bookStatus, required this.bookCover});
+    const NextBook({required this.uuid, required this.bookUid, required this.title, required this.author, required this.isbn13, required this.genres, required this.bookStatus, required this.bookCover});
   factory NextBook.fromJson(Map<String, dynamic> json) {
     return NextBook(
       uuid: json['uuid'],
+      bookUid: json['_id'],
       title: json['title'],
       author: json['author'],
       //year: json['year'],
@@ -95,6 +118,25 @@ class Queue {
   factory Queue.fromJson(Map<String, dynamic> json) {
     return Queue(
       uuid: json['uuid'],
+      // bookList: json['book_list'],
+    );
+  }
+}
+
+class SwipeRight {
+  final String uuid;
+  final String bookUID;
+  final String bookUserID;
+  // final List<Book> bookList;
+
+  // const Queue({required this.uuid, required this.bookList});
+  const SwipeRight({required this.uuid, required this.bookUID, required this.bookUserID});
+
+  factory SwipeRight.fromJson(Map<String, dynamic> json) {
+    return SwipeRight(
+      uuid: json['uuid'],
+      bookUID: json['book_uid'],
+      bookUserID: json['book_user_id'],
       // bookList: json['book_list'],
     );
   }

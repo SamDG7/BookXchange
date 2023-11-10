@@ -1,4 +1,6 @@
+import 'package:bookxchange_flutter/api/other_profile.dart';
 import 'package:bookxchange_flutter/screens/chat_page.dart';
+import 'package:bookxchange_flutter/screens/other_user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -46,27 +48,28 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget _buildUserListItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-    if (_auth.currentUser!.email != data['email']) {
-      return ListTile(
-        title: Text(data['email']),
-        onTap: () {
-          //something soon
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  receiverUserEmail: data['email'],
-                  receiverUserID: data['uid'],
-                ),
-              ));
-        },
-      );
-    } else {
-      return Container();
-    }
+  if (_auth.currentUser!.email != data['email']) {
+    return ListTile(
+      title: Text(data['email']),
+      leading: Icon(Icons.person), // Add a little icon next to the email
+      onTap: () {
+        // Navigate to a different page when the ListTile is pressed
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtherUser(
+              userId: data['uid'],
+            ),
+          ),
+        );
+      },
+    );
+  } else {
+    return Container();
   }
+}
 }
 
 //current user list -- all users except current logged in user
