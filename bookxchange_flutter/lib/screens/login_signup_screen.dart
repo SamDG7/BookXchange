@@ -165,7 +165,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   void signModIn() async {
 
     //try sign in
-    //try {
       // need to indicate mod credentials somehow
 
     const moderatorEmail = "bookxchangehelp@gmail.com";

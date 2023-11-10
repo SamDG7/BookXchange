@@ -1,3 +1,4 @@
+import 'package:bookxchange_flutter/screens/add_rating_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
