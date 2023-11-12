@@ -227,3 +227,48 @@ Future<List<dynamic>> fetchData(userZipCode) async {
     throw Exception('Failed to fetch data');
   }
 }
+
+class UserRating {
+  final String uuid;
+  final String userRating;
+  final String numRaters;
+
+   const UserRating({required this.uuid, required this.userRating, required this.numRaters});
+  factory UserRating.fromJson(Map<String, dynamic> json) {
+    return UserRating(
+      uuid: json['uuid'],
+      userRating: json['user_rating'],
+      numRaters: json['num_raters']
+    );
+  }
+}
+
+// add user rating with the corresponding uuid
+Future<UserRating> addUserRating(String uuid, String userRating, String numRaters) async {
+  final response = await http.put(
+
+    // Route declared in the backend (bookxchange_backend/app.py)
+    //Uri.parse('http://10.0.0.127:8080/user/add_userrating'),
+    Uri.parse('http://127.0.0.1:8080/user/add_userrating'),
+    
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, dynamic>{
+      'uuid': uuid,
+      'user_rating': userRating,
+      'num_raters': numRaters
+    }
+    ),
+  );
+
+  if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return UserRating.fromJson(await jsonDecode(response.body));
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+      throw Exception('Failed to add user rating.');
+  }
+}

@@ -286,8 +286,40 @@ def user_get_picture(user_uid):
     # return user.to_json(orient='records', force_ascii=False)
     return jsonify({'user_picture': base64_string.decode('utf-8')})
 
+# user add user rating
+@app.route('/user/userrating', methods=['PUT'])
+def user_library_add_userrating():
+    # (re) setter method so doesn't return anything
 
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
 
+    uuid = json['uuid']
+    userRating = json['user_rating']
+    numRaters = json['num_raters']
+
+    user = db.user_collection.find_one({"uuid": uuid})
+    currentRating = user.get("user_rating", 0)
+    # get current rating from backend
+
+    total_rating = currentRating * numRaters
+    total_rating = total_rating + userRating
+    userRating  = total_rating / (numRaters + 1)
+    numRaters = numRaters + 1
+
+    user = db.db.user_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$set': {
+            "user_rating": userRating,
+            "num_raters": numRaters
+        }}
+    )
+
+    return json, 201
 
 
 ##############################
