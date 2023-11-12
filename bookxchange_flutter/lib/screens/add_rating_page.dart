@@ -21,6 +21,7 @@ class AddRatingScreen extends StatefulWidget {
 
 class _AddRatingScreenState extends State<AddRatingScreen> {
   late String userRating = '';
+  late String numRaters = '';
 
   bool isNumericString(String rating) {
     // Use a regular expression to check if the input is numeric
@@ -201,6 +202,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                       );
                     } else {
                       //SAVE RATING HERE
+
                       addRatingConfirmationPopup(context);
                       /*
                       Future.delayed(Duration(seconds: 2), () {
