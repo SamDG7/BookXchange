@@ -208,6 +208,7 @@ class _ChatPageState extends State<ChatPage> {
                     onPressed: () {
                       sendUserReport(widget.receiverUserEmail);
                       Navigator.pop(context);
+                      reportUserConfirmPopup();
                     },
                     child: const Text(
                       "Submit Report",
@@ -251,5 +252,36 @@ class _ChatPageState extends State<ChatPage> {
       }),
     );
     print(response.body);
+  }
+
+  void reportUserConfirmPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "User Report",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text("Your report has been succesfully submitted.",
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(
+                        "/")); // Close the success message dialog
+                //account is deleted
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
