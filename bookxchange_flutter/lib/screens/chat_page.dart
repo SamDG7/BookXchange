@@ -207,6 +207,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     onPressed: () {
                       sendUserReport(widget.receiverUserEmail);
+                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Submit Report",
@@ -222,6 +223,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future sendUserReport(String reportName) async {
     //send email to mods
+    print('attempting to send user report');
+    print(reportName);
     const email = 'bookxchangehelp@gmail.com';
     const serviceId = 'service_7syjpzx';
     const templateId = 'template_eium6e8';
@@ -247,7 +250,6 @@ class _ChatPageState extends State<ChatPage> {
         }
       }),
     );
-    Navigator.pop(context);
     print(response.body);
   }
 }
