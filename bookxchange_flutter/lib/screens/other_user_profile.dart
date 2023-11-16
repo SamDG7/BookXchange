@@ -1,3 +1,5 @@
+import 'package:bookxchange_flutter/constants.dart';
+import 'package:bookxchange_flutter/screens/add_rating_page.dart';
 import 'package:flutter/material.dart';
 
 import '../api/other_profile.dart';
@@ -14,7 +16,14 @@ class OtherUser extends StatefulWidget {
 class _OtherUserState extends State<OtherUser> {
   late Future<String?> aboutMeFuture;
   late Future<String?> bioFuture;
-  late Future<double?> communityRatingFuture;
+  late Future<double?> userRatingFuture;
+  bool value = false;
+
+  void changeData() {
+    setState(() {
+      userRatingFuture = getOtherUserCommunityRating(widget.userId);
+    });
+  }
 
   @override
   void initState() {
@@ -22,7 +31,7 @@ class _OtherUserState extends State<OtherUser> {
     // Initialize your Future objects here
     aboutMeFuture = getOtherUserAboutMe(widget.userId);
     bioFuture = getOtherUserBio(widget.userId);
-    communityRatingFuture = getOtherUserCommunityRating(widget.userId);
+    userRatingFuture = getOtherUserCommunityRating(widget.userId);
   }
 
   @override
@@ -79,8 +88,8 @@ class _OtherUserState extends State<OtherUser> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            FutureBuilder<double?>(
-                              future: communityRatingFuture,
+                            value? FutureBuilder<double?>(
+                              future: userRatingFuture,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -91,7 +100,28 @@ class _OtherUserState extends State<OtherUser> {
                                   final communityRating = snapshot.data;
                                   return communityRating != null
                                       ? Text(
-                                          'Community Rating: $communityRating',
+                                          'Community Rating: ${communityRating.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : Text('Community Rating not available');
+                                }
+                              },
+                            ): FutureBuilder<double?>(
+                              future: userRatingFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  final communityRating = snapshot.data;
+                                  return communityRating != null
+                                      ? Text(
+                                          'Community Rating: ${communityRating.toStringAsFixed(2)}',
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
@@ -106,6 +136,36 @@ class _OtherUserState extends State<OtherUser> {
                       : Text('Bio not available');
                 }
               },
+            ),
+            const SizedBox(height: 100),
+            Padding(
+              padding: EdgeInsets.fromLTRB(87, 0, 0, 100),
+              child: ElevatedButton(
+                //GET RID OF???
+                onPressed: () async {
+                  String refresh = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddRatingScreen(userId: widget.userId),
+                    ),
+                  );
+
+                  if (refresh == 'refresh') {
+                    changeData();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  backgroundColor: butterfly,
+                ),
+                child: Text(
+                  "Add User Rating",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),

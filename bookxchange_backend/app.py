@@ -70,6 +70,9 @@ def user_singup():
         "user_bio": "",
         "user_zipcode": "",
         "user_radius": "",
+        "user_rating": 0.0,
+        "num_raters": 0,
+        
         #"user_swipe" : property.__dict__
         "user_swipe" : []
     })
@@ -164,6 +167,8 @@ def user_create_profile():
     user_genre = json['user_genre']
     user_zipcode = json['user_zipcode']
     user_radius = json['user_radius']
+    user_rating = json['user_rating']
+    num_raters = json['num_raters']
     # print(user_name)
     # print(user_bio)
     # print(user_genre)
@@ -182,7 +187,9 @@ def user_create_profile():
         "user_bio": user_bio,
         "user_genre": user_genre,
         "user_zipcode": user_zipcode,
-        "user_radius": user_radius}}
+        "user_radius": user_radius,
+        "user_rating": user_rating,
+        "num_raters": num_raters}}
     )
 
     q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
@@ -287,7 +294,7 @@ def user_get_picture(user_uid):
     return jsonify({'user_picture': base64_string.decode('utf-8')})
 
 # user add user rating
-@app.route('/user/userrating', methods=['PUT'])
+@app.route('/user/add_userrating', methods=['PUT'])
 def user_library_add_userrating():
     # (re) setter method so doesn't return anything
 
@@ -299,16 +306,21 @@ def user_library_add_userrating():
 
     uuid = json['uuid']
     userRating = json['user_rating']
-    numRaters = json['num_raters']
+    #numRaters = json['num_raters']
 
     user = db.user_collection.find_one({"uuid": uuid})
     currentRating = user.get("user_rating", 0)
+    numRaters = user.get("num_raters", 0)
+
     # get current rating from backend
 
     total_rating = currentRating * numRaters
     total_rating = total_rating + userRating
     userRating  = total_rating / (numRaters + 1)
     numRaters = numRaters + 1
+    print(userRating)
+    print(numRaters)
+    print(uuid)
 
     user = db.db.user_collection.find_one_and_update(
         {"uuid": uuid}, 
@@ -786,13 +798,13 @@ def get_other_user_profile(other_user_uid):
     # Extract relevant information (about me, bio, community rating) from the user document
     about_me = user.get('user_about_me', '')
     bio = user.get('user_bio', '')
-    community_rating = user.get('community_rating', 0.0)
+    userRating = user.get('user_rating', 0.0)
 
     # Create a JSON response with the extracted information
     response = {
         'user_about_me': about_me,
         'user_bio': bio,
-        'community_rating': community_rating
+        'user_rating': userRating,
     }
 
     return jsonify(response)

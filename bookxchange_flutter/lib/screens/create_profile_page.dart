@@ -93,6 +93,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userBio;
   late String userZipCode;
   late String userRadius;
+  late double userRating = 0.0;
+  late int numRaters = 0;
   List<String> _preferredGenres = [];
   File? _image;
   final picker = ImagePicker();
@@ -519,7 +521,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     saveProfilePicture(getUUID(), _image!);
                   }
                   _newProfile = createUserProfile(getUUID(), userName, userBio,
-                      _preferredGenres, userZipCode, userRadius);
+                      _preferredGenres, userZipCode, userRadius, userRating, numRaters);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
                   //getProfilePicture(getUUID());
