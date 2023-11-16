@@ -13,7 +13,7 @@ import 'dart:io';
 
 // write functions here then import into screen
 Future<CreateProfile> createUserProfile(String uuid, String userName,
-    String userBio, List<String> userGenre, String userZipCode, String userRadius) async {
+    String userBio, List<String> userGenre, String userZipCode, String userRadius, double userRating, int numRaters) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
     Uri.parse('http://127.0.0.1:8080/user/create_profile'),
@@ -28,7 +28,9 @@ Future<CreateProfile> createUserProfile(String uuid, String userName,
       'user_bio': userBio,
       'user_genre': userGenre,
       'user_zipcode': userZipCode,
-      'user_radius': userRadius
+      'user_radius': userRadius,
+      'user_rating': userRating,
+      'num_raters': numRaters
     }),
   );
 
@@ -157,6 +159,8 @@ class CreateProfile {
   final List<String> userGenre;
   final String userZipCode;
   final String userRadius;
+  final double userRating;
+  final int numRaters;
 
   const CreateProfile(
       {required this.uuid,
@@ -164,7 +168,9 @@ class CreateProfile {
       required this.userBio,
       required this.userGenre,
       required this.userZipCode,
-      required this.userRadius});
+      required this.userRadius,
+      required this.userRating,
+      required this.numRaters});
   //const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
@@ -174,7 +180,9 @@ class CreateProfile {
         userBio: json['user_bio'],
         userGenre: json['user_genre'],
         userZipCode: json['user_zipcode'],
-        userRadius: json['user_radius']);
+        userRadius: json['user_radius'],
+        userRating: json['user_rating'],
+        numRaters: json['num_raters']);
   }
 }
 
@@ -230,21 +238,19 @@ Future<List<dynamic>> fetchData(userZipCode) async {
 
 class UserRating {
   final String uuid;
-  final String userRating;
-  final String numRaters;
+  final double userRating;
 
-   const UserRating({required this.uuid, required this.userRating, required this.numRaters});
+   const UserRating({required this.uuid, required this.userRating});
   factory UserRating.fromJson(Map<String, dynamic> json) {
     return UserRating(
       uuid: json['uuid'],
       userRating: json['user_rating'],
-      numRaters: json['num_raters']
     );
   }
 }
 
 // add user rating with the corresponding uuid
-Future<UserRating> addUserRating(String uuid, String userRating, String numRaters) async {
+Future<UserRating> addUserRating(String uuid, double userRating) async {
   final response = await http.put(
 
     // Route declared in the backend (bookxchange_backend/app.py)
@@ -257,7 +263,6 @@ Future<UserRating> addUserRating(String uuid, String userRating, String numRater
     body: jsonEncode(<String, dynamic>{
       'uuid': uuid,
       'user_rating': userRating,
-      'num_raters': numRaters
     }
     ),
   );

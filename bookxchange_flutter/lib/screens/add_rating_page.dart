@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
+import 'package:bookxchange_flutter/screens/other_user_profile.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
@@ -13,20 +14,25 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AddRatingScreen extends StatefulWidget {
-  const AddRatingScreen({super.key});
-
-  @override
+  final String userId;
+  const AddRatingScreen({Key? key, required this.userId}) : super(key: key);
   State<AddRatingScreen> createState() => _AddRatingScreenState();
 }
 
 class _AddRatingScreenState extends State<AddRatingScreen> {
-  late String userRating = '';
-  late String numRaters = '';
+  late double userRating = 0;
+  late int numRaters = 0;
+  late bool isDouble = true;
+  Future<UserRating>? _addRating;
 
-  bool isNumericString(String rating) {
+  
+  /*
+  bool isNumericString(double rating) {
     // Use a regular expression to check if the input is numeric
-    return double.tryParse(rating) != null;
+    return RegExp(r'[a-zA-Z]').hasMatch(rating);
   }
+  */
+  
 
   void successfullyAddedRating(BuildContext context) {
     showDialog(
@@ -60,7 +66,8 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text("Are you sure you want to give the user that rating?", style: TextStyle(fontSize: 16)),
+          content: Text("Are you sure you want to give the user that rating?",
+              style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
               onPressed: () {
@@ -115,7 +122,14 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: TextField(
                   onChanged: (value) {
-                    userRating = value;
+                    try {
+                      userRating = double.parse(value);
+                      isDouble = true;
+                    } catch (e) {
+                      print("Error: $e");
+                      isDouble = false;
+
+                    }
                   },
                   maxLength: 4,
                   decoration: InputDecoration(
@@ -164,13 +178,12 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                   ),
                 ),
               ),
-              
               Padding(
                 padding: EdgeInsets.fromLTRB(100, 0, 10, 100),
                 child: ElevatedButton(
                   //TRIGGER SAVE POPUP AND EXIT
                   onPressed: () async {
-                     if (isNumericString(userRating) == false) {
+                     if (isDouble == false) {
                       //print("the zipcode is empty");
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -186,12 +199,13 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                         ),
                       );
                     } 
-                    else if ((double.parse(userRating) < 0) || (double.parse(userRating) > 5)) {
+                    else if ((userRating < 0) || (userRating > 5)) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           backgroundColor: butterfly,
                           content: Center(
-                            child: Text('Please enter a number between 0 and 5!',
+                            child: Text(
+                                'Please enter a number between 0 and 5!',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -202,22 +216,18 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                       );
                     } else {
                       //SAVE RATING HERE
-
+                      print(userRating);
+                      _addRating = addUserRating(widget.userId, userRating);
                       addRatingConfirmationPopup(context);
-                      /*
+
                       Future.delayed(Duration(seconds: 2), () {
-                        //PUSH TO CHAT PAGE??
-                       
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                        
+                        int count = 0;
+                       Navigator.pop(context);
+                        Navigator.pop(context, 'refresh');
                       });
-                      */
+
+                      //Navigator.pop(context, 'refresh');
                     }
-                    
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
