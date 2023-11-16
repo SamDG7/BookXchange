@@ -53,6 +53,7 @@ dependencies:
   swipe_cards: ^2.0.0+1
   appinio_swiper: ^2.0.3
   cloud_firestore: ^4.12.2
+  flutter_rating_bar: ^4.0.1
 
 
 dev_dependencies:

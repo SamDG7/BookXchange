@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:bookxchange_flutter/api/display_library.dart';
 import 'dart:convert';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -35,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
+  late double rating;
+  //late Future<double?> userRatingFuture;
   //Future<Image> _image = getProfilePicture(getUUID());
   // Future<Library>? _userLibrary = getCurrentLibrary(getUUID());
 
@@ -50,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       // Vertical scrollable layout
       body: ListView(
@@ -60,35 +62,32 @@ Widget build(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-                
-                child: Container(
-                  //children: [
-                  child: CircleAvatar(
-                  radius: 75,
-                    //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
-                    child: FutureBuilder<ProfileImage>(
-                        // pass the list (postsFuture)
-                        future: _image,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // do something till waiting for data, we can show here a loader
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasData) {
-                            //final bio = snapshot.data!.userBio;
-                            final userPicture = snapshot.data!.userPicture;
-                            return buildPicture(userPicture);
-                            // Text(posts);
-                            // we have the data, do stuff here
-                          } else {
-                            return const Text("No image available");
-                            // we did not recieve any data, maybe show error or no data available
-                          }
-                        })
-                  ),
-                )
-            ),
+                  padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                  child: Container(
+                    //children: [
+                    child: CircleAvatar(
+                        radius: 75,
+                        //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
+                        child: FutureBuilder<ProfileImage>(
+                            // pass the list (postsFuture)
+                            future: _image,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // do something till waiting for data, we can show here a loader
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasData) {
+                                //final bio = snapshot.data!.userBio;
+                                final userPicture = snapshot.data!.userPicture;
+                                return buildPicture(userPicture);
+                                // Text(posts);
+                                // we have the data, do stuff here
+                              } else {
+                                return const Text("No image available");
+                                // we did not recieve any data, maybe show error or no data available
+                              }
+                            })),
+                  )),
               Padding(
                 padding: EdgeInsets.fromLTRB(10, 25, 10, 0),
                 child: Container(
@@ -240,18 +239,18 @@ Widget build(BuildContext context) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FutureBuilder<ExistingUser>(
-                future: _existingUser,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasData) {
-                    final radius = snapshot.data!.userRadius;
-                    return buildRadius(radius);
-                  } else {
-                    return Text("No radius available");
-                  }
-                },
-              ),
+                  future: _existingUser,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasData) {
+                      final radius = snapshot.data!.userRadius;
+                      return buildRadius(radius);
+                    } else {
+                      return Text("No radius available");
+                    }
+                  },
+                ),
                 Text(
                   "About Me:",
                   textAlign: TextAlign.left,
@@ -280,28 +279,45 @@ Widget build(BuildContext context) {
                             // we did not recieve any data, maybe show error or no data available
                           }
                         })),
-                
+
+                SizedBox(height: 10),
                 // Community rating
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: Row(
+                  padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                  child: Column(
                     children: [
+                      //child:
                       Text(
-                        "Community \nRating: ",
+                        "Community Rating: ",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Image.asset(
-                          'assets/community_rating.png'), // TODO: REPLACE WITH ACTUAL USER RATING IN FORM OF STARS
                     ],
                   ),
                 ),
-
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  child: FutureBuilder<ExistingUser?>(
+                    future: _existingUser,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final communityRating = snapshot.data!.userRating;
+                        rating = snapshot.data!.userRating;
+                        SizedBox(height: 20);
+                        return buildRating(communityRating);
+                      }
+                    },
+                  ),
+                ),
                 // Library
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 20, 5, 0),
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -314,157 +330,155 @@ Widget build(BuildContext context) {
                       ),
 
                       Padding(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child:
+                        padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+                        child:
 
-                              // Title and edit button
-                              Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              OutlinedButton.icon(
-                                onPressed: () {
-                                   Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditLibraryScreen()),
-                                // add screen to edit library here
-                              ); 
-                                },
-                                icon: Icon(
-                                  Icons.edit,
-                                  color: butterfly,
-                                ),
-                                label: Text(
-                                  'Edit Library',
-                                  style: TextStyle(color: Colors.grey[800]),
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  side:
-                                      BorderSide(width: 1.0, color: butterfly),
-                                ),
+                            // Title and edit button
+                            Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditLibraryScreen()),
+                                  // add screen to edit library here
+                                );
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: butterfly,
                               ),
+                              label: Text(
+                                'Edit Library',
+                                style: TextStyle(color: Colors.grey[800]),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(width: 1.0, color: butterfly),
+                              ),
+                            ),
 
-                              SizedBox(width: 10),
+                            SizedBox(width: 10),
 
-                              // Add book button
-                              OutlinedButton.icon(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                context: context,
-                                builder: (context) => Container(
-                                    height: 300,
-                                    padding:
-                                        const EdgeInsets.fromLTRB(20, 20, 0, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text("Add a Book!",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineLarge),
-                                        SizedBox(height: 20),
-                                        Text(
-                                            "Add a book either manually or enter the ISBN to find your book!"),
-                                        SizedBox(height: 50),
-                                        Row(
+                            // Add book button
+                            OutlinedButton.icon(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => Container(
+                                        height: 300,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 20, 0, 0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            SizedBox(width: 15),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                    MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    AddBooktoLibraryScreen()),
-                                    // add screen to edit library here
-                                                  );
-                                              },
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(butterfly),
-                                                fixedSize: MaterialStateProperty
-                                                    .all<Size>(Size(150, 50)),
-                                              ),
-                                              child: Text(
-                                                "Add book manually",
-                                                style: TextStyle(
-                                                    color: Colors.white
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 20),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                    MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    //AddBookISBNScreen()),
-                                                    DisplayBookISBNScreen()),
-                                    // add screen to edit library here
-                                                  );
-                                              },
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(butterfly),
-                                                fixedSize: MaterialStateProperty
-                                                    .all<Size>(Size(150, 50)),
-                                              ),
-                                              child: Text(
-                                                "Add book via ISBN",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                            Text("Add a Book!",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineLarge),
+                                            SizedBox(height: 20),
+                                            Text(
+                                                "Add a book either manually or enter the ISBN to find your book!"),
+                                            SizedBox(height: 50),
+                                            Row(
+                                              children: [
+                                                SizedBox(width: 15),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              AddBooktoLibraryScreen()),
+                                                      // add screen to edit library here
+                                                    );
+                                                  },
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                butterfly),
+                                                    fixedSize:
+                                                        MaterialStateProperty
+                                                            .all<Size>(
+                                                                Size(150, 50)),
+                                                  ),
+                                                  child: Text(
+                                                    "Add book manually",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 20),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              //AddBookISBNScreen()),
+                                                              DisplayBookISBNScreen()),
+                                                      // add screen to edit library here
+                                                    );
+                                                  },
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                butterfly),
+                                                    fixedSize:
+                                                        MaterialStateProperty
+                                                            .all<Size>(
+                                                                Size(150, 50)),
+                                                  ),
+                                                  child: Text(
+                                                    "Add book via ISBN",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
-                                        ),
-                                      ],
-                                    )));
-                                  
-                                },
-                                icon: Icon(
-                                  Icons.add,
-                                  color: butterfly,
-                                ),
-                                label: Text(
-                                  'Add Book',
-                                  style: TextStyle(color: Colors.grey[800]),
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  side:
-                                      BorderSide(width: 1.0, color: butterfly),
-                                ),
+                                        )));
+                              },
+                              icon: Icon(
+                                Icons.add,
+                                color: butterfly,
                               ),
-                            ],
-                          ),
-                          ),
-      //gridview will go here
-      Padding(
-                padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-                
-                child: Container(
-                          child: FutureBuilder<BookCovers>(
-                          future: _bookCovers,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasData) {
-                                final covers = snapshot.data!;
-                                return buildBook(covers);
-                            } else {
-                              return const Text("There are no books in your library");
-                            }
-                          }),
-                        
-                  
-                )
-            ),
-
-
+                              label: Text(
+                                'Add Book',
+                                style: TextStyle(color: Colors.grey[800]),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(width: 1.0, color: butterfly),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      //gridview will go here
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                          child: Container(
+                            child: FutureBuilder<BookCovers>(
+                                future: _bookCovers,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasData) {
+                                    final covers = snapshot.data!;
+                                    return buildBook(covers);
+                                  } else {
+                                    return const Text(
+                                        "There are no books in your library");
+                                  }
+                                }),
+                          )),
                     ],
                   ),
                 ),
@@ -474,10 +488,8 @@ Widget build(BuildContext context) {
           )
         ],
       ),
-      
     );
   }
-  
 
   Widget buildBio(String userbio) {
     return Text(userbio,
@@ -487,7 +499,7 @@ Widget build(BuildContext context) {
   }
 
   Widget buildName(String username) {
-    return  Text(
+    return Text(
       username,
       textAlign: TextAlign.left,
       softWrap: true,
@@ -497,21 +509,28 @@ Widget build(BuildContext context) {
         overflow: TextOverflow.clip,
       ),
     );
-  //}
-  //);
+    //}
+    //);
   }
 
   Widget buildPicture(String image64) {
     // ignore: unnecessary_null_comparison
-    return  profileImage == null ? CircleAvatar(radius: 75, child: Text('N',
-                      style: TextStyle(
-                        color: butterfly,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 80,
-                      ),
-                    )) : CircleAvatar(radius: 75, backgroundImage: Image.memory(base64Decode(image64)).image);
-
+    return profileImage == null
+        ? CircleAvatar(
+            radius: 75,
+            child: Text(
+              'N',
+              style: TextStyle(
+                color: butterfly,
+                fontWeight: FontWeight.w500,
+                fontSize: 80,
+              ),
+            ))
+        : CircleAvatar(
+            radius: 75,
+            backgroundImage: Image.memory(base64Decode(image64)).image);
   }
+
   //should buildgrid
   Widget buildBook(BookCovers covers) {
     return GridView.builder(
@@ -528,35 +547,60 @@ Widget build(BuildContext context) {
           base64.decode(covers.bookCover[index]),
         );
       },
-
     );
   }
-  
+
   Widget buildRadius(String userRadius) {
-  return Row(
-    children: [
-      Text(
-        "My Radius: ",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
+    return Row(
+      children: [
+        Text(
+          "My Radius: ",
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      Text(
-        userRadius,
-        style: TextStyle(
-          fontSize: 15,
+        Text(
+          userRadius,
+          style: TextStyle(
+            fontSize: 15,
+          ),
         ),
-      ),
-      Text(
-        " miles",
-        style: TextStyle(
-          fontSize: 15,
+        Text(
+          " miles",
+          style: TextStyle(
+            fontSize: 15,
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
-
+  Widget buildRating(double userRating) {
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 10, top: 60),
+          child: Text(
+            userRating.toStringAsFixed(2),
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+        ),
+        RatingBarIndicator(
+          rating: userRating,
+          direction: Axis.horizontal,
+          itemCount: 5,
+          itemSize: 50.0,
+          unratedColor: Colors.grey[400],
+          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+          itemBuilder: (context, index) => Icon(
+            Icons.star,
+            color: butterfly,
+          ),
+        ),
+      ],
+    );
+  }
 }

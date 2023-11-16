@@ -30,5 +30,5 @@ Future<String> getOtherUserBio(String uuid) async {
 
 Future<double> getOtherUserCommunityRating(String uuid) async {
   final Map<String, dynamic> otherUserProfile = await getOtherUserProfile(uuid);
-  return otherUserProfile['community_rating'] as double;
+  return otherUserProfile['user_rating'] as double;
 }
