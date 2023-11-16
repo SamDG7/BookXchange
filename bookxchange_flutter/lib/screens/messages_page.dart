@@ -13,6 +13,10 @@ class MessagesScreen extends StatefulWidget {
   State<MessagesScreen> createState() => _MessagesScreenState();
 }
 
+void unmatchWithUser() {
+  //how are we doing this?
+}
+
 class _MessagesScreenState extends State<MessagesScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -48,43 +52,47 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget _buildUserListItem(DocumentSnapshot document) {
-  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-  if (_auth.currentUser!.email != data['email']) {
-    return ListTile(
-      title: Text(data['email']),
-      leading: GestureDetector(
+    if (_auth.currentUser!.email != data['email']) {
+      return ListTile(
+        title: Text(data['email']),
+        leading: GestureDetector(
+          onTap: () {
+            // Navigate to user profile
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OtherUser(
+                  userId: data['uid'],
+                ),
+              ),
+            );
+          },
+          child:
+              const Icon(Icons.person), // Add a little icon next to the email
+        ),
         onTap: () {
-          // Navigate to user profile
+          // Navigate to chat page
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUser(
-                userId: data['uid'],
+              builder: (context) => ChatPage(
+                receiverUserEmail: data['email'],
+                receiverUserID: data['uid'],
               ),
             ),
           );
         },
-        child: Icon(Icons.person), // Add a little icon next to the email
-      ),
-      onTap: () {
-        // Navigate to chat page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatPage(
-              receiverUserEmail: data['email'],
-              receiverUserID: data['uid'],
-            ),
-          ),
-        );
-      },
-    );
-  } else {
-    return Container();
+        trailing: const IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: unmatchWithUser,
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
-}
-
 }
 
 //current user list -- all users except current logged in user
