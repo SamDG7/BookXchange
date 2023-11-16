@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookxchange_flutter/components/chat_bubble.dart';
 import 'package:bookxchange_flutter/components/components.dart';
@@ -28,11 +29,15 @@ class _ChatPageState extends State<ChatPage> {
   late String _subject = "";
   late String _msg = "";
 
+  final String del = "Delivered.";
+  final String sending = "Sending...";
+  bool sent = false;
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
           widget.receiverUserID, _messageController.text);
 
+      sent = true;
       _messageController.clear();
     }
   }
@@ -115,6 +120,7 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Text(data['senderEmail']),
                 ChatBubble(message: data['message']),
+                const Text("Delivered"),
               ],
             )));
   }
@@ -277,7 +283,7 @@ class _ChatPageState extends State<ChatPage> {
                         "/")); // Close the success message dialog
                 //account is deleted
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );

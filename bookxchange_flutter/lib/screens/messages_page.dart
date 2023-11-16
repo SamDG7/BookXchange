@@ -22,13 +22,17 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Chats'),
-      ),
-      body: _buildUserList(),
-    );
+    return SingleChildScrollView(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                title: const Text('Chats'),
+              ),
+              body: Scrollbar(child: _buildUserList()),
+            )));
   }
 
   Widget _buildUserList() {
