@@ -63,7 +63,14 @@ class _ChatPageState extends State<ChatPage> {
                       onTap: () {
                         reportUser(context);
                       },
-                    )
+                    ),
+                    PopupMenuItem(
+                      child: const Text('Block User'),
+                      onTap: () {
+                        blockUserConfirmationPopup(context);
+                      },
+                    ),
+
                   ])
         ],
       ),
@@ -284,6 +291,62 @@ class _ChatPageState extends State<ChatPage> {
                 //account is deleted
               },
               child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void successfullyBlockedUser(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Blocked User'),
+          content: Text('You have successfully blocked this user!',
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                //ADD LOGIC TO DELETE CHAT HERE
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void blockUserConfirmationPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Blocking of User",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text("Are you sure you want to block this user?",
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                successfullyBlockedUser(context);
+              },
+              child: Text("Confirm"),
             ),
           ],
         );
