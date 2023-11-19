@@ -138,7 +138,23 @@ class _ChatPageState extends State<ChatPage> {
                       color: data['isHearted'] ? Colors.red : Colors.grey,
                       onPressed: () {
                         
-                        toggleHeartStatus(document.reference, !data['isHearted']);
+                        toggleHeart(document.reference, !data['isHearted']);
+                        },
+                      
+                    
+                      ),
+
+
+
+                      IconButton(
+                      icon: Icon(
+                        data['isBrokenHearted'] ? Icons.heart_broken : Icons.heart_broken_outlined,
+                      ),
+                      iconSize: 25,
+                      color: data['isBrokenHearted'] ? Colors.red : Colors.grey,
+                      onPressed: () {
+                        
+                        toggleBrokenHeart(document.reference, !data['isBrokenHearted']);
                         },
                       
                     
@@ -152,8 +168,14 @@ class _ChatPageState extends State<ChatPage> {
             )));
   }
 
-  void toggleHeartStatus(DocumentReference reference, bool newHeartStatus) {
+  void toggleHeart(DocumentReference reference, bool newHeartStatus) {
     reference.update({'isHearted': newHeartStatus});
+  }
+
+  
+
+  void toggleBrokenHeart(DocumentReference reference, bool newHeartStatus) {
+    reference.update({'isBrokenHearted': newHeartStatus});
   }
 
   Widget _buildMessageInput() {

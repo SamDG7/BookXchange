@@ -7,6 +7,7 @@ class Message {
   final String message;
   final Timestamp timestamp;
   bool isHearted;
+  bool isBrokenHearted;
 
   Message(
       {required this.senderEmail,
@@ -14,7 +15,9 @@ class Message {
       required this.timestamp,
       required this.recevierId,
       required this.message,
-      this.isHearted = false});
+      this.isHearted = false,
+      this.isBrokenHearted = false,
+      });
 
   Map<String, dynamic> toMap() {
     return {
@@ -24,6 +27,7 @@ class Message {
       'message': message,
       'timestamp': timestamp,
       'isHearted': isHearted,
+      'isBrokenHearted': isBrokenHearted,
     };
   }
 }
