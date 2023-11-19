@@ -1,5 +1,19 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
+<a name="readme-top"></a>
+
+<br />
+<div align="center">
+  <a href="">
+    <img src="https://github.com/SamDG7/BookXchange/blob/main/bookxchange_flutter/assets/logo_no_text.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">BookXChange</h3>
+
+  <p align="center">
+    An iOS and Android mobile app that allows users to meet up, discuss, and Xchange books!
+    <br />
+  </p>
+</div>
+
 
 # BookXchange
 CS307 BookXchange
@@ -18,7 +32,4 @@ Running backend (seperate terminal):
 To install packages: 
 - pip3 install -r requirements.txt
 
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/SamDG7/BookXchange/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/SamDG7/BookXchange/network/members
+
