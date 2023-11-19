@@ -70,7 +70,6 @@ class _ChatPageState extends State<ChatPage> {
                         blockUserConfirmationPopup(context);
                       },
                     ),
-
                   ])
         ],
       ),
@@ -308,8 +307,37 @@ class _ChatPageState extends State<ChatPage> {
               style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 //ADD LOGIC TO DELETE CHAT HERE
+                //deletes messages and chat room
+                try {
+                  var snapshot = await FirebaseFirestore.instance
+                      .collection(
+                          'chat_rooms/${widget.receiverUserID}_${_firebaseAuth.currentUser!.uid}/messages')
+                      .get();
+                  if (mounted) {
+                    for (DocumentSnapshot ds in snapshot.docs) {
+                      await ds.reference.delete();
+                    }
+
+                    await FirebaseFirestore.instance
+                        .collection('chat_rooms')
+                        .doc(
+                            '${widget.receiverUserID}_${_firebaseAuth.currentUser!.uid}')
+                        .delete();
+                  }
+                } catch (e) {
+                  // Handle errors here
+                  print('Error: $e');
+                }
+
+                //deletes user doc so chat doesn't show up on page
+
+                final receiverUserDoc = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc('${widget.receiverUserID}')
+                    .delete();
+
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
