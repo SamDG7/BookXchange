@@ -23,6 +23,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  Color iconColor = Colors.grey;
+
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -70,7 +72,6 @@ class _ChatPageState extends State<ChatPage> {
                         blockUserConfirmationPopup(context);
                       },
                     ),
-
                   ])
         ],
       ),
@@ -126,10 +127,33 @@ class _ChatPageState extends State<ChatPage> {
                       : MainAxisAlignment.start,
               children: [
                 Text(data['senderEmail']),
-                ChatBubble(message: data['message']),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [ 
+                    IconButton(
+                      icon: Icon(
+                        data['isHearted'] ? Icons.favorite : Icons.favorite_border,
+                      ),
+                      iconSize: 25,
+                      color: data['isHearted'] ? Colors.red : Colors.grey,
+                      onPressed: () {
+                        
+                        toggleHeartStatus(document.reference, !data['isHearted']);
+                        },
+                      
+                    
+                      ),
+                  
+                    ChatBubble(message: data['message']),
+                  ],
+                ),
                 const Text("Delivered"),
               ],
             )));
+  }
+
+  void toggleHeartStatus(DocumentReference reference, bool newHeartStatus) {
+    reference.update({'isHearted': newHeartStatus});
   }
 
   Widget _buildMessageInput() {
