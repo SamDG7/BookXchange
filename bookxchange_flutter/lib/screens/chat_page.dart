@@ -23,6 +23,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  Color iconColor = Colors.grey;
+
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -125,10 +127,55 @@ class _ChatPageState extends State<ChatPage> {
                       : MainAxisAlignment.start,
               children: [
                 Text(data['senderEmail']),
-                ChatBubble(message: data['message']),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [ 
+                    IconButton(
+                      icon: Icon(
+                        data['isHearted'] ? Icons.favorite : Icons.favorite_border,
+                      ),
+                      iconSize: 25,
+                      color: data['isHearted'] ? Colors.red : Colors.grey,
+                      onPressed: () {
+                        
+                        toggleHeart(document.reference, !data['isHearted']);
+                        },
+                      
+                    
+                      ),
+
+
+
+                      IconButton(
+                      icon: Icon(
+                        data['isBrokenHearted'] ? Icons.heart_broken : Icons.heart_broken_outlined,
+                      ),
+                      iconSize: 25,
+                      color: data['isBrokenHearted'] ? Colors.red : Colors.grey,
+                      onPressed: () {
+                        
+                        toggleBrokenHeart(document.reference, !data['isBrokenHearted']);
+                        },
+                      
+                    
+                      ),
+                  
+                    ChatBubble(message: data['message']),
+                  ],
+                ),
                 const Text("Delivered"),
               ],
             )));
+  }
+
+  void toggleHeart(DocumentReference reference, bool newHeartStatus) {
+    reference.update({'isHearted': newHeartStatus});
+  }
+
+  
+
+  void toggleBrokenHeart(DocumentReference reference, bool newHeartStatus) {
+    reference.update({'isBrokenHearted': newHeartStatus});
   }
 
   Widget _buildMessageInput() {
