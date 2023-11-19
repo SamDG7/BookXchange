@@ -23,6 +23,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  Color iconColor = Colors.grey;
+
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -70,7 +72,6 @@ class _ChatPageState extends State<ChatPage> {
                         blockUserConfirmationPopup(context);
                       },
                     ),
-
                   ])
         ],
       ),
@@ -126,7 +127,18 @@ class _ChatPageState extends State<ChatPage> {
                       : MainAxisAlignment.start,
               children: [
                 Text(data['senderEmail']),
-                ChatBubble(message: data['message']),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.favorite),
+                      iconSize: 25,
+                      color: iconColor,
+                      onPressed: () {},
+                    ),
+                    ChatBubble(message: data['message']),
+                  ],
+                ),
                 const Text("Delivered"),
               ],
             )));
