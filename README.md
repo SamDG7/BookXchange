@@ -39,8 +39,8 @@ For futher information view the project backlog and planning documents in the "d
 
 _Follow the instructions below to launch the application._
 
-1. Install Flutter: [https://docs.flutter.dev/get-started/install](Flutter)
-2. Install Emulator of Choice: [https://medium.com/@abrisad_it/how-to-launch-ios-simulator-and-android-emulator-on-mac-cd198295532e](iOS) or [https://developer.android.com/studio](Android)
+1. Install Flutter: [Flutter](https://docs.flutter.dev/get-started/install)
+2. Install Emulator of Choice: [iOS](https://medium.com/@abrisad_it/how-to-launch-ios-simulator-and-android-emulator-on-mac-cd198295532e) or [Android](https://developer.android.com/studio)
 3. Clone the repo
   ```sh
   git clone https://github.com/SamDG7/BookXchange.git
@@ -52,15 +52,11 @@ _Follow the instructions below to launch the application._
 5. Run Front-end via Flutter:
   ```sh
   cd bookxchange_flutter
-  ```
-  ```sh
   flutter run
   ```
 6. Run the back-end:
    ```sh
    cd bookxchange_backend
-   ```
-   ```sh
    python3 app.py
    ```
 
