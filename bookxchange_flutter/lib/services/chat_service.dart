@@ -17,7 +17,8 @@ class ChatService extends ChangeNotifier {
         senderId: currentUserId,
         timestamp: timestamp,
         recevierId: receverId,
-        message: message);
+        message: message,
+        );
 
     List<String> ids = [currentUserId, receverId];
     ids.sort();

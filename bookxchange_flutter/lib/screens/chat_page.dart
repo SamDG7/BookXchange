@@ -129,19 +129,31 @@ class _ChatPageState extends State<ChatPage> {
                 Text(data['senderEmail']),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+                  children: [ 
                     IconButton(
-                      icon: const Icon(Icons.favorite),
+                      icon: Icon(
+                        data['isHearted'] ? Icons.favorite : Icons.favorite_border,
+                      ),
                       iconSize: 25,
-                      color: iconColor,
-                      onPressed: () {},
-                    ),
+                      color: data['isHearted'] ? Colors.red : Colors.grey,
+                      onPressed: () {
+                        
+                        toggleHeartStatus(document.reference, !data['isHearted']);
+                        },
+                      
+                    
+                      ),
+                  
                     ChatBubble(message: data['message']),
                   ],
                 ),
                 const Text("Delivered"),
               ],
             )));
+  }
+
+  void toggleHeartStatus(DocumentReference reference, bool newHeartStatus) {
+    reference.update({'isHearted': newHeartStatus});
   }
 
   Widget _buildMessageInput() {
