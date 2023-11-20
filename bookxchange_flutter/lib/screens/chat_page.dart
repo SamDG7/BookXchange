@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookxchange_flutter/components/chat_bubble.dart';
@@ -30,6 +31,7 @@ class _ChatPageState extends State<ChatPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   late String _subject = "";
   late String _msg = "";
+  Future<BlockedUsers>? _addBlockedUser;
 
   final String del = "Delivered.";
   final String sending = "Sending...";
@@ -143,8 +145,6 @@ class _ChatPageState extends State<ChatPage> {
                       
                     
                       ),
-
-
 
                       IconButton(
                       icon: Icon(
@@ -385,6 +385,8 @@ class _ChatPageState extends State<ChatPage> {
                     .doc('${widget.receiverUserID}')
                     .delete();
 
+                //STORE BLOCKED ID FOR BLOCKEE
+                _addBlockedUser = addUBlockedUser(_firebaseAuth.currentUser!.uid, widget.receiverUserID);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },

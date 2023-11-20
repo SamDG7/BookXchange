@@ -72,6 +72,7 @@ def user_singup():
         "user_radius": "",
         "user_rating": 0.0,
         "num_raters": 0,
+        "blocked_user" : [],
         
         #"user_swipe" : property.__dict__
         "user_swipe" : []
@@ -169,6 +170,7 @@ def user_create_profile():
     user_radius = json['user_radius']
     user_rating = json['user_rating']
     num_raters = json['num_raters']
+
     # print(user_name)
     # print(user_bio)
     # print(user_genre)
@@ -328,6 +330,30 @@ def user_library_add_userrating():
         {'$set': {
             "user_rating": userRating,
             "num_raters": numRaters
+        }}
+    )
+
+    return json, 201
+
+# user add blocked user
+@app.route('/user/add_blockeduser', methods=['PUT'])
+def user_library_add_blockeduser():
+    # (re) setter method so doesn't return anything
+
+    content_type = request.headers.get('Content-Type')
+    if(content_type == 'application/json; charset=utf-8'):
+        json = request.json
+    else:
+        return 'content type not supported'
+
+    uuid = json['uuid']
+    blockedUser = json['blocked_user']
+   
+    user = db.db.user_collection.find_one_and_update(
+        {"uuid": uuid}, 
+
+        {'$addToSet': {
+            "blocked_user": blockedUser
         }}
     )
 
