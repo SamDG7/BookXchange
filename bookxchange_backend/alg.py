@@ -40,11 +40,12 @@ def calcDistance(pref, book_pref):
           score += abs(encode[bp] - encode[p])
   
   return score
+
 def createQueue(uuid, collection, preferences):
   queue = []
   user = list(db.db.user_collection.find({"uuid": uuid}))
   for doc in collection:
-    if doc['uuid'] != uuid:
+    if doc['uuid'] != uuid and doc['uuid'] not in user['blocked_user']:
       current_book_genres = doc['genres']
       score = calcDistance(preferences, current_book_genres)
       queue.append([doc['_id'], score])
@@ -62,6 +63,7 @@ def createQueue(uuid, collection, preferences):
 #right is a boolean, book_id is the object ID of the book swiped on
 def updateQueueOnSwipe(uuid, right):
   queue = list(db.db.queue_collection.find({"uuid": uuid}))[0]['queue']
+  user = list(db.db.user_collection.find({'uuid': uuid}))[0]
   user_genres = list(db.db.user_collection.find({'uuid': uuid}))[0]['user_genre']
   swiped_book = list(db.db.book_collection.find({'_id': queue[0][0]}))
   print(f'This is the users current queue: {queue}\n\n\n\n')
@@ -70,6 +72,7 @@ def updateQueueOnSwipe(uuid, right):
   queue.pop(0)
 
   if right:    
+    
     swiped_book_genres = swiped_book[0]['genres']
     swiped_book_author = swiped_book[0]['author']
 
@@ -97,7 +100,7 @@ def updateQueueOnSwipe(uuid, right):
   for b in all_books:
     id = b['_id']
     g = b['genres']
-    if id not in [x[0] for x in queue]:
+    if id not in [x[0] for x in queue] and b['uuid'] not in user['blocked_user']:
       queue.append([id, calcDistance(g, user_genres)])
       print(f'added {id} because its not in queue')
       break
@@ -122,7 +125,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  updateQueueOnSwipe('pD1EYTRa4CNoCNu767VYgwytfTR2', True)
+  updateQueueOnSwipe('wyrQqvd6J4YuHNSDJW11QK5AUa82', True)
   return 0
 if __name__ == "__main__":
     main()
