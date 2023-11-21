@@ -131,35 +131,32 @@ class _ChatPageState extends State<ChatPage> {
                 Text(data['senderEmail']),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [ 
+                  children: [
                     IconButton(
                       icon: Icon(
-                        data['isHearted'] ? Icons.favorite : Icons.favorite_border,
+                        data['isHearted']
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                       ),
                       iconSize: 25,
                       color: data['isHearted'] ? Colors.red : Colors.grey,
                       onPressed: () {
-                        
                         toggleHeart(document.reference, !data['isHearted']);
-                        },
-                      
-                    
-                      ),
-
-                      IconButton(
+                      },
+                    ),
+                    IconButton(
                       icon: Icon(
-                        data['isBrokenHearted'] ? Icons.heart_broken : Icons.heart_broken_outlined,
+                        data['isBrokenHearted']
+                            ? Icons.heart_broken
+                            : Icons.heart_broken_outlined,
                       ),
                       iconSize: 25,
                       color: data['isBrokenHearted'] ? Colors.red : Colors.grey,
                       onPressed: () {
-                        
-                        toggleBrokenHeart(document.reference, !data['isBrokenHearted']);
-                        },
-                      
-                    
-                      ),
-                  
+                        toggleBrokenHeart(
+                            document.reference, !data['isBrokenHearted']);
+                      },
+                    ),
                     ChatBubble(message: data['message']),
                   ],
                 ),
@@ -171,8 +168,6 @@ class _ChatPageState extends State<ChatPage> {
   void toggleHeart(DocumentReference reference, bool newHeartStatus) {
     reference.update({'isHearted': newHeartStatus});
   }
-
-  
 
   void toggleBrokenHeart(DocumentReference reference, bool newHeartStatus) {
     reference.update({'isBrokenHearted': newHeartStatus});
@@ -380,13 +375,15 @@ class _ChatPageState extends State<ChatPage> {
 
                 //deletes user doc so chat doesn't show up on page
 
+                //THIS IS TEMPORARY AND NEEDS TO BE REMOVED ONCE MATCHING IS DONE
                 final receiverUserDoc = await FirebaseFirestore.instance
                     .collection('users')
                     .doc('${widget.receiverUserID}')
                     .delete();
 
                 //STORE BLOCKED ID FOR BLOCKEE
-                _addBlockedUser = addUBlockedUser(_firebaseAuth.currentUser!.uid, widget.receiverUserID);
+                _addBlockedUser = addUBlockedUser(
+                    _firebaseAuth.currentUser!.uid, widget.receiverUserID);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
