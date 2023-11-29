@@ -26,16 +26,10 @@ Future<List<ModUser>> getUserList() async {
     final response = await http.get(Uri.parse('http://127.0.0.1:8080/moderator/get_user/''$uuid'));
     
     if (response.statusCode == 200) {
-        //final List body = json.decode(response.body);
-        //return body.map((e) => User.fromJson(e)).toList();
-       //return UserProfile.fromJson(jsonDecode((response.body)));
-       print(jsonDecode(response.body)[0]);
-      //  print((UserProfile.fromJson(
-      //   jsonDecode(response.body)[0] as Map<String, dynamic>)).userName);
-        
-      //  return UserProfile.fromJson(
-      //   jsonDecode(response.body)[0] as Map<String, dynamic>);
-        return UserProfile.fromJson(jsonDecode(response.body)[0] as Map<String, dynamic>);
+
+       //print(jsonDecode(response.body)[0]);
+
+      return UserProfile.fromJson(jsonDecode(response.body)[0] as Map<String, dynamic>);
        
     } else {
       print("Error in getting book covers");
@@ -102,14 +96,14 @@ Future<List<ModUser>> getUserList() async {
   final String userPhone;
   final String userName;
   final String userBio;
-  //final List userGenre;
+  final List userGenre;
   final String userZipcode;
   final String userRadius;
-  final Double userRating;
+  final double userRating;
   final String userPicture;
 
-  //const UserProfile({required this.uuid, required this.userEmail, required this.userPhone, required this.userName, required this.userBio, required this.userGenre, required this.userZipcode, required this.userRadius, required this.userRating, required this.userPicture});
-  const UserProfile({required this.uuid, required this.userEmail, required this.userPhone, required this.userName, required this.userBio, required this.userZipcode, required this.userRadius, required this.userRating, required this.userPicture});
+  const UserProfile({required this.uuid, required this.userEmail, required this.userPhone, required this.userName, required this.userBio, required this.userGenre, required this.userZipcode, required this.userRadius, required this.userRating, required this.userPicture});
+  //const UserProfile({required this.uuid, required this.userEmail, required this.userPhone, required this.userName, required this.userBio, required this.userZipcode, required this.userRadius, required this.userRating, required this.userPicture});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
@@ -118,7 +112,7 @@ Future<List<ModUser>> getUserList() async {
       userPhone: json['user_phone'],
       userName: json['user_name'],
       userBio: json['user_bio'],
-      //userGenre: json['user_genre'] as List,
+      userGenre: json['user_genre'] as List,
       userZipcode: json['user_zipcode'],
       userRadius: json['user_radius'],
       userRating: json['user_rating'],
