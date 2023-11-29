@@ -6,6 +6,7 @@ import 'package:bookxchange_flutter/screens/messages_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:bookxchange_flutter/screens/swiper_page.dart';
 import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:bookxchange_flutter/screens/mod_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:bookxchange_flutter/components/components.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';

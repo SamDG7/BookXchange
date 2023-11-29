@@ -5,7 +5,7 @@ import io
 from json import dumps, loads
 import json
 from tkinter import Image
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, url_for
 import pandas as pd
 #from os import abort
 import os 
@@ -41,6 +41,99 @@ def flask_mongodb_atlas():
 #     return user_uid
 #user sign up
 
+
+## MODERATOR ROUTES
+
+@app.route('/moderator/all_users', methods=['GET'])
+def get_all_users():
+
+    user_list = db.db.user_collection.find({})
+    user_list_df = pd.DataFrame(user_list)
+
+    print(user_list_df.info())
+    user_list_df = user_list_df.drop(columns=["_id", "user_swipe", "num_raters", "user_rating", "user_genre", "user_zipcode", "user_phone", "user_bio", "user_radius"])
+    print(user_list_df.info())
+
+    if (user_list_df.empty):
+            return "Resource Not Found", 404
+    
+    return user_list_df.to_json(orient='records')
+
+
+@app.route('/moderator/get_user/<user_uid>', methods=['GET'])
+def get_mod_user(user_uid):
+
+    user = db.db.user_collection.find_one({
+        # 'uuid': str(user_uid)
+        'uuid': user_uid
+    })
+    if (user == None):
+        return "Resource Not Found", 404
+    user_df = pd.DataFrame([user])
+    #user_list_df = pd.DataFrame(user_list)
+
+    #print(user_df.info())
+    #user_df = user_df.drop(columns=["_id", "user_swipe", "num_raters"])
+    user_df = user_df.drop(columns=["_id", "user_swipe"])
+    
+    
+    try:
+        with open("images/%s.png" %user_uid, "rb") as f:
+            base64_string = base64.b64encode(f.read())
+            user_df['user_picture'] = base64_string.decode('utf-8')
+    except:
+        print("file not found");        
+    
+    #jsonify({'user_picture': base64_string.decode('utf-8')})
+
+    print(user_df.info())
+
+    if (user_df.empty):
+            return "Resource Not Found", 404
+    
+    return user_df.to_json(orient='records')
+
+@app.route('/moderator/delete_user/<user_uid>', methods=['DELETE'])
+def mod_user_delete(user_uid):
+    # content_type = request.headers.get('Content-Type')
+    # if (content_type == 'application/json; charset=utf-8'):
+    #     json = request.json
+    # else:
+    #     return 'content type not supported'
+    
+    print(user_uid);
+    user_email = db.db.user_collection.find_one({'uuid': user_uid}, {"_id" : 0, "uuid" : 0, "user_name" : 0, "user_phone" : 0, "user_bio" : 0, "user_zipcode" : 0, "user_radius" : 0, "user_rating" : 0, "num_raters" : 0, "user_genre" : 0, "blocked_user": 0, "user_swipe": 0, "cities": 0})
+    print(user_email["user_email"]);
+    delete_user = db.db.user_collection.delete_one({
+        'uuid': user_uid,
+    })
+    db.db.mod_collection.update_one(
+        {
+            "uuid": "pDVeA1GgkbajzI3kpopcc1Qrng02"
+        },
+        {
+            "$addToSet": {
+                "deleted_users": user_email["user_email"]
+            }
+        }
+     );
+
+    return user_uid, 204
+
+@app.route('/moderator/deleted_users', methods=['GET'])
+def get_deleted_users():
+
+    user_list = db.db.mod_collection.find_one({}, {"_id" : 0, "uuid" : 0})
+    delete_user_list = user_list['deleted_users'];
+    print(delete_user_list);
+    #print(user_list_df.info())
+    # user_list_df = user_list_df.drop(columns=["_id", "user_swipe", "num_raters", "user_rating", "user_genre", "user_zipcode", "user_phone", "user_bio", "user_radius"])
+    # print(user_list_df.info())
+
+    # if (user_list_df.empty):
+    #         return "Resource Not Found", 404
+    
+    return delete_user_list
 ## USER ACCOUNT ROUTES 
 
 # user sign up -- new user
@@ -508,52 +601,9 @@ def get_library(user_uid):
     #print(book_cover_add)
     library_df = pd.DataFrame({'book_list': book_list_add, 'book_covers': book_cover_add})
 
-    # print(library_df)
-    #for i,j in library_df._id.len
     if (library_df.empty):
             return "Resource Not Found", 404
     
-    
-    # #library_df["book_covers"] = ""
-    # #print(library_df);
-    # #print(library_df.info())
-    # for i in library_df.book_list:
-         
-    #     try:
-    #         full_fp = ""
-    #         mypath = './book_covers/%s' %user_uid
-    #         #print(str(library_df.book_list[0]))
-    #         #print(os.listdir(mypath))
-    #         myList = []
-    #         for i in library_df.book_list[0]:
-    #         #for image_fp in os.listdir(mypath):
-    #             #print(i)
-    #             book_picture = str(i)
-    #             print(book_picture)
-    #             full_fp = os.path.join(mypath, '%s.png' %str(book_picture))
-    #             #print(full_fp)
-    #             #print(full_fp)
-    #             with open(full_fp, "rb") as f:
-    #                 base64_string = base64.b64encode(f.read())
-    #                 myList.append(base64_string.decode('utf-8'))
-    #                 #library_df.book_covers[i] = base64_string.decode('utf-8')
-    #     except:
-    #         print("file not found");    
-    # library_df["book_covers"] : myList;    
-        
-        # return user.to_json(orient='records', force_ascii=False)
-        # returnList = [];
-        # for i, s in enumerate(myList):
-        #     myList[i] = myList[i].decode('utf-8')
-        
-    
-    #library_df = library_df.drop(columns=["_id"])
-    #print(library_df);
-    #library_df[book_list]
-    #pdLibrary = pdLibrary.drop(columns=["uuid"])
-    
-    #print(library_df.to_json(orient='records'))
-  
     return library_df.to_json(orient='records')
     #return "test"
 
@@ -653,8 +703,12 @@ def get_book_cover(user_uid, right):
     
     book_uid = (db.db.queue_collection.find({"uuid": user_uid}))[0]['queue'][0][0];
     print(book_uid)
-    book = db.db.book_collection.find_one({"_id": book_uid})
+    if db.db.book_collection.count_documents({"_id": ObjectId(book_uid)}) == 0:
+        return "Book not found", 404;
+    book = db.db.book_collection.find_one({"_id": ObjectId(book_uid)})
     book = pd.DataFrame([book])
+    #if 
+    print(book.info())
     book = book.astype({"_id": str, "uuid": str})
     print(book['title'])
     #print(book['uuid'].to_string(index=False))
@@ -743,6 +797,7 @@ def library_delete_book():
     
 @app.route('/book/check_match', methods=['PUT'])
 def book_check_match():
+    #found_match = False
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
@@ -771,7 +826,59 @@ def book_check_match():
         }
      );
     
-    return json, 201
+    if db.db.user_collection.count_documents({"uuid": book_user_id}) == 0:
+        return {"match" : False}
+    
+    match_user_swipes = db.db.user_collection.find_one({"uuid": book_user_id}, {"_id" : 0, "uuid" : 0, "user_email" : 0, "user_name" : 0, "user_phone" : 0, "user_bio" : 0, "user_zipcode" : 0, "user_radius" : 0, "user_rating" : 0, "num_raters" : 0, "user_genre" : 0})
+    print(book_user_id);
+    print(book_uid);
+    print("this is the match_user_list\n")
+    print(match_user_swipes['user_swipe'])
+    #if match_user_swipes.user_swipe == None:
+    if len(match_user_swipes['user_swipe']) == 0:
+        #return redirect(url_for('book/return_match',match = False))
+        return {"match" : False}
+
+    for key, value in (match_user_swipes['user_swipe'][0]).items():
+        print(key);
+        if key == uuid :
+            #found_match = True
+            db.db.match_collection.update_one(
+            {
+                "uuid": uuid
+            },
+            {
+                "$addToSet": {
+                    "matches": {
+                        "match_user_id": book_user_id,
+                        "match_list": [book_uid]
+                    }
+                }
+            }, upsert=True
+            );
+            db.db.match_collection.update_one(
+            {
+                "uuid": book_user_id
+            },
+            {
+                "$addToSet": {
+                    "matches": {
+                        "match_user_id": uuid,
+                        "match_list": i.book_list
+                    }
+                }
+            }, upsert=True
+            );
+            #return redirect(url_for('book/return_match',match = True))
+            return {"match" : True}
+    
+    #return redirect(url_for('book/return_match',match = False))
+    return {"match" : False}
+
+@app.route('/book/return_match/<match>')
+def success(match):
+    return {"match" : match}
+   
 
 # Route to get another user's about me, community rating, and bio
 @app.route('/user/profile/<other_user_uid>', methods=['GET'])

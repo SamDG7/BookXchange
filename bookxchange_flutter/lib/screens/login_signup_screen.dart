@@ -7,12 +7,15 @@ import 'package:bookxchange_flutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:bookxchange_flutter/main.dart';
 import 'package:flutter/gestures.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 // Stateful Widget
+//final navigatorKey = GlobalKey<NavigatorState>();
+
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({super.key});
   static String id = 'login_signup_screen';
@@ -139,27 +142,44 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   //method to sign in users (firebaseAuth)
   void signUserIn() async {
     //try sign in
+    deletedUsers =  await getDeletedUsers();
+    if (deletedUsers.contains(_email)) {
+        deletedUserMessage();
+        return;
+    }
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
-      // Navigator.pop(context);
-      futureUser = getUserLogin(getUUID());
+   
 
-      _firebaseFirestore.collection('users').doc(userCredential.user!.uid).set({
-        'uid': userCredential.user!.uid,
-        'email': _email,
-      }, SetOptions(merge: true));
+    
+        if (_email != "bookxchangehelp@gmail.com") {
+            futureUser = getUserLogin(getUUID());
+          }
+       
+              _firebaseFirestore.collection('users').doc(userCredential.user!.uid).set({
+              'uid': userCredential.user!.uid,
+              'email': _email,
+            }, SetOptions(merge: true));
 
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => HomePage()));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => HomePage()));
+        
+          
+
+    
     } on FirebaseAuthException catch (e) {
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        wrongEmailMessage();
+        
         print('WRONG Something');
       }
+    } on Exception catch (e) {
+        wrongEmailMessage();        
     }
-  }
+   }
+
+
 
   //method to sign in moderators (firebaseAuth)
   void signModIn() async {
@@ -173,15 +193,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password);
-      futureUser = getUserLogin(getUUID());
+      //futureUser = getUserLogin(getUUID());
 
       if (_email == moderatorEmail) {
+        Navigator.pop(context);
         Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ModHomePage()));
       }
       else { 
         wrongEmailMessage();
       }
+      
       
     } on FirebaseAuthException catch (e) {
       //WRONG LOGIN CREDENTIALS
@@ -199,6 +221,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       builder: (context) {
         return const AlertDialog(
           title: Text('Incorrect Email or Password'),
+        );
+      },
+    );
+  }
+
+  void deletedUserMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('your account has been deleted'),
         );
       },
     );
@@ -576,12 +609,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                           minimumSize: const Size(100,
                                               50), // Set the button size (width x height)
                                         ),
-                                        onPressed:
+                                        onPressed: 
+                                        // () {
+                                        //   signModIn();
+                                        //   Navigator.pop(context);
+                                        // },
 
                                             //
                                             // TODO: REPLACE WITH OTHER FUNCTION
                                             //
+                                            //Navigator.pop(context),
                                             signModIn,
+                                        
                                         child: const Text(
                                           "Log In",
                                           style: TextStyle(
