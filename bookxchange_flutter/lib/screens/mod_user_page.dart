@@ -1,23 +1,11 @@
-import 'dart:math';
-import 'dart:typed_data';
 
-import 'package:bookxchange_flutter/api/book_profile.dart';
-import 'package:bookxchange_flutter/api/display_library.dart';
-import 'package:bookxchange_flutter/api/library_profile.dart';
 import 'package:bookxchange_flutter/constants.dart';
-import 'package:bookxchange_flutter/screens/create_book_page.dart';
+
 import 'package:bookxchange_flutter/screens/mod_page.dart';
-import 'package:bookxchange_flutter/screens/display_book_isbn_page.dart';
-import 'package:bookxchange_flutter/screens/book_page.dart';
-import 'package:bookxchange_flutter/screens/edit_book_page.dart';
-import 'package:bookxchange_flutter/screens/edit_library_page.dart';
-import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
-import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
-import 'package:bookxchange_flutter/api/user_account.dart';
-import 'package:bookxchange_flutter/api/user_profile.dart';
+
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
+
 import 'package:bookxchange_flutter/api/moderator_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -114,19 +102,22 @@ class _ModUserScreenState extends State<ModUserScreen> {
       appBar: AppBar(
      
         backgroundColor: butterfly,
+        title: Text("User Profile",  
+        style: TextStyle(color: Colors.white,
+              fontWeight: FontWeight.bold)),
 
-        title: FutureBuilder(
-        future: _moderatorUserProfile,
-        builder: (context, snapshot){
-         return Text(snapshot.hasData
-           ? snapshot.data!.userName
-          : "User Info", 
-          style: TextStyle(color: Colors.white,
-             fontWeight: FontWeight.bold
-             )
-          );//AppLocalizations.of(context)!.loading
-        }
-      ),
+      //   title: FutureBuilder(
+      //   future: _moderatorUserProfile,
+      //   builder: (context, snapshot){
+      //    return Text(snapshot.hasData
+      //      ? snapshot.data!.userName
+      //     : "User Info", 
+      //     style: TextStyle(color: Colors.white,
+      //        fontWeight: FontWeight.bold
+      //        )
+      //     );//AppLocalizations.of(context)!.loading
+      //   }
+      // ),
       ),
       body: ListView(
         children: <Widget>[
@@ -186,6 +177,10 @@ class _ModUserScreenState extends State<ModUserScreen> {
                               return buildName(name);
                               // Text(posts);
                               // we have the data, do stuff here
+
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            
                             } else {
                               return const Text("No name available");
                               // we did not recieve any data, maybe show error or no data available
@@ -222,6 +217,8 @@ class _ModUserScreenState extends State<ModUserScreen> {
                   } else if (snapshot.hasData) {
                     final radius = snapshot.data!.userRadius;
                     return buildRadius(radius);
+                  } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
                   } else {
                     return Text("No radius available");
                   }
