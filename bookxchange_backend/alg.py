@@ -43,12 +43,14 @@ def calcDistance(pref, book_pref):
 
 def createQueue(uuid, collection, preferences):
   queue = []
-  user = list(db.db.user_collection.find({"uuid": uuid}))
+  user = list(db.db.user_collection.find({"uuid": uuid}))[0]
   for doc in collection:
-    if doc['uuid'] != uuid and doc['uuid'] not in user['blocked_user']:
-      current_book_genres = doc['genres']
-      score = calcDistance(preferences, current_book_genres)
-      queue.append([doc['_id'], score])
+    if doc['uuid'] != uuid and doc['uuid']:
+      if bool(user['blocked_user']):
+        if doc['uuid'] not in user['blocked_user']:
+          current_book_genres = doc['genres']
+          score = calcDistance(preferences, current_book_genres)
+          queue.append([doc['_id'], score])
 
   queue.sort(key= lambda x: x[1])
 
@@ -137,7 +139,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  updateQueueOnSwipe('JV8acEq9NXRQrQcqywRuaql690q1', True)
+  createQueue('JV8acEq9NXRQrQcqywRuaql690q1', db.db.book_collection.find({}), ['Fantasy'])
   return 0
 if __name__ == "__main__":
     main()
