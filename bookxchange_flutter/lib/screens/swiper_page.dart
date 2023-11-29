@@ -18,7 +18,7 @@ class BookSwiperScreen extends StatefulWidget {
 
 class _BookSwiperScreenState extends State<BookSwiperScreen> {
   Future<NextBook>? _nextBook = getNextBook(getUUID(), "initial");
-  Future<SwipeRight>? swipe;
+  Future<CheckMatch>? swipe;
   late NextBook? _currentBook;
   //Future<NextBook>? _currentBook = _nextBook;
   bool right = false;
