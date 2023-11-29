@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bookxchange_flutter/screens/home_page.dart';
 import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/screens/create_profile_page.dart';
-
+import 'package:bookxchange_flutter/screens/mod_page.dart';
 import 'package:bookxchange_flutter/screens/verify_email_page.dart';
 //import 'package:bookxchange_flutter/screens/test_picture.dart';
 
@@ -27,6 +27,7 @@ class AuthPage extends StatelessWidget {
                 } else {
                   //return const TestPictureScreen();
                   return const HomePage();
+                  //return const ModHomePage();
                 }
               } else {
                 return const VerifyScreen();

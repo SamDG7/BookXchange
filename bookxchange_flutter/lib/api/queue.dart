@@ -51,7 +51,7 @@ Future<NextBook> getNextBook(String uuid, String direction) async {
     }
 }
 
-Future<SwipeRight> swipeRight(String uuid, String bookUID, String bookUserID) async {
+Future<CheckMatch> swipeRight(String uuid, String bookUID, String bookUserID) async {
 
   final response = await http.put(
     Uri.parse('http://127.0.0.1:8080/book/check_match'),
@@ -66,7 +66,9 @@ Future<SwipeRight> swipeRight(String uuid, String bookUID, String bookUserID) as
   );
 
   if (response.statusCode == 201) {
-    return SwipeRight.fromJson(await jsonDecode(response.body));
+    //return SwipeRight.fromJson(await jsonDecode(response.body));
+    //return await jsonDecode(response.body);
+    return CheckMatch.fromJson(await jsonDecode(response.body));
   } else {
     throw Exception('Failed to add to right list');
   }
@@ -81,7 +83,7 @@ class NextBook {
   final String isbn13;
   final String bookStatus;
   final List<dynamic> genres;
-  final String bookCover;
+  final dynamic bookCover;
   
   //final Image bookCover;
   //final String yourReview;
@@ -137,6 +139,19 @@ class SwipeRight {
       uuid: json['uuid'],
       bookUID: json['book_uid'],
       bookUserID: json['book_user_id'],
+      // bookList: json['book_list'],
+    );
+  }
+}
+
+class CheckMatch {
+  final String match;
+
+  const CheckMatch({required this.match});
+
+  factory CheckMatch.fromJson(Map<String, dynamic> json) {
+    return CheckMatch(
+      match: json['match'],
       // bookList: json['book_list'],
     );
   }
