@@ -46,8 +46,6 @@ def createQueue(uuid, collection, preferences):
   user = list(db.db.user_collection.find({"uuid": uuid}))[0]
   for doc in collection:
     if doc['uuid'] != uuid and doc['uuid']:
-      if bool(user['blocked_user']):
-        if doc['uuid'] not in user['blocked_user']:
           current_book_genres = doc['genres']
           score = calcDistance(preferences, current_book_genres)
           queue.append([doc['_id'], score])
