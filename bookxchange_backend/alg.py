@@ -97,13 +97,24 @@ def updateQueueOnSwipe(uuid, right):
 
   #add 1 new book to queue
   all_books = list(db.book_collection.find({}))
+  swipe_book_ids = []
+  user_swipe = user['user_swipe']
+  # print(user_swipe)
+  
+  for doc in user_swipe:
+    swipe_book_ids.append(doc['book_list'])
+  # print(all_books)
+
+  
   for b in all_books:
-    id = b['_id']
+    id = str(b['_id'])
     g = b['genres']
     if id not in [x[0] for x in queue] and b['uuid'] not in user['blocked_user']:
-      queue.append([id, calcDistance(g, user_genres)])
-      print(f'added {id} because its not in queue')
-      break
+      print(f'book id: {id}')
+      if id not in swipe_book_ids[0]:
+        queue.append([id, calcDistance(g, user_genres)])
+        print(f'added {id} because its not in queue')
+        break
 
 
   if not right:
@@ -125,7 +136,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  updateQueueOnSwipe('wyrQqvd6J4YuHNSDJW11QK5AUa82', True)
+  updateQueueOnSwipe('Ibh7MPhNl8PEZDzdtE40zuhVTTp2', True)
   return 0
 if __name__ == "__main__":
     main()
