@@ -95,6 +95,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late String userRadius;
   late double userRating = 0.0;
   late int numRaters = 0;
+  List<String> cities = [];
   List<String> _preferredGenres = [];
   File? _image;
   final picker = ImagePicker();
@@ -193,8 +194,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           );
         },
       );
-    }
-    else if (int.parse(userRadius) >= 100) {
+    } else if (int.parse(userRadius) >= 100) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -213,7 +213,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         },
       );
     }
-}
+  }
 
 /*
   void _negativeradius() {
@@ -227,7 +227,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     );
   }
   */
-
 
   void successfullyCreatedAccount(BuildContext context) {
     showDialog(
@@ -405,7 +404,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               textField: TextField(
                 onChanged: (value) {
                   userRadius = value;
-                  checkRadius(); 
+                  checkRadius();
                 },
                 style: const TextStyle(
                   fontSize: 15,
@@ -417,7 +416,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 maxLength: 3,
-                
               ),
             ),
           ),
@@ -496,7 +494,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 minimumSize:
                     const Size(200, 50), // Set the button size (width x height)
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (checkNullValue() == false) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -516,12 +514,37 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                                   color: Colors.white, fontSize: 16))),
                     ),
                   );
+                } else if ((await fetchData(userZipCode)).isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: butterfly,
+                      content: Center(
+                        child: Text('Please enter a valid zip code!',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500)),
+                      ),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
                 } else {
                   if (_image != null) {
                     saveProfilePicture(getUUID(), _image!);
                   }
-                  _newProfile = createUserProfile(getUUID(), userName, userBio,
-                      _preferredGenres, userZipCode, userRadius, userRating, numRaters);
+                  List<dynamic> data = await fetchData(userZipCode);
+                  //String cities = data.toString();
+                  List<String> cities = data.map((entry) => entry['city_name']).cast<String>().toList();
+                  _newProfile = createUserProfile(
+                      getUUID(),
+                      userName,
+                      userBio,
+                      _preferredGenres,
+                      userZipCode,
+                      userRadius,
+                      userRating,
+                      numRaters,
+                      cities);
                   //ADD PREFERENCES HAVE BEEN SAVED HERE
                   successfullyCreatedAccount(context);
                   //getProfilePicture(getUUID());
