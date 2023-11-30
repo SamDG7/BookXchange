@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookxchange_flutter/components/chat_bubble.dart';
@@ -9,6 +11,7 @@ import 'package:bookxchange_flutter/services/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
@@ -24,8 +27,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  Color iconColor = Colors.grey;
+  @override
+  void initState() {
+    super.initState();
+    sendDefaultMessage();
+  }
 
+  Color iconColor = Colors.grey;
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -36,6 +44,7 @@ class _ChatPageState extends State<ChatPage> {
   final String del = "Delivered.";
   final String sending = "Sending...";
   bool sent = false;
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
@@ -43,6 +52,36 @@ class _ChatPageState extends State<ChatPage> {
 
       sent = true;
       _messageController.clear();
+    }
+  }
+
+  void sendDefaultMessage() async {
+    String chatroomId =
+        "${widget.receiverUserID}_${_firebaseAuth.currentUser!.uid}";
+
+    try {
+      // Get the cities of the other user
+      UserCities receiverCities = await getCities(widget.receiverUserID);
+      UserCities senderCities = await getCities(_firebaseAuth.currentUser!.uid);
+
+      List<String> cities = [];
+
+      if (receiverCities.cities != null) {
+        cities.addAll(receiverCities.cities.map((city) => city.toString()));
+      }
+
+      if (senderCities.cities != null) {
+        cities.addAll(senderCities.cities.map((city) => city.toString()));
+      }
+
+      String messageContent =
+          'Hi, let\'s meet up! A suggested nearby location is a public library in any of the following cities: ${cities.join(', ')}';
+
+      // Send the message to the other user
+      await _chatService.sendMessage(widget.receiverUserID, messageContent);
+    } catch (error) {
+      // Handle errors (e.g., user not found)
+      print('Error fetching user cities: $error');
     }
   }
 
@@ -114,55 +153,85 @@ class _ChatPageState extends State<ChatPage> {
         ? Alignment.centerRight
         : Alignment.centerLeft;
 
-    return Container(
-        alignment: alignment,
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment:
-                  (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.start,
-              children: [
-                Text(data['senderEmail']),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        data['isHearted']
-                            ? Icons.favorite
-                            : Icons.favorite_border,
+    if (data['message'].startsWith('Hi, let\'s meet up!')) {
+      return Container(
+          alignment: Alignment.center,
+          child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 8.0),
+                          child: ChatBubble(message: data['message']),
+                        ),
                       ),
-                      iconSize: 25,
-                      color: data['isHearted'] ? Colors.red : Colors.grey,
-                      onPressed: () {
-                        toggleHeart(document.reference, !data['isHearted']);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        data['isBrokenHearted']
-                            ? Icons.heart_broken
-                            : Icons.heart_broken_outlined,
+                    ],
+                  ),
+                ],
+              )));
+    } else {
+      return Container(
+          alignment: alignment,
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment:
+                    (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                mainAxisAlignment:
+                    (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                children: [
+                  Text(data['senderEmail']),
+                  Row(
+                    crossAxisAlignment:
+                        (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
+                    mainAxisAlignment:
+                        (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          data['isHearted']
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                        ),
+                        iconSize: 25,
+                        color: data['isHearted'] ? Colors.red : Colors.grey,
+                        onPressed: () {
+                          toggleHeart(document.reference, !data['isHearted']);
+                        },
                       ),
-                      iconSize: 25,
-                      color: data['isBrokenHearted'] ? Colors.red : Colors.grey,
-                      onPressed: () {
-                        toggleBrokenHeart(
-                            document.reference, !data['isBrokenHearted']);
-                      },
-                    ),
-                    ChatBubble(message: data['message']),
-                  ],
-                ),
-                const Text("Delivered"),
-              ],
-            )));
+                      IconButton(
+                        icon: Icon(
+                          data['isBrokenHearted']
+                              ? Icons.heart_broken
+                              : Icons.heart_broken_outlined,
+                        ),
+                        iconSize: 25,
+                        color:
+                            data['isBrokenHearted'] ? Colors.red : Colors.grey,
+                        onPressed: () {
+                          toggleBrokenHeart(
+                              document.reference, !data['isBrokenHearted']);
+                        },
+                      ),
+                      ChatBubble(message: data['message']),
+                    ],
+                  ),
+                  const Text("Delivered"),
+                ],
+              )));
+    }
   }
 
   void toggleHeart(DocumentReference reference, bool newHeartStatus) {
@@ -174,22 +243,27 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageInput() {
-    return Row(
-      children: [
-        Expanded(
+    return Container(
+      padding: const EdgeInsets.only(
+          bottom: 25.0, left: 20), // Adjust the bottom padding as needed
+      child: Row(
+        children: [
+          Expanded(
             child: TextField(
-          controller: _messageController,
-          obscureText: false,
-          decoration: const InputDecoration(hintText: 'Type Message Here'),
-        )),
-        IconButton(
-          onPressed: sendMessage,
-          icon: const Icon(
-            Icons.arrow_upward,
-            size: 40,
+              controller: _messageController,
+              obscureText: false,
+              decoration: const InputDecoration(hintText: 'Type Message Here'),
+            ),
           ),
-        )
-      ],
+          IconButton(
+            onPressed: sendMessage,
+            icon: const Icon(
+              Icons.arrow_upward,
+              size: 40,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

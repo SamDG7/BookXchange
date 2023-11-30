@@ -21,6 +21,7 @@ Future<CreateProfile> createUserProfile(
   String userRadius,
   double userRating,
   int numRaters,
+  List<dynamic> cities,
 ) async {
   final response = await http.put(
     //Uri.parse('http://localhost:8080/user/create_profile'),
@@ -39,6 +40,7 @@ Future<CreateProfile> createUserProfile(
       'user_radius': userRadius,
       'user_rating': userRating,
       'num_raters': numRaters,
+      'cities': cities,
     }),
   );
 
@@ -167,17 +169,19 @@ class CreateProfile {
   final String userRadius;
   final double userRating;
   final int numRaters;
+  final List<dynamic> cities;
 
-  const CreateProfile(
-      {required this.uuid,
-      required this.userName,
-      required this.userBio,
-      required this.userGenre,
-      required this.userZipCode,
-      required this.userRadius,
-      required this.userRating,
-      required this.numRaters,
-});
+  const CreateProfile({
+    required this.uuid,
+    required this.userName,
+    required this.userBio,
+    required this.userGenre,
+    required this.userZipCode,
+    required this.userRadius,
+    required this.userRating,
+    required this.numRaters,
+    required this.cities,
+  });
   //const CreateProfile({required this.uuid, required this.userName, required this.userBio, required this.userGenre});
 
   factory CreateProfile.fromJson(Map<String, dynamic> json) {
@@ -189,7 +193,8 @@ class CreateProfile {
         userZipCode: json['user_zipcode'],
         userRadius: json['user_radius'],
         userRating: json['user_rating'],
-        numRaters: json['num_raters'],);
+        numRaters: json['num_raters'],
+        cities: json['cities']);
   }
 }
 
@@ -234,9 +239,9 @@ Future<List<dynamic>> fetchData(userZipCode) async {
   final response = await http.get(Uri.parse(
       'https://zipcodedownload.com/ZipList?zipList='
       '$userZipCode'
-      '&state=&country=us5&format=json&pagenumber=1&key=682e852e2e054212b39d494d29ad3a47'));
+      '&state=&country=us5&format=json&pagenumber=1&key=4ad1beca492a425aa60117ad8bb1d560'));
   if (response.statusCode == 200) {
-    print(json.decode(response.body));
+    //print(json.decode(response.body));
     return json.decode(response.body);
   } else {
     print(response.statusCode);
@@ -320,5 +325,32 @@ Future<BlockedUsers> addUBlockedUser(String uuid, String blockedUser) async {
     // If the server did not return a 201 CREATED response,
     // then throw an exception.
     throw Exception('Failed to add blocked user.');
+  }
+}
+
+class UserCities {
+  final List<dynamic> cities;
+
+  const UserCities({required this.cities});
+  factory UserCities.fromJson(Map<String, dynamic> json) {
+    return UserCities(
+      cities: json['cities'],
+    );
+  }
+}
+
+Future<UserCities> getCities(String uuid) async {
+  http.Response response = await http
+      //.get(Uri.parse('http://localhost:8080/user/''$uuid'));
+      .get(Uri.parse('http://127.0.0.1:8080/user/get_cities/$uuid'));
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
+    return UserCities.fromJson(responseData);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load user data');
   }
 }
