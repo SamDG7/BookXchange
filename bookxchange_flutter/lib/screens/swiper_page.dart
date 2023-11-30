@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
@@ -22,6 +23,7 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
   late NextBook? _currentBook;
   //Future<NextBook>? _currentBook = _nextBook;
   bool right = false;
+  bool showMatchAnimation = false;
   //Future<SwipeRight>? _swipeRight = swipeRight(getUUID(), _nextBook![])
   //print(_nextBook.title)
   @override
@@ -31,64 +33,83 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: AppinioSwiper(
-              cardsCount: 15,
-              //onSwipe: 
-              onSwiping: (AppinioSwiperDirection direction) async {
-              //onSwiping: (AppinioSwiperDirection direction)  {
-                print(direction.toString());
-                if (direction == AppinioSwiperDirection.right) {
-                  print("right");
-                  right = true;
-                  
-                  _currentBook = await _nextBook;
-                  swipe = swipeRight(getUUID(), _currentBook!.bookUid, _currentBook!.uuid);
-                  print(_currentBook!.title);
-                  print(_currentBook!.author);
-                  _nextBook = getNextBook(getUUID(), "true");
-                  //currentBook = _nextBook as NextBook;
-                  //print(currentBook.title);
-                } else {
-                  right = false;
-                  print("left");
-                  _currentBook = await _nextBook;
-                  _nextBook = getNextBook(getUUID(), "false");
-                }
-              },
-              // swipeOptions: AppinioSwipeOptions.symmetric(
-              //     horizontal: true, vertical: false),
-              cardsBuilder: (BuildContext context, int index) {
-                return Container(
-                    alignment: Alignment.center,
-                    //color: CupertinoColors.lightBackgroundGray,
-                    color: Colors.transparent,
-                    child: FutureBuilder<NextBook>(
-                        // pass the list (postsFuture)
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                AppinioSwiper(
+                  cardsCount: 15,
+                  onSwiping: (AppinioSwiperDirection direction) async {
+                    print(direction.toString());
+                    if (direction == AppinioSwiperDirection.right) {
+                      print("right");
+                      right = true;
+
+                      _currentBook = await _nextBook;
+                      swipe = swipeRight(getUUID(), _currentBook!.bookUid, _currentBook!.uuid);
+                      print(_currentBook!.title);
+                      print(_currentBook!.author);
+                      if (swipe == true) {
+                        setState(() {
+                          showMatchAnimation = true;
+                        });
+                        // Start a timer to hide the match animation after 3 seconds
+                        Timer(Duration(seconds: 3), () {
+                          setState(() {
+                            showMatchAnimation = false;
+                          });
+                        });
+                      }
+                      _nextBook = getNextBook(getUUID(), "true");
+                    } else {
+                      right = false;
+                      print("left");
+                      _currentBook = await _nextBook;
+                      _nextBook = getNextBook(getUUID(), "false");
+                    }
+                  },
+                  cardsBuilder: (BuildContext context, int index) {
+                    return Container(
+                      alignment: Alignment.center,
+                      color: Colors.transparent,
+                      child: FutureBuilder<NextBook>(
                         future: _nextBook,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // do something till waiting for data, we can show here a loader
+                          if (snapshot.connectionState == ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasData) {
-                            //print(right);
-                            //final bio = snapshot.data!.userBio;
-                              final nextBook = snapshot.data!;
-                            //print(nextBook.title);
-                            //print(nextBook.author);
-                              return buildNextBook(nextBook);
-                            // Text(posts);
-                            // we have the data, do stuff here
+                            final nextBook = snapshot.data!;
+                            return buildNextBook(nextBook);
                           } else {
                             return const Text("Book Cover Image");
-                            // we did not recieve any data, maybe show error or no data available
                           }
-                        })
-                    //child: const Text('Book Cover Image'), // You can replace this with an actual book cover image
+                        },
+                      ),
                     );
-              },
+                  },
+                ),
+                AnimatedOpacity(
+                  opacity: showMatchAnimation ? 1.0 : 0.0,
+                  duration: Duration(milliseconds: 500),
+                  child: Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: butterfly,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      "It's a match!",
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          // Uncomment the code below if you want to add thumbs up and thumbs down buttons
           /*
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

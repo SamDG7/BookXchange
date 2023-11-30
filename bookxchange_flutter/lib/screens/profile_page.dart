@@ -34,6 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<ProfileImage>? _image = getProfilePicture(getUUID());
   //Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
   Future<BookCovers>? _bookCovers = getBookCovers(getUUID());
+  Future<List<LibraryBooks>>? _swappedBooks = getSwappedBooks(getUUID());
   String baseUrl = 'https://127.0.0.1:8080/bookxchange_backend/book_covers';
   late double rating;
   //late Future<double?> userRatingFuture;
@@ -234,11 +235,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // About me title and bio
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FutureBuilder<ExistingUser>(
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: FutureBuilder<ExistingUser>(
                   future: _existingUser,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -251,7 +254,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                   },
                 ),
-                Text(
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: Text(
                   "About Me:",
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -259,8 +265,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                ),
                 Padding(
-                    padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
+                    padding: EdgeInsets.fromLTRB(20, 5, 10, 0),
                     child: FutureBuilder<ExistingUser>(
                         // pass the list (postsFuture)
                         future: _existingUser,
@@ -282,23 +289,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 10),
                 // Community rating
+                // Padding(
+                //   padding: EdgeInsets.fromLTRB(20, 5, 10, 0),
+                //   child: Column(
+                //     children: [
+                //       //child:
+                //       Text(
+                //         "Community Rating: ",
+                //         style: TextStyle(
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //       // Text(
+                //       //   userRadius,
+                //       //   style: TextStyle(
+                //       //     fontSize: 15,
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 10, 0),
-                  child: Column(
-                    children: [
-                      //child:
-                      Text(
-                        "Community Rating: ",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
                   child: FutureBuilder<ExistingUser?>(
                     future: _existingUser,
                     builder: (context, snapshot) {
@@ -315,26 +328,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                 ),
-                // Library
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 5, 0),
+               
+                //Library
+                // Padding(
+                //   padding: EdgeInsets.fromLTRB(0, 20, 5, 0),
+                //   child: Column(
+                //     //crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         "My Library",
+                //         style: TextStyle(
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+
+                      
+                       Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Container(
+              //height: MediaQuery.of(context).size.height - 510,
+           
+              height: MediaQuery.of(context).size.height,
+              
+
+              // Surround the login/sign up options with a border
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                // border: Border.all(
+                //   color: butterfly, // Border color
+                //   width: 3.0, // Border width
+                // ),
+              ),
+              //child: SingleChildScrollView(
+                      //gridview will go here
+                       child: DefaultTabController(
+                        length: 2, 
+                        // 2 tabs
+                  
                   child: Column(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "My Library",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  children: <Widget>[
+                    const TabBar(
+                        indicatorColor: butterfly,
+                        isScrollable: true,
+                        //dividerColor: butterfly,
+                        labelColor: butterfly,
+                        labelStyle:
+                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        tabs: [
+                          Tab(
+                            text: "My Library",
+                            
+                          ),
+                          Tab(
+                            text: "Swapped Books",
+                          ),
+                        ],
                       ),
 
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
-                        child:
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    SingleChildScrollView(
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Column(
+                          children: [
 
-                            // Title and edit button
-                            Row(
+                        //child:
+                          Container(
+                            child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             OutlinedButton.icon(
@@ -458,13 +521,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ],
-                        ),
                       ),
-                      //gridview will go here
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-                          child: Container(
-                            child: FutureBuilder<BookCovers>(
+                          ),
+                      // ),
+                      // Padding(
+                      //     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          //child: Container(
+                            
+                            //Container(
+                              
+                              //child: Padding(
+                              //   Padding(
+                              //  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                              // Container(
+                              // child: SingleChildScrollView(
+                             //child:
+                             FutureBuilder<BookCovers>(
                                 future: _bookCovers,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -478,10 +550,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         "There are no books in your library");
                                   }
                                 }),
-                          )),
-                    ],
+                              //),
+                              //),
+                             // ),
+                              //),
+                          //),
+                          ], 
+                        ),
+                          ),
+                    ),
+                    //],
+                 // ),
+                //),
+                Container(
+                              //child: SingleChildScrollView(
+                     child: FutureBuilder<List<LibraryBooks>>(
+                    future: _swappedBooks,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final books = snapshot.data!;
+                        return buildSwappedBooks(books);
+                      } else {
+                        return const Text("No books swapped yet!");
+                      }
+                    },
                   ),
+                              //),
+                              ),
+                  ],
+                  
                 ),
+              ),
+                  ],
+                ),
+                  ),
+              //),
+                ),
+            ),
+                      // ),
+              //],
                 //invite someone to the app
               ],
             ),
@@ -533,9 +642,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   //should buildgrid
   Widget buildBook(BookCovers covers) {
-    return GridView.builder(
+    return Padding(
+       padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+       child: GridView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Number of columns
         crossAxisSpacing: 2.0, // Spacing between columns
@@ -547,6 +659,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           base64.decode(covers.bookCover[index]),
         );
       },
+    ),
     );
   }
 
@@ -579,16 +692,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget buildRating(double userRating) {
     return Stack(
       children: [
+
         Padding(
-          padding: EdgeInsets.only(left: 10, top: 60),
-          child: Text(
+          padding: EdgeInsets.only(left: 10, top: 0),
+          child: Column(
+          children: [
+             Row(
+              children: [
+            Text(
+            "Community Rating: ",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+            Text(
             userRating.toStringAsFixed(2),
             style: TextStyle(
               fontSize: 20,
             ),
           ),
+              ],
+             ),
+          ],
+          )
         ),
-        RatingBarIndicator(
+        Padding(
+          padding: EdgeInsets.only(left: 10, top: 30),
+
+        child: RatingBarIndicator(
           rating: userRating,
           direction: Axis.horizontal,
           itemCount: 5,
@@ -600,7 +732,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: butterfly,
           ),
         ),
+        ),
       ],
+    );
+  }
+
+Widget buildSwappedBooks(List<LibraryBooks> library) {
+    // ListView Builder to show data in a list
+    return Padding(
+       padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+       child: GridView.builder(
+      scrollDirection: Axis.vertical,
+      //shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // Number of columns
+        crossAxisSpacing: 2.0, // Spacing between columns
+        mainAxisSpacing: 10.0, // Spacing between rows
+      ),
+      itemCount: library.length,
+      itemBuilder: (context, index) {
+          final book = library[index];
+          return GestureDetector(
+            onTap: () {
+              currentBookUID = book.bookUID;
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+
+                // add screen to edit library here
+              );
+              print(book.bookUID);
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+              );
+            },
+            child: Image.memory(
+          base64.decode(book.bookCover),
+          )
+        );
+      },
+    ),
     );
   }
 }

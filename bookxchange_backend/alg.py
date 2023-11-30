@@ -46,8 +46,6 @@ def createQueue(uuid, collection, preferences):
   user = list(db.db.user_collection.find({"uuid": uuid}))[0]
   for doc in collection:
     if doc['uuid'] != uuid and doc['uuid']:
-      if bool(user['blocked_user']):
-        if doc['uuid'] not in user['blocked_user']:
           current_book_genres = doc['genres']
           score = calcDistance(preferences, current_book_genres)
           queue.append([doc['_id'], score])
@@ -70,7 +68,6 @@ def updateQueueOnSwipe(uuid, right):
   swiped_book = list(db.db.book_collection.find({'_id': queue[0][0]}))
   print(f'This is the users current queue: {queue}\n\n\n\n')
   swiped_book_in_queue = queue[0]
-  
   queue.pop(0)
 
   if right:    
@@ -79,6 +76,7 @@ def updateQueueOnSwipe(uuid, right):
     swiped_book_author = swiped_book[0]['author']
 
     for book in queue:
+      curr_book = list(db.db.book_collection.find({'_id': book[0]}))
       curr_book = list(db.db.book_collection.find({'_id': book[0]}))[0]
       curr_book_genres = curr_book['genres']
       val = calcDistance(swiped_book_genres, curr_book_genres)
@@ -107,17 +105,27 @@ def updateQueueOnSwipe(uuid, right):
       swipe_book_ids.append(doc['book_list'])
   # print(all_books)
 
-  
+  print(swipe_book_ids)
   for b in all_books:
     id = str(b['_id'])
+    id_ = b['_id']
     g = b['genres']
-    if id not in [x[0] for x in queue] and b['uuid'] not in user['blocked_user']:
+    uuid_of_book = list(db.db.book_collection.find({'_id': id_}))[0]['uuid']
+    print(uuid_of_book)
+    if id_ not in [x[0] for x in queue] and b['uuid'] not in user['blocked_user']:
       print(f'book id: {id}')
-      if bool(user_swipe):
-        if id not in swipe_book_ids[0]:
-          queue.append([id, calcDistance(g, user_genres)])
-          print(f'added {id} because its not in queue')
-          break
+      if uuid_of_book != uuid:
+        if bool(user_swipe):
+          id_found = False
+          for sublist in swipe_book_ids:
+            if id in sublist:
+              id_found = True
+              break
+
+          if not id_found:
+            queue.append([id_, calcDistance(g, user_genres)])
+            print(f'added {id} because its not in queue')
+            break
 
 
   if not right:
@@ -139,7 +147,7 @@ def updateQueueOnSwipe(uuid, right):
 
 
 def main():
-  createQueue('JV8acEq9NXRQrQcqywRuaql690q1', db.db.book_collection.find({}), ['Fantasy'])
+  updateQueueOnSwipe('BMyiIRvTllQ02dLo4cg5de1vwU33', True)
   return 0
 if __name__ == "__main__":
     main()
