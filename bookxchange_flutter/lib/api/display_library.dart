@@ -22,6 +22,20 @@ Future<BookCovers> getBookCovers(String uuid) async {
     }
   }
 
+Future<List<LibraryBooks>> getSwappedBooks(String uuid) async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8080/user/matched_books/''$uuid'));
+    if (response.statusCode == 200) {
+      // if (response.body.isEmpty) {
+      //   return 
+      // }
+      final List body = json.decode(response.body);
+      return body.map((e) => LibraryBooks.fromJson(e)).toList();
+    } else {
+      //print("Error in getting book covers");
+      throw Exception('Failed to load image');
+    }
+  }
+
 Future<List<LibraryBooks>> getLibraryBooks(String uuid) async {
     final response = await http.get(Uri.parse('http://127.0.0.1:8080/library/''$uuid'));
     
