@@ -73,6 +73,7 @@ def user_singup():
         "user_rating": 0.0,
         "num_raters": 0,
         "blocked_user" : [],
+        "cities": [],
         
         #"user_swipe" : property.__dict__
         "user_swipe" : []
@@ -170,6 +171,11 @@ def user_create_profile():
     user_radius = json['user_radius']
     user_rating = json['user_rating']
     num_raters = json['num_raters']
+    cities = json['cities']
+  
+    print(cities)
+    #cities = [entry["city_name"] for entry in cities]
+
 
     # print(user_name)
     # print(user_bio)
@@ -191,7 +197,8 @@ def user_create_profile():
         "user_zipcode": user_zipcode,
         "user_radius": user_radius,
         "user_rating": user_rating,
-        "num_raters": num_raters}}
+        "num_raters": num_raters,
+        "cities": cities}}
     )
 
     q = createQueue(uuid, list(db.book_collection.find({})), user_genre)
@@ -358,6 +365,27 @@ def user_library_add_blockeduser():
     )
 
     return json, 201
+
+# Route to get a user's cities
+@app.route('/user/get_cities/<uuid>', methods=['GET'])
+def get_cities(uuid):
+
+    user = db.db.user_collection.find_one({
+        'uuid': uuid
+    })
+
+    if user is None:
+        return "Resource Not Found", 404
+
+    # Extract relevant information (cities) from the user document
+    cities = user.get('cities', '')
+
+    # Create a JSON response with the extracted information
+    response = {
+        'cities': cities,
+    }
+
+    return jsonify(response)
 
 
 ##############################
