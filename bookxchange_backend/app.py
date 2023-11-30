@@ -835,7 +835,6 @@ def library_delete_book():
     
 @app.route('/book/check_match', methods=['PUT'])
 def book_check_match():
-    #found_match = False
     content_type = request.headers.get('Content-Type')
     if(content_type == 'application/json; charset=utf-8'):
         json = request.json
@@ -872,15 +871,12 @@ def book_check_match():
     print(book_uid);
     print("this is the match_user_list\n")
     print(match_user_swipes['user_swipe'])
-    #if match_user_swipes.user_swipe == None:
     if len(match_user_swipes['user_swipe']) == 0:
-        #return redirect(url_for('book/return_match',match = False))
         return {"match" : False}
 
     for key, value in (match_user_swipes['user_swipe'][0]).items():
         print(key);
         if key == uuid :
-            #found_match = True
             db.db.match_collection.update_one(
             {
                 "uuid": uuid
