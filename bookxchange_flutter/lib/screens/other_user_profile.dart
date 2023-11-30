@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../api/other_profile.dart';
 
-enum OtherMenuItem { item1, item2 }
-
 class OtherUser extends StatefulWidget {
   final String userId;
 
@@ -17,9 +15,7 @@ class OtherUser extends StatefulWidget {
 
 class _OtherUserState extends State<OtherUser> {
   late Future<String?> aboutMeFuture;
-  late Future<String?> bioFuture;
   late Future<double?> userRatingFuture;
-  bool value = false;
 
   void changeData() {
     setState(() {
@@ -27,14 +23,10 @@ class _OtherUserState extends State<OtherUser> {
     });
   }
 
-  
-
   @override
   void initState() {
     super.initState();
-    // Initialize your Future objects here
     aboutMeFuture = getOtherUserAboutMe(widget.userId);
-    bioFuture = getOtherUserBio(widget.userId);
     userRatingFuture = getOtherUserCommunityRating(widget.userId);
   }
 
@@ -59,89 +51,64 @@ class _OtherUserState extends State<OtherUser> {
                 } else {
                   final aboutMeData = snapshot.data;
                   return aboutMeData != null
-                      ? Text(
-                          'About Me:\n$aboutMeData',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'About Me:',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              aboutMeData,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: butterfly,
+                              ),
+                            ),
+                          ],
                         )
                       : Text('About Me not available');
                 }
               },
             ),
             const SizedBox(height: 16),
-            FutureBuilder<String?>(
-              future: bioFuture,
+            FutureBuilder<double?>(
+              future: userRatingFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  final bioData = snapshot.data;
-                  return bioData != null
+                  final communityRating = snapshot.data;
+                  return communityRating != null
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Bio:\n$bioData',
+                              'Community Rating:',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            value
-                                ? FutureBuilder<double?>(
-                                    future: userRatingFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        final communityRating = snapshot.data;
-                                        return communityRating != null
-                                            ? Text(
-                                                'Community Rating: ${communityRating.toStringAsFixed(2)}',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              )
-                                            : Text(
-                                                'Community Rating not available');
-                                      }
-                                    },
-                                  )
-                                : FutureBuilder<double?>(
-                                    future: userRatingFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        final communityRating = snapshot.data;
-                                        return communityRating != null
-                                            ? Text(
-                                                'Community Rating: ${communityRating.toStringAsFixed(2)}',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              )
-                                            : Text(
-                                                'Community Rating not available');
-                                      }
-                                    },
-                                  ),
+                            Text(
+                              communityRating.toStringAsFixed(2),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: butterfly,
+                              ),
+                            ),
                           ],
                         )
-                      : Text('Bio not available');
+                      : Text('Community Rating not available');
                 }
               },
             ),
@@ -149,7 +116,6 @@ class _OtherUserState extends State<OtherUser> {
             Padding(
               padding: EdgeInsets.fromLTRB(87, 0, 0, 20),
               child: ElevatedButton(
-                //GET RID OF???
                 onPressed: () async {
                   String refresh = await Navigator.push(
                     context,
@@ -175,27 +141,6 @@ class _OtherUserState extends State<OtherUser> {
                 ),
               ),
             ),
-            /*
-            Padding(
-              padding: EdgeInsets.fromLTRB(110, 0, 0, 150),
-              child: ElevatedButton(
-                //GET RID OF???
-                onPressed: () {
-                  blockUserConfirmationPopup(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  backgroundColor: butterfly,
-                ),
-                child: Text(
-                  "Block User",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ),
-            */
           ],
         ),
       ),
