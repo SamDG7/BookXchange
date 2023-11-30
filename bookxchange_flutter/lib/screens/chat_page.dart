@@ -27,24 +27,10 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
- static const String defaultMessageSentKey = 'defaultMessageSent';
-  bool defaultMessageSent = false;
-
   @override
   void initState() {
     super.initState();
-    checkDefaultMessageSent();
-  }
-
-  Future<void> checkDefaultMessageSent() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      defaultMessageSent = prefs.getBool(defaultMessageSentKey) ?? false;
-      if (!defaultMessageSent) {
-        sendDefaultMessage();
-        prefs.setBool(defaultMessageSentKey, true);
-      }
-    });
+    sendDefaultMessage();
   }
 
   Color iconColor = Colors.grey;
@@ -58,6 +44,7 @@ class _ChatPageState extends State<ChatPage> {
   final String del = "Delivered.";
   final String sending = "Sending...";
   bool sent = false;
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
@@ -68,47 +55,34 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-
   void sendDefaultMessage() async {
     String chatroomId =
         "${widget.receiverUserID}_${_firebaseAuth.currentUser!.uid}";
 
-      try {
-        // Get the cities of the other user
-        UserCities receiverCities = await getCities(widget.receiverUserID);
-        UserCities senderCities =
-            await getCities(_firebaseAuth.currentUser!.uid);
+    try {
+      // Get the cities of the other user
+      UserCities receiverCities = await getCities(widget.receiverUserID);
+      UserCities senderCities = await getCities(_firebaseAuth.currentUser!.uid);
 
-        List<String> cities = [];
+      List<String> cities = [];
 
-        if (receiverCities.cities != null) {
-          cities.addAll(receiverCities.cities.map((city) => city.toString()));
-        }
-
-        if (senderCities.cities != null) {
-          cities.addAll(senderCities.cities.map((city) => city.toString()));
-        }
-
-        String messageContent =
-            'Hi, let\'s meet up! A suggested nearby location is a public library in any of the following cities: ${cities.join(', ')}';
-
-        // Send the message to the other user
-        await _chatService.sendMessage(widget.receiverUserID, messageContent);
-      } catch (error) {
-        // Handle errors (e.g., user not found)
-        print('Error fetching user cities: $error');
+      if (receiverCities.cities != null) {
+        cities.addAll(receiverCities.cities.map((city) => city.toString()));
       }
-  }
 
-  Future<bool> chatroomExists(String chatroomId) async {
-    // Reference to the chat room document
-    DocumentReference chatroomReference =
-        FirebaseFirestore.instance.collection('chat_rooms').doc(chatroomId);
+      if (senderCities.cities != null) {
+        cities.addAll(senderCities.cities.map((city) => city.toString()));
+      }
 
-    // Get the chatroom document
-    DocumentSnapshot chatroomSnapshot = await chatroomReference.get();
+      String messageContent =
+          'Hi, let\'s meet up! A suggested nearby location is a public library in any of the following cities: ${cities.join(', ')}';
 
-    return chatroomSnapshot.exists;
+      // Send the message to the other user
+      await _chatService.sendMessage(widget.receiverUserID, messageContent);
+    } catch (error) {
+      // Handle errors (e.g., user not found)
+      print('Error fetching user cities: $error');
+    }
   }
 
   @override
@@ -179,60 +153,85 @@ class _ChatPageState extends State<ChatPage> {
         ? Alignment.centerRight
         : Alignment.centerLeft;
 
-    return Container(
-        alignment: alignment,
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment:
-                  (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.start,
-              children: [
-                Text(data['senderEmail']),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        data['isHearted']
-                            ? Icons.favorite
-                            : Icons.favorite_border,
+    if (data['message'].startsWith('Hi, let\'s meet up!')) {
+      return Container(
+          alignment: Alignment.center,
+          child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 8.0),
+                          child: ChatBubble(message: data['message']),
+                        ),
                       ),
-                      iconSize: 25,
-                      color: data['isHearted'] ? Colors.red : Colors.grey,
-                      onPressed: () {
-                        toggleHeart(document.reference, !data['isHearted']);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        data['isBrokenHearted']
-                            ? Icons.heart_broken
-                            : Icons.heart_broken_outlined,
+                    ],
+                  ),
+                ],
+              )));
+    } else {
+      return Container(
+          alignment: alignment,
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment:
+                    (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                mainAxisAlignment:
+                    (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                children: [
+                  Text(data['senderEmail']),
+                  Row(
+                    crossAxisAlignment:
+                        (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
+                    mainAxisAlignment:
+                        (data['senderId'] == _firebaseAuth.currentUser!.uid)
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          data['isHearted']
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                        ),
+                        iconSize: 25,
+                        color: data['isHearted'] ? Colors.red : Colors.grey,
+                        onPressed: () {
+                          toggleHeart(document.reference, !data['isHearted']);
+                        },
                       ),
-                      iconSize: 25,
-                      color: data['isBrokenHearted'] ? Colors.red : Colors.grey,
-                      onPressed: () {
-                        toggleBrokenHeart(
-                            document.reference, !data['isBrokenHearted']);
-                      },
-                    ),
-                    Flexible(
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 8.0),
-                        child: ChatBubble(message: data['message']),
+                      IconButton(
+                        icon: Icon(
+                          data['isBrokenHearted']
+                              ? Icons.heart_broken
+                              : Icons.heart_broken_outlined,
+                        ),
+                        iconSize: 25,
+                        color:
+                            data['isBrokenHearted'] ? Colors.red : Colors.grey,
+                        onPressed: () {
+                          toggleBrokenHeart(
+                              document.reference, !data['isBrokenHearted']);
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                const Text("Delivered"),
-              ],
-            )));
+                      ChatBubble(message: data['message']),
+                    ],
+                  ),
+                  const Text("Delivered"),
+                ],
+              )));
+    }
   }
 
   void toggleHeart(DocumentReference reference, bool newHeartStatus) {
