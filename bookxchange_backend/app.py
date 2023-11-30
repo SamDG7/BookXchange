@@ -861,6 +861,8 @@ def library_delete_book():
 
     return json, 201
     
+
+# check match every time user swipes
 @app.route('/book/check_match', methods=['PUT'])
 def book_check_match():
     content_type = request.headers.get('Content-Type')
@@ -902,22 +904,30 @@ def book_check_match():
     if len(match_user_swipes['user_swipe']) == 0:
         return {"match" : False}
 
-    for key, value in (match_user_swipes['user_swipe'][0]).items():
-        print(key);
-        if key == uuid :
-            db.db.match_collection.update_one(
-            {
-                "uuid": uuid
-            },
-            {
-                "$addToSet": {
-                    "matches": {
-                        "match_user_id": book_user_id,
-                        "match_list": [book_uid]
+    for book_swipe in (match_user_swipes['user_swipe']):
+        print(book_swipe);
+
+       
+        
+        if book_swipe.get('book_user_id') == uuid :
+            #found_match = True
+            result = db.db.match_collection.update_one({"uuid": uuid, "matches.match_user_id": book_user_id}, {"$push": {"matches.$.match_list": book_uid}})
+            if result.modified_count == 0:
+                db.db.match_collection.update_one(
+                {
+                    "uuid": uuid
+                },
+                {
+                    "$addToSet": {
+                        "matches": {
+                            "match_user_id": book_user_id,
+                            "match_list": [book_uid]
+                        }
                     }
-                }
-            }, upsert=True
-            );
+                }, upsert=True
+                );
+            # result = db.db.match_collection.update_one({"uuid": book_user_id, "matches.match_user_id": uuid}, {"$push": {"matches.$.match_list": book_swipe.get('book_list')}})
+            # if result.modified_count == 0:
             db.db.match_collection.update_one(
             {
                 "uuid": book_user_id
@@ -926,7 +936,7 @@ def book_check_match():
                 "$addToSet": {
                     "matches": {
                         "match_user_id": uuid,
-                        "match_list": i.book_list
+                        "match_list": book_swipe.get('book_list')
                     }
                 }
             }, upsert=True
@@ -937,10 +947,51 @@ def book_check_match():
     #return redirect(url_for('book/return_match',match = False))
     return {"match" : False}
 
-@app.route('/book/return_match/<match>')
-def success(match):
-    return {"match" : match}
-   
+@app.route('/user/chat/<user_uid>', methods=['GET'])
+def get_chat_users(user_uid):
+    user_match_doc = db.db.match_collection.find_one({"uuid": user_uid})
+    user_matches = user_match_doc['matches']
+    print(user_matches)
+    user_match_list = []
+    for match in user_matches:
+        if match['match_user_id'] not in user_match_list:
+            #print(match)
+            user_match_list.append(match['match_user_id'])
+
+    return {"chat_list": user_match_list}
+        
+@app.route('/user/matched_books/<user_uid>', methods=['GET'])
+def get_matched_bookx(user_uid):
+    user_match_doc = db.db.match_collection.find_one({"uuid": user_uid})
+    user_matches = user_match_doc['matches']
+    user_match_covers = []
+    user_match_books = []
+    for matches in user_matches:
+        match_id = matches['match_user_id']
+        for i in matches['match_list']:
+            if i not in user_match_books:
+                full_fp = ""
+                mypath = './book_covers/%s' %match_id
+                book_picture = str(i)
+
+                full_fp = os.path.join(mypath, '%s.png' %book_picture)
+                print(full_fp)
+
+                with open(full_fp, "rb") as f:
+                    base64_string = base64.b64encode(f.read())
+                    book_cover_encode = (base64_string.decode('utf-8'))
+
+                user_match_books.append(str(i))
+                user_match_covers.append(str(book_cover_encode))
+    
+    library_df = pd.DataFrame({'book_list': user_match_books, 'book_covers': user_match_covers})
+
+    if (library_df.empty):
+            return "Resource Not Found", 404
+    
+    return library_df.to_json(orient='records')
+
+
 
 # Route to get another user's about me, community rating, and bio
 @app.route('/user/profile/<other_user_uid>', methods=['GET'])
