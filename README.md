@@ -32,7 +32,7 @@ For futher information view the project backlog and planning documents in the "d
 * MongoDB
 * Firebase Authentication
 * Cloud Firestore
-* Google Books API
+* OpenLib API
 
 
 ## Getting Started
