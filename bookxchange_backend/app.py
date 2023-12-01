@@ -1020,12 +1020,24 @@ def get_other_user_profile(other_user_uid):
     about_me = user.get('user_about_me', '')
     bio = user.get('user_bio', '')
     userRating = user.get('user_rating', 0.0)
+    
+    try:
+        with open("images/%s.png" %other_user_uid, "rb") as f:
+            base64_string = base64.b64encode(f.read())
+            base64_string = base64_string.decode('utf-8')
+    except:
+        base64_string = "";
+        print("file not found");        
+    
+    # return user.to_json(orient='records', force_ascii=False)
+    #return jsonify({'user_picture': base64_string.decode('utf-8')})
 
     # Create a JSON response with the extracted information
     response = {
         'user_about_me': about_me,
         'user_bio': bio,
         'user_rating': userRating,
+        'user_picture': base64_string,
     }
 
     return jsonify(response)

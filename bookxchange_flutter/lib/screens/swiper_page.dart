@@ -146,32 +146,17 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
 
   Widget buildNextBook(NextBook book) {
     String book_author = book.author;
-    // return GridView.builder(
-    //   scrollDirection: Axis.vertical,
-    //   shrinkWrap: true,
-    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 2, // Number of columns
-    //     crossAxisSpacing: 2.0, // Spacing between columns
-    //     mainAxisSpacing: 10.0, // Spacing between rows
-    //   ),
-    //   itemCount: covers.bookCover.length, // Number of items
-    //   itemBuilder: (BuildContext context, int index) {
-    return Card(
-      elevation: 4.0,
-      //color: butterfly_light,
-      //color: Colors.grey[100],
-      child: Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
+
+    return book.bookCover == null
+    ? Card(
+            child: Column(
+            children: [
+          SizedBox(height: 20,),
           Container(
             height: 450.0,
-            child: Image.memory(base64.decode(book.bookCover)),
+            child: const Text("Book Cover Image"),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10,),
           ListTile(
             title: Padding(
               padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
@@ -199,12 +184,100 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
               ),
             ),
           ),
+          
+          
+        ],))
+        : Card(
+      elevation: 4.0,
+      //color: butterfly_light,
+      //color: Colors.grey[100],
+      child: Column(
+        children: [
+          SizedBox(height: 20,),
+          Container(
+            height: 450.0,
+            child: Image.memory(base64.decode(book.bookCover)),
+          ),
+          SizedBox(height: 10,),
+          ListTile(
+            title: Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
+              child: Center(
+                child: Text(
+                  book.title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            subtitle: Padding(
+              padding: EdgeInsets.fromLTRB(30, 5, 30, 0),
+              child: Center(
+                child: Text(
+                  "by $book_author",
+                  style: TextStyle(
+                    fontSize: 18, // Font size
+                    color: Colors.black, // Text color
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+          
         ],
       ),
     );
-    //     },
 
-    //   );
+    // return Card(
+    //   elevation: 4.0,
+
+    //   child: Column(
+    //     children: [
+    //       SizedBox(
+    //         height: 20,
+    //       ),
+    //       Container(
+    //         height: 450.0,
+    //         child: Image.memory(base64.decode(book.bookCover)),
+    //       ),
+    //       SizedBox(
+    //         height: 10,
+    //       ),
+    //       ListTile(
+    //         title: Padding(
+    //           padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
+    //           child: Center(
+    //             child: Text(
+    //               book.title,
+    //               style: TextStyle(
+    //                 fontSize: 20,
+    //                 fontWeight: FontWeight.bold,
+    //                 color: Colors.black,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //         subtitle: Padding(
+    //           padding: EdgeInsets.fromLTRB(30, 5, 30, 0),
+    //           child: Center(
+    //             child: Text(
+    //               "by $book_author",
+    //               style: TextStyle(
+    //                 fontSize: 18, // Font size
+    //                 color: Colors.black, // Text color
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
+
   }
 }
 
