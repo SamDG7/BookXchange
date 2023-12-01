@@ -16,6 +16,7 @@ String isbn13 = '';
 String currentBookUID = '';
 String modUserID = '';
 List<dynamic> deletedUsers = [];
+List<dynamic> chatEmails = [];
 
 final List<String> genreList = [
       'Crime and Mystery',
@@ -65,5 +66,19 @@ void modDeleteUser(String uuid) {
     } else {
       print("Error in getting deleted users");
       throw Exception('Failed to load deleted users');
+    }
+  }
+
+   Future<List<dynamic>> getChatMatches(String user_uid) async {
+    final response = await http.get(
+    Uri.parse('http://127.0.0.1:8080/user/chat/$user_uid'));
+    if (response.statusCode == 200) {
+
+      //print(json.decode(response.body));
+      chatEmails = json.decode(response.body);
+      return chatEmails;
+    } else {
+      //print("Error in getting book covers");
+      throw Exception('Failed to load image');
     }
   }

@@ -1,5 +1,7 @@
 import 'package:bookxchange_flutter/api/other_profile.dart';
 import 'package:bookxchange_flutter/screens/chat_page.dart';
+import 'package:bookxchange_flutter/api/queue.dart';
+import 'package:bookxchange_flutter/globals.dart';
 import 'package:bookxchange_flutter/screens/other_user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +58,21 @@ void unmatchWithUser(String receiverUserID) async {
 
 class _MessagesScreenState extends State<MessagesScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  //Future<ChatEmails> _chatEmails = chatMatches(getUUID());
+  List<dynamic> chats = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+    getChatMatches(getUUID()).then((chats) {
+      setState(() {
+        this.chats = chats; 
+      });
+    });
+  }
+
+   
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -72,8 +88,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
             )));
   }
 
+
   Widget _buildUserList() {
+
     return StreamBuilder<QuerySnapshot>(
+      //for (var e in FirebaseFirestore.instance.collection('users').snapshots()) 
+   
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -84,58 +104,111 @@ class _MessagesScreenState extends State<MessagesScreen> {
         }
 
         return ListView(
+
+          // shrinkWrap: true, children: _buildUserListItem(snapshot.data!.docs, user))
+          // : Container(),
+
           children: snapshot.data!.docs
+            // if (checkEmail == true) {
               .map<Widget>((doc) => _buildUserListItem(doc))
               .toList(),
         );
       },
-    );
+              
+        );
+      
   }
 
-  Widget _buildUserListItem(DocumentSnapshot document) {
+//getChatEmails();
+//if (chatEmails.contains(data['email'])) {
+
+Widget _buildUserListItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-    if (_auth.currentUser!.email != data['email']) {
+
+
+    if (chats == null) {
+      getChatMatches(getUUID());
+      return const CircularProgressIndicator();
+    } else {
+
+    if (chats.contains(data['email']) && (_auth.currentUser!.email != data['email'])) {
+      //if (_auth.currentUser!.email != data['email']) {
+        print(data['email']);
+        //return Container(child: const Text("sffdsafdfasf"));
       return ListTile(
-        title: Text(data['email']),
-        leading: GestureDetector(
-          onTap: () {
-            // Navigate to user profile
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OtherUser(
-                  userId: data['uid'],
-                ),
-              ),
-            );
-          },
-          child:
-              const Icon(Icons.person), // Add a little icon next to the email
-        ),
-        onTap: () {
-          // Navigate to chat page
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
-                receiverUserEmail: data['email'],
-                receiverUserID: data['uid'],
-              ),
+    title: Text(data['email']),
+    //title: Text("chat created"),
+    leading: GestureDetector(
+      onTap: () {
+        // Navigate to user profile
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtherUser(
+              userId: data['uid'],
             ),
-          );
-        },
-        trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () {
-            unmatchWithUserConfirm(data);
-          },
+          ),
+        );
+      },
+      child:
+          const Icon(Icons.person), // Add a little icon next to the email
+    ),
+    onTap: () {
+      // Navigate to chat page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatPage(
+            receiverUserEmail: data['email'],
+            receiverUserID: data['uid'],
+          ),
         ),
       );
-    } else {
-      return Container();
+    },
+    trailing: IconButton(
+      icon: const Icon(Icons.delete),
+      onPressed: () {
+        unmatchWithUserConfirm(data);
+      },
+    ),
+  );
+      } else {
+     // } else {
+        //return Container(child: const Text("1"));
+        return Container();
+      }
     }
-  }
+     //}
+    //    }).catchError((error) {
+    // // Handle errors if the future fails
+    //   print('Error fetching data: $error');
+    
+    
+
+    // getChatMatches(getUUID()).then((List<dynamic> chat) {
+    //   //if ((_auth.currentUser!.email != data['email'])) {
+    // // Now you have the resolved list in the 'data' variable
+    // dynamic valueToCheck = data['email'];
+    // print(data['email']);
+    // print(chat);
+
+      
+    // }).catchError((error) {
+    // // Handle errors if the future fails
+      
+    //   print('Error fetching data: $error');
+    // });
+    
+    
+  //} 
+  // return ListTile( 
+  //   // child: const Text(
+  //   //     "you have no matches yet! swipe to match!"
+  //   //   )
+  // );
+  
+ }
 
   void unmatchWithUserConfirm(Map<String, dynamic> data) {
     showDialog(
