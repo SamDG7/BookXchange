@@ -82,6 +82,7 @@ def get_mod_user(user_uid):
             base64_string = base64.b64encode(f.read())
             user_df['user_picture'] = base64_string.decode('utf-8')
     except:
+        user_df['user_picture'] = ""
         print("file not found");        
     
     #jsonify({'user_picture': base64_string.decode('utf-8')})
@@ -761,6 +762,34 @@ def book_get_pictures(user_uid):
     #return json.dumps({'book_covers': myList})
     return ({'book_covers': myList})
 
+@app.route('/book/get_picture/<book_uid>', methods=['GET'])
+def book_get_swapped_picture(book_uid):
+    book = db.db.book_collection.find_one({"_id": ObjectId(book_uid)});
+    mypath = './book_covers/%s' %(book['uuid'])
+    print(mypath)
+    full_fp = os.path.join(mypath, '%s.png' %book_uid)
+    print(full_fp)
+    try:
+    #     full_fp = ""
+    #     print(book['uuid'])
+    #     mypath = './book_covers/%s'% book['uuid']
+    #     full_fp = os.path.join(mypath, book_uid)
+    #     print(full_fp + ".png")
+    #     with open(full_fp, "rb") as f:
+    #         base64_string = base64.b64encode(f.read())
+    #         base64_string = base64_string.decode('utf-8')
+
+        
+        
+            #print(full_fp)
+        with open(full_fp, "rb") as f:
+            base64_string = base64.b64encode(f.read())
+            book_image = (base64_string.decode('utf-8'))
+    except:
+        base64_string = "";
+        print("file not found");
+    return jsonify({'book_picture': book_image})
+
 #THIS IS THE TEMP QUEUE BACKEND
 
 @app.route('/book/get_next/<user_uid>/<right>', methods=['GET'])
@@ -974,7 +1003,7 @@ def get_chat_users(user_uid):
     return email_match_list
         
 @app.route('/user/matched_books/<user_uid>', methods=['GET'])
-def get_matched_bookx(user_uid):
+def get_matched_books(user_uid):
     user_match_doc = db.db.match_collection.find_one({"uuid": user_uid})
     user_matches = user_match_doc['matches']
     user_match_covers = []
@@ -989,11 +1018,13 @@ def get_matched_bookx(user_uid):
 
                 full_fp = os.path.join(mypath, '%s.png' %book_picture)
                 print(full_fp)
-
-                with open(full_fp, "rb") as f:
-                    base64_string = base64.b64encode(f.read())
-                    book_cover_encode = (base64_string.decode('utf-8'))
-
+                try :
+                    with open(full_fp, "rb") as f:
+                        base64_string = base64.b64encode(f.read())
+                        book_cover_encode = (base64_string.decode('utf-8'))
+                except: 
+                    book_cover_encode = ""
+                
                 user_match_books.append(str(i))
                 user_match_covers.append(str(book_cover_encode))
     

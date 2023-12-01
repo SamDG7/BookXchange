@@ -148,14 +148,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         return;
     }
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email, password: _password);
-   
-
-    
         if (_email != "bookxchangehelp@gmail.com") {
+          UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
+
             futureUser = getUserLogin(getUUID());
-          }
+          
        
               _firebaseFirestore.collection('users').doc(userCredential.user!.uid).set({
               'uid': userCredential.user!.uid,
@@ -164,15 +162,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => HomePage()));
-        
-          
+        } else {
+          throw Exception();
+        }
 
-    
     } on FirebaseAuthException catch (e) {
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
         
         print('WRONG Something');
+        wrongEmailMessage(); 
       }
     } on Exception catch (e) {
         wrongEmailMessage();        
@@ -191,26 +190,30 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
     try {
 
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email, password: _password);
+      
       //futureUser = getUserLogin(getUUID());
 
       if (_email == moderatorEmail) {
+        await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
         Navigator.pop(context);
         Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ModHomePage()));
-      }
-      else { 
-        wrongEmailMessage();
+      } else { 
+        throw Exception();
       }
       
       
     } on FirebaseAuthException catch (e) {
       //WRONG LOGIN CREDENTIALS
       if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        wrongEmailMessage();
         print('WRONG Something');
+        wrongEmailMessage();
+        
       }
+    } on Exception catch (e) {
+        print("error");
+        wrongEmailMessage();        
     }
   }
 

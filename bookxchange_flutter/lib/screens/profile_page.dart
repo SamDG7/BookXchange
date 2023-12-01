@@ -16,6 +16,7 @@ import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
 import 'package:bookxchange_flutter/api/user_account.dart';
 import 'package:bookxchange_flutter/api/user_profile.dart';
 import 'package:bookxchange_flutter/globals.dart';
+import 'package:bookxchange_flutter/screens/swapped_book_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:bookxchange_flutter/api/display_library.dart';
@@ -759,15 +760,15 @@ Widget buildSwappedBooks(List<LibraryBooks> library) {
               currentBookUID = book.bookUID;
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BookAboutScreen()),
+                MaterialPageRoute(builder: (context) => SwappedBookAboutScreen()),
 
                 // add screen to edit library here
               );
-              print(book.bookUID);
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => BookAboutScreen()),
-              );
+              // print(book.bookUID);
+              // Navigator.push(
+              //   context, 
+              //   MaterialPageRoute(builder: (context) => BookAboutScreen()),
+              // );
             },
             child: Image.memory(
           base64.decode(book.bookCover),
