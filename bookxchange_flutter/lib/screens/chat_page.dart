@@ -27,12 +27,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  @override
-  void initState() {
-    super.initState();
-    sendDefaultMessage();
-  }
-
   Color iconColor = Colors.grey;
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
@@ -55,7 +49,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void sendDefaultMessage() async {
+  Future<String> sendDefaultMessage() async {
     String chatroomId =
         "${widget.receiverUserID}_${_firebaseAuth.currentUser!.uid}";
 
@@ -77,11 +71,14 @@ class _ChatPageState extends State<ChatPage> {
       String messageContent =
           'Hi, let\'s meet up! A suggested nearby location is a public library in any of the following cities: ${cities.join(', ')}';
 
+      return messageContent;
+
       // Send the message to the other user
-      await _chatService.sendMessage(widget.receiverUserID, messageContent);
+      //await _chatService.sendMessage(widget.receiverUserID, messageContent);
     } catch (error) {
       // Handle errors (e.g., user not found)
       print('Error fetching user cities: $error');
+      return '';
     }
   }
 
@@ -118,6 +115,33 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<String>(
+                future: sendDefaultMessage(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Text(
+                      snapshot.data ??
+                          '', // Display an empty string if data is null
+                      style: TextStyle(fontSize: 16.0),
+                      textAlign: TextAlign.center,
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
           Expanded(
             child: _buildMessageList(),
           ),
