@@ -18,6 +18,11 @@ Future<Map<String, dynamic>> getOtherUserProfile(String uuid) async {
   }
 }
 
+Future<String> getOtherUserName(String uuid) async {
+  final Map<String, dynamic> otherUserProfile = await getOtherUserProfile(uuid);
+  return otherUserProfile['user_name'] as String;
+}
+
 Future<String> getOtherUserAboutMe(String uuid) async {
   final Map<String, dynamic> otherUserProfile = await getOtherUserProfile(uuid);
   return otherUserProfile['user_bio'] as String;

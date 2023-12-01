@@ -16,6 +16,8 @@ class OtherUser extends StatefulWidget {
 }
 
 class _OtherUserState extends State<OtherUser> {
+
+  late Future<String?> userNameFuture;
   late Future<String?> aboutMeFuture;
   late Future<double?> userRatingFuture;
   late Future<String?> userPictureFuture;
@@ -29,6 +31,8 @@ class _OtherUserState extends State<OtherUser> {
   @override
   void initState() {
     super.initState();
+
+    userNameFuture = getOtherUserName(widget.userId);
     aboutMeFuture = getOtherUserAboutMe(widget.userId);
     userRatingFuture = getOtherUserCommunityRating(widget.userId);
     userPictureFuture = getOtherUserImage(widget.userId);
@@ -44,9 +48,56 @@ class _OtherUserState extends State<OtherUser> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          //mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
+
+
+            // WHY IS THIS NOT ACTUALL CENTERED
+            Column(crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+            
+
+
+
+
+            FutureBuilder<String?>(
+              future: userNameFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final userNameData = snapshot.data;
+                  return userNameData != null
+                      ? Column(
+                          //crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userNameData,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text('Name not available');
+                }
+              },
+            ),
+
+
+
+
+
+
+
             Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                  padding: EdgeInsets.fromLTRB(20, 10, 10, 20),
                   child: Container(
                     //children: [
                     child: CircleAvatar(
@@ -72,6 +123,12 @@ class _OtherUserState extends State<OtherUser> {
                               }
                             })),
                   )),
+
+            ],
+            ),
+
+
+
             FutureBuilder<String?>(
               future: aboutMeFuture,
               builder: (context, snapshot) {
@@ -107,6 +164,9 @@ class _OtherUserState extends State<OtherUser> {
                 }
               },
             ),
+
+
+
             const SizedBox(height: 16),
             FutureBuilder<double?>(
               future: userRatingFuture,
@@ -143,9 +203,10 @@ class _OtherUserState extends State<OtherUser> {
                 }
               },
             ),
-            const SizedBox(height: 100),
+
+            //const SizedBox(height: 100),
             Padding(
-              padding: EdgeInsets.fromLTRB(87, 0, 0, 20),
+              padding: EdgeInsets.fromLTRB(87, 20, 0, 20),
               child: ElevatedButton(
                 onPressed: () async {
                   String refresh = await Navigator.push(
