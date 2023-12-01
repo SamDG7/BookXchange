@@ -16,7 +16,6 @@ class OtherUser extends StatefulWidget {
 }
 
 class _OtherUserState extends State<OtherUser> {
-
   late Future<String?> userNameFuture;
   late Future<String?> aboutMeFuture;
   late Future<double?> userRatingFuture;
@@ -44,170 +43,162 @@ class _OtherUserState extends State<OtherUser> {
       appBar: AppBar(
         title: const Text('User Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
+        children: <Widget>[
+          // NAME AND IMAGE
+          Column(
+            // CENTER NAME AND IMAGE
+            crossAxisAlignment: CrossAxisAlignment.center,
 
-          children: [
-
-
-            // WHY IS THIS NOT ACTUALL CENTERED
-            Column(crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-            
-
-
-
-
-            FutureBuilder<String?>(
-              future: userNameFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final userNameData = snapshot.data;
-                  return userNameData != null
-                      ? Column(
-                          //crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userNameData,
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+              FutureBuilder<String?>(
+                future: userNameFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final userNameData = snapshot.data;
+                    return userNameData != null
+                        ? Column(
+                            //crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                userNameData,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Text('Name not available');
-                }
-              },
-            ),
+                            ],
+                          )
+                        : Text('Name not available');
+                  }
+                },
+              ),
 
+              // add space between name and image
+              const SizedBox(height: 10.0),
 
-
-
-
-
-
-            Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 10, 20),
-                  child: Container(
-                    //children: [
-                    child: CircleAvatar(
-                        radius: 75,
-                        //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
-                        child: FutureBuilder<String?>(
-                            // pass the list (postsFuture)
-                            future: userPictureFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // do something till waiting for data, we can show here a loader
-                                return const CircularProgressIndicator();
-                              } else if (snapshot.hasData) {
-                                //final bio = snapshot.data!.userBio;
-                                final userPicture = snapshot.data!;
-                                return buildPicture(userPicture);
-                                // Text(posts);
-                                // we have the data, do stuff here
-                              } else {
-                                return const Text("No image available");
-                                // we did not recieve any data, maybe show error or no data available
-                              }
-                            })),
-                  )),
-
+              CircleAvatar(
+                radius: 75,
+                //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
+                child: FutureBuilder<String?>(
+                    // pass the list (postsFuture)
+                    future: userPictureFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // do something till waiting for data, we can show here a loader
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        //final bio = snapshot.data!.userBio;
+                        final userPicture = snapshot.data!;
+                        return buildPicture(userPicture);
+                        // Text(posts);
+                        // we have the data, do stuff here
+                      } else {
+                        return const Text("No image available");
+                        // we did not recieve any data, maybe show error or no data available
+                      }
+                    }),
+              ),
             ],
+          ),
+
+          // ABOUT ME AND COMMUNITY RATING
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Column(
+              // LEFT JUSTIFY ABOUT ME AND COMMUNITY RATING
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                FutureBuilder<String?>(
+                  future: aboutMeFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final aboutMeData = snapshot.data;
+                      return aboutMeData != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'About Me:',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  aboutMeData,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: butterfly,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Text('About Me not available');
+                    }
+                  },
+                ),
+
+                // add space between about me and community rating
+                const SizedBox(height: 10.0),
+
+                FutureBuilder<double?>(
+                  future: userRatingFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final communityRating = snapshot.data;
+                      return communityRating != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Community Rating:',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  communityRating.toStringAsFixed(2),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: butterfly,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Text('Community Rating not available');
+                    }
+                  },
+                ),
+              ],
             ),
+          ),
 
+          const SizedBox(height: 10.0),
 
-
-            FutureBuilder<String?>(
-              future: aboutMeFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final aboutMeData = snapshot.data;
-                  return aboutMeData != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'About Me:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              aboutMeData,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: butterfly,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text('About Me not available');
-                }
-              },
-            ),
-
-
-
-            const SizedBox(height: 16),
-            FutureBuilder<double?>(
-              future: userRatingFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final communityRating = snapshot.data;
-                  return communityRating != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Community Rating:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              communityRating.toStringAsFixed(2),
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: butterfly,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text('Community Rating not available');
-                }
-              },
-            ),
-
-            //const SizedBox(height: 100),
-            Padding(
-              padding: EdgeInsets.fromLTRB(87, 20, 0, 20),
-              child: ElevatedButton(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(
                 onPressed: () async {
                   String refresh = await Navigator.push(
                     context,
@@ -232,9 +223,9 @@ class _OtherUserState extends State<OtherUser> {
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
