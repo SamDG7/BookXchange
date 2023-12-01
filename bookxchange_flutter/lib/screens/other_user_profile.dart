@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bookxchange_flutter/constants.dart';
 import 'package:bookxchange_flutter/screens/add_rating_page.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ class OtherUser extends StatefulWidget {
 class _OtherUserState extends State<OtherUser> {
   late Future<String?> aboutMeFuture;
   late Future<double?> userRatingFuture;
+  late Future<String?> userPictureFuture;
 
   void changeData() {
     setState(() {
@@ -28,6 +31,7 @@ class _OtherUserState extends State<OtherUser> {
     super.initState();
     aboutMeFuture = getOtherUserAboutMe(widget.userId);
     userRatingFuture = getOtherUserCommunityRating(widget.userId);
+    userPictureFuture = getOtherUserImage(widget.userId);
   }
 
   @override
@@ -41,6 +45,33 @@ class _OtherUserState extends State<OtherUser> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+                  padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
+                  child: Container(
+                    //children: [
+                    child: CircleAvatar(
+                        radius: 75,
+                        //child: buildPicture(getImageURL(getUUID())),//Image.network(getImageURL(getUUID()), width: 70, height: 70)
+                        child: FutureBuilder<String?>(
+                            // pass the list (postsFuture)
+                            future: userPictureFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // do something till waiting for data, we can show here a loader
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasData) {
+                                //final bio = snapshot.data!.userBio;
+                                final userPicture = snapshot.data!;
+                                return buildPicture(userPicture);
+                                // Text(posts);
+                                // we have the data, do stuff here
+                              } else {
+                                return const Text("No image available");
+                                // we did not recieve any data, maybe show error or no data available
+                              }
+                            })),
+                  )),
             FutureBuilder<String?>(
               future: aboutMeFuture,
               builder: (context, snapshot) {
@@ -145,5 +176,23 @@ class _OtherUserState extends State<OtherUser> {
         ),
       ),
     );
+  }
+
+  Widget buildPicture(String image64) {
+    // ignore: unnecessary_null_comparison
+    return userPictureFuture == null
+        ? CircleAvatar(
+            radius: 75,
+            child: Text(
+              'N',
+              style: TextStyle(
+                color: butterfly,
+                fontWeight: FontWeight.w500,
+                fontSize: 80,
+              ),
+            ))
+        : CircleAvatar(
+            radius: 75,
+            backgroundImage: Image.memory(base64Decode(image64)).image);
   }
 }

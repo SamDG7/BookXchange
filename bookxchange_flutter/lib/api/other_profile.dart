@@ -32,3 +32,8 @@ Future<double> getOtherUserCommunityRating(String uuid) async {
   final Map<String, dynamic> otherUserProfile = await getOtherUserProfile(uuid);
   return otherUserProfile['user_rating'] as double;
 }
+
+Future<String> getOtherUserImage(String uuid) async {
+  final Map<String, dynamic> otherUserProfile = await getOtherUserProfile(uuid);
+  return otherUserProfile['user_picture'] as String;
+}
