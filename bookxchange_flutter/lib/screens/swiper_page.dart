@@ -45,7 +45,8 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
                       right = true;
 
                       _currentBook = await _nextBook;
-                      swipe = swipeRight(getUUID(), _currentBook!.bookUid, _currentBook!.uuid);
+                      swipe = swipeRight(
+                          getUUID(), _currentBook!.bookUid, _currentBook!.uuid);
                       print(_currentBook!.title);
                       print(_currentBook!.author);
                       if (swipe == true) {
@@ -74,7 +75,8 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
                       child: FutureBuilder<NextBook>(
                         future: _nextBook,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasData) {
                             final nextBook = snapshot.data!;
@@ -160,12 +162,16 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
       //color: Colors.grey[100],
       child: Column(
         children: [
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Container(
             height: 450.0,
             child: Image.memory(base64.decode(book.bookCover)),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           ListTile(
             title: Padding(
               padding: EdgeInsets.fromLTRB(30, 10, 30, 0),
@@ -193,8 +199,6 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
               ),
             ),
           ),
-          
-          
         ],
       ),
     );
