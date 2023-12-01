@@ -103,7 +103,7 @@ class _BookSwiperScreenState extends State<BookSwiperScreen> {
                       style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.green,
                       ),
                     ),
                   ),
