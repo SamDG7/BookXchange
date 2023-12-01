@@ -102,22 +102,22 @@ class _ModUserScreenState extends State<ModUserScreen> {
       appBar: AppBar(
      
         backgroundColor: butterfly,
-        title: Text("User Profile",  
-        style: TextStyle(color: Colors.white,
-              fontWeight: FontWeight.bold)),
+        // title: Text("User Profile",  
+        // style: TextStyle(color: Colors.white,
+        //       fontWeight: FontWeight.bold)),
 
-      //   title: FutureBuilder(
-      //   future: _moderatorUserProfile,
-      //   builder: (context, snapshot){
-      //    return Text(snapshot.hasData
-      //      ? snapshot.data!.userName
-      //     : "User Info", 
-      //     style: TextStyle(color: Colors.white,
-      //        fontWeight: FontWeight.bold
-      //        )
-      //     );//AppLocalizations.of(context)!.loading
-      //   }
-      // ),
+        title: FutureBuilder(
+        future: _moderatorUserProfile,
+        builder: (context, snapshot){
+         return Text(snapshot.hasData
+           ? snapshot.data!.userName
+          : "User Info", 
+          style: TextStyle(color: Colors.white,
+             fontWeight: FontWeight.bold
+             )
+          );//AppLocalizations.of(context)!.loading
+        }
+      ),
       ),
       body: ListView(
         children: <Widget>[

@@ -258,8 +258,8 @@ Future<Map<String,dynamic>> saveBookCoverPicture(String uuid, File pickedImage) 
   }
 }
 
-Future<BookCoverImage> getBookCoverPicture(String book_uid, String uuid) async {
-  http.Response response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_picture/''$uuid/$book_uid'));
+Future<BookCoverImage> getBookCoverPicture(String book_uid) async {
+  http.Response response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_picture/''/$book_uid'));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -270,6 +270,19 @@ Future<BookCoverImage> getBookCoverPicture(String book_uid, String uuid) async {
     throw Exception('Failed to load book cover');
   }
 }
+
+// Future<BookCoverImage> getSwappedBookCoverPicture(String book_uid) async {
+//   http.Response response = await http.get(Uri.parse('http://127.0.0.1:8080/book/get_swapped_picturee/''/$book_uid'));
+//   if (response.statusCode == 200) {
+//     // If the server did return a 200 OK response,
+//     // then parse the JSON.
+//     return BookCoverImage.fromJson(jsonDecode((response.body)));
+//   } else {
+//     // If the server did not return a 200 OK response,
+//     // then throw an exception.
+//     throw Exception('Failed to load book cover');
+//   }
+// }
 
 // edit book status with the corresponding uuid
 Future<BookStatus> updateBookStatus(String bookUID, String bookStatus) async {

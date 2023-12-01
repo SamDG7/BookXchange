@@ -11,11 +11,11 @@ import 'package:bookxchange_flutter/screens/edit_library_page.dart';
 import 'package:bookxchange_flutter/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
-class BookAboutScreen extends StatefulWidget {
-  const BookAboutScreen({super.key});
+class SwappedBookAboutScreen extends StatefulWidget {
+  const SwappedBookAboutScreen({super.key});
 
   @override
-  State<BookAboutScreen> createState() => _BookAboutScreenState();
+  State<SwappedBookAboutScreen> createState() => _SwappedBookAboutScreenState();
 }
 
 //popup that allows user to change book status
@@ -37,7 +37,7 @@ Future<String> _showStatusDialog(BuildContext context) {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => BookAboutScreen()));
+                      builder: (BuildContext context) => SwappedBookAboutScreen()));
 
               completer.complete('Available');
             },
@@ -50,7 +50,7 @@ Future<String> _showStatusDialog(BuildContext context) {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => BookAboutScreen()));
+                      builder: (BuildContext context) => SwappedBookAboutScreen()));
               completer.complete('Out for Loan');
             },
             child: Text('Out for Loan',
@@ -63,7 +63,7 @@ Future<String> _showStatusDialog(BuildContext context) {
   return completer.future;
 }
 
-class _BookAboutScreenState extends State<BookAboutScreen> {
+class _SwappedBookAboutScreenState extends State<SwappedBookAboutScreen> {
   Future<Book>? _currentBook = getBook(currentBookUID);
   Future<BookCoverImage>? _currentBookCover =
       getBookCoverPicture(currentBookUID);
@@ -135,13 +135,25 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: butterfly,
-        title: Text(
-          'Your Book',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        // title: Text(
+        //   'Your Book',
+        //   style: TextStyle(
+        //     color: Colors.white,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        title: FutureBuilder(
+        future: _currentBook,
+        builder: (context, snapshot){
+         return Text(snapshot.hasData
+           ? snapshot.data!.title
+          : "Book Info", 
+          style: TextStyle(color: Colors.white,
+             fontWeight: FontWeight.bold
+             )
+          );//AppLocalizations.of(context)!.loading
+        }
+      ),
       ),
       // Vertical scrollable layout
       body: ListView(
@@ -269,32 +281,32 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                         side: BorderSide(width: 1.0, color: butterfly),
                       ),
                     ),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        //Navigator.push(
-                        //    context,
-                        //    MaterialPageRoute(
-                        //         builder: (context) => BookAboutScreen()),
-                        // add screen to edit library here
-                        //     );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditBookScreen()),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.edit,
-                        color: butterfly,
-                      ),
-                      label: Text(
-                        'Edit Book',
-                        style: TextStyle(color: Colors.grey[800]),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(width: 1.0, color: butterfly),
-                      ),
-                    ),
+                    // OutlinedButton.icon(
+                    //   onPressed: () {
+                    //     //Navigator.push(
+                    //     //    context,
+                    //     //    MaterialPageRoute(
+                    //     //         builder: (context) => BookAboutScreen()),
+                    //     // add screen to edit library here
+                    //     //     );
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => EditBookScreen()),
+                    //     );
+                    //   },
+                    //   icon: Icon(
+                    //     Icons.edit,
+                    //     color: butterfly,
+                    //   ),
+                    //   label: Text(
+                    //     'Edit Book',
+                    //     style: TextStyle(color: Colors.grey[800]),
+                    //   ),
+                    //   style: OutlinedButton.styleFrom(
+                    //     side: BorderSide(width: 1.0, color: butterfly),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],
@@ -386,7 +398,7 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     }),
                 SizedBox(height: 10),
                 Text(
-                  "Your Review:",
+                  "Book Owner's Review:",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -399,13 +411,13 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
                     fontSize: 16,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
-                      child: OutlinedButton.icon(
-                        onPressed: () {
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //   children: [
+                //     Padding(
+                //       padding: EdgeInsets.fromLTRB(0, 20, 20, 0),
+                //       child: OutlinedButton.icon(
+                //         onPressed: () {
 
 
 
@@ -413,9 +425,9 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
 
 
 
-                          deleteBookConfirmationPopup(context);
-                          deleteBookFromLibrary(getUUID(), currentBookUID);
-                          deleteBookFromCollection(currentBookUID);
+                //           deleteBookConfirmationPopup(context);
+                //           deleteBookFromLibrary(getUUID(), currentBookUID);
+                //           deleteBookFromCollection(currentBookUID);
                           
 
 
@@ -427,48 +439,48 @@ class _BookAboutScreenState extends State<BookAboutScreen> {
 
 
 
-                        },
-                        icon: Icon(
-                          Icons.remove,
-                          color: butterfly,
-                        ),
-                        label: Text(
-                          'Remove Book',
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 1.0, color: butterfly),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 20, 15, 0),
-                      child: OutlinedButton.icon(
-                        onPressed: () async {
-                          bookStatus = await _showStatusDialog(context);
-                          _updateBookStatus =
-                              updateBookStatus(currentBookUID, bookStatus);
-                          print(bookStatus);
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: butterfly,
-                        ),
-                        label: Text(
-                          'Change Book Status',
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(width: 1.0, color: butterfly),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                //         },
+                //         icon: Icon(
+                //           Icons.remove,
+                //           color: butterfly,
+                //         ),
+                //         label: Text(
+                //           'Remove Book',
+                //           style: TextStyle(color: Colors.grey[800]),
+                //         ),
+                //         style: OutlinedButton.styleFrom(
+                //           side: BorderSide(width: 1.0, color: butterfly),
+                //           padding:
+                //               EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                //         ),
+                //       ),
+                //     ),
+                //     Padding(
+                //       padding: EdgeInsets.fromLTRB(0, 20, 15, 0),
+                //       child: OutlinedButton.icon(
+                //         onPressed: () async {
+                //           bookStatus = await _showStatusDialog(context);
+                //           _updateBookStatus =
+                //               updateBookStatus(currentBookUID, bookStatus);
+                //           print(bookStatus);
+                //         },
+                //         icon: Icon(
+                //           Icons.edit,
+                //           color: butterfly,
+                //         ),
+                //         label: Text(
+                //           'Change Book Status',
+                //           style: TextStyle(color: Colors.grey[800]),
+                //         ),
+                //         style: OutlinedButton.styleFrom(
+                //           side: BorderSide(width: 1.0, color: butterfly),
+                //           padding:
+                //               EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
