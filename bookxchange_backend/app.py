@@ -1017,6 +1017,7 @@ def get_other_user_profile(other_user_uid):
         return "Resource Not Found", 404
 
     # Extract relevant information (about me, bio, community rating) from the user document
+    userName = user.get('user_name', '')
     about_me = user.get('user_about_me', '')
     bio = user.get('user_bio', '')
     userRating = user.get('user_rating', 0.0)
@@ -1034,6 +1035,7 @@ def get_other_user_profile(other_user_uid):
 
     # Create a JSON response with the extracted information
     response = {
+        'user_name': userName,
         'user_about_me': about_me,
         'user_bio': bio,
         'user_rating': userRating,
