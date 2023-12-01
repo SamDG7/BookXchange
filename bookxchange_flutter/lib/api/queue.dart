@@ -1,4 +1,5 @@
 //import 'package:bookxchange_flutter/screens/login_signup_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 //import 'package:bookxchange_flutter/screens/edit_profile_page.dart';
 import 'dart:convert';
@@ -74,6 +75,7 @@ Future<CheckMatch> swipeRight(String uuid, String bookUID, String bookUserID) as
   }
 }
 
+
 class NextBook {
   final String uuid;
   final String bookUid;
@@ -84,11 +86,6 @@ class NextBook {
   final String bookStatus;
   final List<dynamic> genres;
   final dynamic bookCover;
-  
-  //final Image bookCover;
-  //final String yourReview;
- // final bool currentStatus;
-  //final int numSwaps;
 
   //const Book({required this.uuid, required this.title, required this. author, required this.year, required this.genres, required this.bookCover, required this.yourReview, required this.currentStatus, required this.numSwaps});
     const NextBook({required this.uuid, required this.bookUid, required this.title, required this.author, required this.isbn13, required this.genres, required this.bookStatus, required this.bookCover});
@@ -152,6 +149,19 @@ class CheckMatch {
   factory CheckMatch.fromJson(Map<String, dynamic> json) {
     return CheckMatch(
       match: json['match'],
+      // bookList: json['book_list'],
+    );
+  }
+}
+
+class ChatEmails {
+  final List email;
+
+  const ChatEmails({required this.email});
+
+  factory ChatEmails.fromJson(Map<String, dynamic> json) {
+    return ChatEmails(
+      email: json['match_emails'],
       // bookList: json['book_list'],
     );
   }

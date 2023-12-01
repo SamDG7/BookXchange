@@ -353,6 +353,14 @@ def user_reset_algo():
         {'$set': {"user_genre": user_genre}}
     )
 
+    db.db.queue_collection.delete_one({"uuid": uuid})
+    user = db.db.user_collection.find_one({"uuid": uuid})
+    print(user['user_genre'])
+    q = createQueue(uuid, list(db.book_collection.find({})), user['user_genre'])
+    db.db.queue_collection.insert_one({"uuid": uuid, "queue": q})
+    #createQueue(uuid, list(db.book_collection.find({})), user_genre)
+    #(uuid, collection, preferences)
+
     return json, 201
 
 @app.route('/user/save_picture', methods=['POST'])
@@ -928,12 +936,17 @@ def get_chat_users(user_uid):
     user_matches = user_match_doc['matches']
     print(user_matches)
     user_match_list = []
+    email_match_list = []
     for match in user_matches:
         if match['match_user_id'] not in user_match_list:
-            #print(match)
             user_match_list.append(match['match_user_id'])
+            user = db.db.user_collection.find_one({"uuid": match['match_user_id']})
+            email_match_list.append(user['user_email'])
+            #user_match_list[""]
+            #email_match_list.append(user['user_email'])
 
-    return {"chat_list": user_match_list}
+
+    return email_match_list
         
 @app.route('/user/matched_books/<user_uid>', methods=['GET'])
 def get_matched_bookx(user_uid):

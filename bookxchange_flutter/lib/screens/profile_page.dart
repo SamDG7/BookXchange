@@ -573,7 +573,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final books = snapshot.data!;
                         return buildSwappedBooks(books);
                       } else {
-                        return const Text("No books swapped yet!");
+                        return Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Text("No books swapped yet!", textAlign: TextAlign.center,),);
                       }
                     },
                   ),
