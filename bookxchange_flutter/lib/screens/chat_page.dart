@@ -119,7 +119,8 @@ class _ChatPageState extends State<ChatPage> {
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+                color: Colors.grey[300],
+                //border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               padding: const EdgeInsets.all(8.0),
@@ -131,11 +132,35 @@ class _ChatPageState extends State<ChatPage> {
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    return Text(
-                      snapshot.data ??
-                          '', // Display an empty string if data is null
-                      style: TextStyle(fontSize: 16.0),
+                    return RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black, // Set to your desired text color
+                        ),
+                        children: [
+                          TextSpan(
+                            text:
+                                'You’ve matched with ${widget.receiverUserEmail}!\n',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      25.0), // Adjust the bottom padding as needed
+                            ),
+                          ),
+                          TextSpan(
+                            text: snapshot.data,
+                            
+                          ),
+                        ],
+                      ),
                     );
                   }
                 },
